@@ -3,8 +3,8 @@
         "name": "gordon"
     },
     "name": "angular-pzutil",
-    "version": "0.0.2",
-    "main": ["./dist/ui-bootstrap-tpls.js"],
+    "version": "0.0.3",
+    "main": ["./dist/pzutil-tpls.js"],
     "dependencies": {
         "angular": ">=1"
     }
