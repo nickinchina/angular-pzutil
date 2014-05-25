@@ -27,7 +27,6 @@ angular.module('pzutil.modal', [])
                 modalInstance.result.then(function (r) {}, function () {});
 
                 promise.then(function(r){
-                    console.info('promise', cb);
                     cb();
                     modalInstance.close();
                 });
