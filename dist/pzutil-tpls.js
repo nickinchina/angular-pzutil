@@ -2,7 +2,7 @@
  * pzutil
  * 
 
- * Version: 0.0.4 - 2014-05-25
+ * Version: 0.0.5 - 2014-05-25
  * License: MIT
  */
 angular.module("pzutil", ["pzutil.tpls", "pzutil.modal","pzutil.services","pzutil.simplegrid"]);
@@ -129,7 +129,7 @@ angular.module('pzutil.services', [])
 /**
  * Created by gordon on 2014/4/14.
  */
-angular.module('pzutil.simpleGrid', ['pzutil.services','pzutil.modal'])
+angular.module('pzutil.simplegrid', ['pzutil.services','pzutil.modal'])
     .factory('sgColumn', ['localizedMessages', function (localizedMessages) {
 
         var factory = function($scope) {

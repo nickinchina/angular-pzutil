@@ -1,7 +1,7 @@
 /**
  * Created by gordon on 2014/4/14.
  */
-angular.module('pzutil.simpleGrid', ['pzutil.services','pzutil.modal'])
+angular.module('pzutil.simplegrid', ['pzutil.services','pzutil.modal'])
     .factory('sgColumn', ['localizedMessages', function (localizedMessages) {
 
         var factory = function($scope) {
