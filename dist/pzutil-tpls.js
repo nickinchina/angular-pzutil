@@ -2,7 +2,7 @@
  * pzutil
  * 
 
- * Version: 0.0.6 - 2014-05-25
+ * Version: 0.0.7 - 2014-05-25
  * License: MIT
  */
 angular.module("pzutil", ["pzutil.tpls", "pzutil.modal","pzutil.services","pzutil.simplegrid"]);
@@ -36,6 +36,7 @@ angular.module('pzutil.modal', [])
                 modalInstance.result.then(function (r) {}, function () {});
 
                 promise.then(function(r){
+                    console.info('promise', cb);
                     cb();
                     modalInstance.close();
                 });
@@ -304,7 +305,6 @@ angular.module('pzutil.simplegrid', ['pzutil.services','pzutil.modal'])
                                     to: Math.min($scope.pageSize * $scope.currentPage,$scope.totalItems) ,
                                     total: $scope.totalItems
                                 } );
-                            console.info('footer',$scope.footer);
                         };
                         if ($attrs.sgOnChange) {
                             crudWait.doWork("Please wait...", $scope.sgOnChange({items:l}), loader);

@@ -182,7 +182,6 @@ angular.module('pzutil.simplegrid', ['pzutil.services','pzutil.modal'])
                                     to: Math.min($scope.pageSize * $scope.currentPage,$scope.totalItems) ,
                                     total: $scope.totalItems
                                 } );
-                            console.info('footer',$scope.footer);
                         };
                         if ($attrs.sgOnChange) {
                             crudWait.doWork("Please wait...", $scope.sgOnChange({items:l}), loader);
