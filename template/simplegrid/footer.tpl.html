@@ -1,0 +1,10 @@
+<div class="row">
+    <div class="col-md-9">
+        <pagination ng-if="!sgNoPager" ng-show="totalItems>pageSize"
+                    total-items="totalItems" page="currentPage" items-per-page="pageSize"
+                    max-size="5" class="pagination-sm" boundary-links="true"  on-select-page="changed(page)" />
+    </div>
+    <div class="col-md-3 sg-footer">
+        <strong>{{footer}}</strong>
+    </div>
+</div>

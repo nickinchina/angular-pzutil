@@ -1,0 +1,11 @@
+{
+    "author": {
+        "name": "gordon"
+    },
+    "name": "angular-pzutil",
+    "version": "0.0.1",
+    "main": ["./dist/ui-bootstrap-tpls.js"],
+    "dependencies": {
+        "angular": ">=1"
+    }
+}

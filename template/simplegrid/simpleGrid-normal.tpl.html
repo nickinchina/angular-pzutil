@@ -1,0 +1,14 @@
+<div class="sg-grid">
+    <ng-include src="'template/simplegrid/header.tpl.html'"></ng-include>
+    <div style="{{scrollStyle}}">
+        <div ng-repeat="item in items" class="row sg-gridrow" ng-click="sgOnClick({id: item.id})">
+            <div class="{{col.$getColumnClass()}}" ng-repeat="col in columns">
+                <i ng-if="col.bool" ng-class="{true: 'fa fa-check'}[item[col.name]]"></i>
+                <a href ng-if="$first && sgAllowDel" ng-click="DelObject(item)"><i class= 'glyphicon glyphicon-remove'></i></a>
+                <ng-include  ng-if="col.template" src="col.template"></ng-include>
+                <span ng-if="!col.template">{{col.$getText(item)}}</span>
+            </div>
+        </div>
+    </div>
+    <ng-include src="'template/simplegrid/footer.tpl.html'"></ng-include>
+</div>
