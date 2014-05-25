@@ -2,7 +2,7 @@
  * pzutil
  * 
 
- * Version: 0.0.3 - 2014-05-25
+ * Version: 0.0.4 - 2014-05-25
  * License: MIT
  */
 angular.module("pzutil", ["pzutil.tpls", "pzutil.modal","pzutil.services","pzutil.simplegrid"]);
@@ -51,7 +51,7 @@ angular.module('pzutil.modal', [])
  * Created by gordon on 2014/4/4.
  */
 angular.module('pzutil.services', [])
-    ,factory('globalSearch', [
+    .factory('globalSearch', [
     function(){
         var breadcrumbsService = {};
         breadcrumbsService.listingSearch = null;

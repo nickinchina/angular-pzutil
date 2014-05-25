@@ -2,7 +2,7 @@
  * Created by gordon on 2014/4/4.
  */
 angular.module('pzutil.services', [])
-    ,factory('globalSearch', [
+    .factory('globalSearch', [
     function(){
         var breadcrumbsService = {};
         breadcrumbsService.listingSearch = null;
