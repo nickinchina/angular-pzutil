@@ -2,7 +2,7 @@
  * pzutil
  * 
 
- * Version: 0.0.5 - 2014-05-25
+ * Version: 0.0.6 - 2014-05-25
  * License: MIT
  */
 angular.module("pzutil", ["pzutil.tpls", "pzutil.modal","pzutil.services","pzutil.simplegrid"]);
@@ -51,12 +51,6 @@ angular.module('pzutil.modal', [])
  * Created by gordon on 2014/4/4.
  */
 angular.module('pzutil.services', [])
-    .factory('globalSearch', [
-    function(){
-        var breadcrumbsService = {};
-        breadcrumbsService.listingSearch = null;
-        return breadcrumbsService;
-    }])
     .factory('localizedMessages', ['$interpolate', 'I18N.MESSAGES', function ($interpolate, i18nmessages) {
 
     var handleNotFound = function (msg, msgKey) {
@@ -188,8 +182,8 @@ angular.module('pzutil.simplegrid', ['pzutil.services','pzutil.modal'])
         }
         return factory;
     }])
-    .directive('simpleGrid', ['sgColumn', 'globalSearch', 'localizedMessages','crudWait',
-        function (sgColumn, globalSearch, localizedMessages,crudWait) {
+    .directive('simpleGrid', ['sgColumn', 'breadcrumbs', 'localizedMessages','crudWait',
+        function (sgColumn, breadcrumbs, localizedMessages,crudWait) {
             return {
                 restrict:'E',
                 replace:true,
@@ -275,7 +269,7 @@ angular.module('pzutil.simplegrid', ['pzutil.services','pzutil.modal'])
                     $scope.changed = function(page) {
                         $scope.currentPage = page;
                         var data = null;
-                        if ($scope.sgGlobalSearch && globalSearch.listingSearch && globalSearch.listingSearch!="")
+                        if ($scope.sgGlobalSearch && breadcrumbs.listingSearch && breadcrumbs.listingSearch!="")
                         {
                             data = _.filter($scope.data, function(i){
                                 for (var c = 0; c< $scope.columns.length; c++){
@@ -284,7 +278,7 @@ angular.module('pzutil.simplegrid', ['pzutil.services','pzutil.modal'])
                                     if ($scope.myLookup)
                                         value = $scope.myLookup({col: col, value:value});
                                     if (value) {
-                                        if (value.toString().indexOf(globalSearch.listingSearch)>-1)
+                                        if (value.toString().indexOf(breadcrumbs.listingSearch)>-1)
                                             return true;
                                     }
                                 }
@@ -321,7 +315,7 @@ angular.module('pzutil.simplegrid', ['pzutil.services','pzutil.modal'])
                     };
                     if ($scope.sgGlobalSearch) {
                         $scope.$watch(function() {
-                            return globalSearch.listingSearch ;
+                            return breadcrumbs.listingSearch ;
                         }, function() {
                             $scope.changed($scope.currentPage);
                         });

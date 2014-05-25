@@ -60,8 +60,8 @@ angular.module('pzutil.simplegrid', ['pzutil.services','pzutil.modal'])
         }
         return factory;
     }])
-    .directive('simpleGrid', ['sgColumn', 'globalSearch', 'localizedMessages','crudWait',
-        function (sgColumn, globalSearch, localizedMessages,crudWait) {
+    .directive('simpleGrid', ['sgColumn', 'breadcrumbs', 'localizedMessages','crudWait',
+        function (sgColumn, breadcrumbs, localizedMessages,crudWait) {
             return {
                 restrict:'E',
                 replace:true,
@@ -147,7 +147,7 @@ angular.module('pzutil.simplegrid', ['pzutil.services','pzutil.modal'])
                     $scope.changed = function(page) {
                         $scope.currentPage = page;
                         var data = null;
-                        if ($scope.sgGlobalSearch && globalSearch.listingSearch && globalSearch.listingSearch!="")
+                        if ($scope.sgGlobalSearch && breadcrumbs.listingSearch && breadcrumbs.listingSearch!="")
                         {
                             data = _.filter($scope.data, function(i){
                                 for (var c = 0; c< $scope.columns.length; c++){
@@ -156,7 +156,7 @@ angular.module('pzutil.simplegrid', ['pzutil.services','pzutil.modal'])
                                     if ($scope.myLookup)
                                         value = $scope.myLookup({col: col, value:value});
                                     if (value) {
-                                        if (value.toString().indexOf(globalSearch.listingSearch)>-1)
+                                        if (value.toString().indexOf(breadcrumbs.listingSearch)>-1)
                                             return true;
                                     }
                                 }
@@ -193,7 +193,7 @@ angular.module('pzutil.simplegrid', ['pzutil.services','pzutil.modal'])
                     };
                     if ($scope.sgGlobalSearch) {
                         $scope.$watch(function() {
-                            return globalSearch.listingSearch ;
+                            return breadcrumbs.listingSearch ;
                         }, function() {
                             $scope.changed($scope.currentPage);
                         });
