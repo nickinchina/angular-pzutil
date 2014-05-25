@@ -1,7 +1,14 @@
 /**
  * Created by gordon on 2014/4/4.
  */
-angular.module('pzutil.localizedMessages', []).factory('localizedMessages', ['$interpolate', 'I18N.MESSAGES', function ($interpolate, i18nmessages) {
+angular.module('pzutil.services', [])
+    ,factory('globalSearch', [
+    function(){
+        var breadcrumbsService = {};
+        breadcrumbsService.listingSearch = null;
+        return breadcrumbsService;
+    }])
+    .factory('localizedMessages', ['$interpolate', 'I18N.MESSAGES', function ($interpolate, i18nmessages) {
 
     var handleNotFound = function (msg, msgKey) {
         return msg || '?' + msgKey + '?';

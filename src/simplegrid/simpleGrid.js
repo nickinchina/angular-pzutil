@@ -1,7 +1,7 @@
 /**
  * Created by gordon on 2014/4/14.
  */
-angular.module('pzutil.simpleGrid', ['pzutil.localizedMessages','pzutil.modal'])
+angular.module('pzutil.simpleGrid', ['pzutil.services','pzutil.modal'])
     .factory('sgColumn', ['localizedMessages', function (localizedMessages) {
 
         var factory = function($scope) {
@@ -60,8 +60,8 @@ angular.module('pzutil.simpleGrid', ['pzutil.localizedMessages','pzutil.modal'])
         }
         return factory;
     }])
-    .directive('simpleGrid', ['sgColumn', 'breadcrumbs', 'localizedMessages','crudWait',
-        function (sgColumn, breadcrumbs, localizedMessages,crudWait) {
+    .directive('simpleGrid', ['sgColumn', 'globalSearch', 'localizedMessages','crudWait',
+        function (sgColumn, globalSearch, localizedMessages,crudWait) {
             return {
                 restrict:'E',
                 replace:true,
@@ -147,7 +147,7 @@ angular.module('pzutil.simpleGrid', ['pzutil.localizedMessages','pzutil.modal'])
                     $scope.changed = function(page) {
                         $scope.currentPage = page;
                         var data = null;
-                        if ($scope.sgGlobalSearch && breadcrumbs.listingSearch && breadcrumbs.listingSearch!="")
+                        if ($scope.sgGlobalSearch && globalSearch.listingSearch && globalSearch.listingSearch!="")
                         {
                             data = _.filter($scope.data, function(i){
                                 for (var c = 0; c< $scope.columns.length; c++){
@@ -156,7 +156,7 @@ angular.module('pzutil.simpleGrid', ['pzutil.localizedMessages','pzutil.modal'])
                                     if ($scope.myLookup)
                                         value = $scope.myLookup({col: col, value:value});
                                     if (value) {
-                                        if (value.toString().indexOf(breadcrumbs.listingSearch)>-1)
+                                        if (value.toString().indexOf(globalSearch.listingSearch)>-1)
                                             return true;
                                     }
                                 }
@@ -193,7 +193,7 @@ angular.module('pzutil.simpleGrid', ['pzutil.localizedMessages','pzutil.modal'])
                     };
                     if ($scope.sgGlobalSearch) {
                         $scope.$watch(function() {
-                            return breadcrumbs.listingSearch ;
+                            return globalSearch.listingSearch ;
                         }, function() {
                             $scope.changed($scope.currentPage);
                         });
