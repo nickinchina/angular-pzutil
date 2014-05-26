@@ -70,16 +70,16 @@ angular.module('pzutil.simplegrid', ['pzutil.services','pzutil.modal'])
                 templateUrl: function($element, $attrs) {
                     var t = $attrs.sgTemplate;
                     if (t) {
-                        var suffix = ".grid.tpl.html'";
+                        var suffix = ".grid.html'";
                         if (t.indexOf(suffix, t.length - suffix.length) !== -1) {
-                            return 'template/simplegrid/simpleGrid-simple.tpl.html';
+                            return 'template/simplegrid/simpleGrid-simple.html';
                         }
                         else {
-                            return 'template/simplegrid/simpleGrid.tpl.html';
+                            return 'template/simplegrid/simpleGrid.html';
                         }
                     }
                     else
-                        return 'template/simplegrid/simpleGrid-normal.tpl.html';
+                        return 'template/simplegrid/simpleGrid-normal.html';
                 },
                 link: function($scope, $element, $attrs, $controller) {
                    $scope.sorter = function(sortField, sortOrder) {

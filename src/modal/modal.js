@@ -7,7 +7,7 @@ angular.module('pzutil.modal', [])
             restrict:'E',
             replace: true,
             transclude: 'element',
-            templateUrl: 'template/modal/modal.tpl.html'
+            templateUrl: 'template/modal/modal.html'
         };
     })
     .factory('crudWait',['$http','$modal', function($http, $modal) {
@@ -15,7 +15,7 @@ angular.module('pzutil.modal', [])
         var mixin = {
             doWork : function(msg, promise, cb) {
                  var modalInstance = $modal.open({
-                    templateUrl: 'template/modal/wait.tpl.html',
+                    templateUrl: 'template/modal/wait.html',
                     controller: 'crudWaitCtrl',
                     resolve: {
                         msg: function () {
