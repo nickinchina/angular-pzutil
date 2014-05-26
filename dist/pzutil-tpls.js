@@ -2,11 +2,11 @@
  * pzutil
  * 
 
- * Version: 0.0.12 - 2014-05-26
+ * Version: 0.0.13 - 2014-05-26
  * License: MIT
  */
 angular.module("pzutil", ["pzutil.tpls", "pzutil.modal","pzutil.services","pzutil.simplegrid","pzutil.tree","pzutil.ztemplate"]);
-angular.module("pzutil.tpls", ["template/modal/modal.tpl.html","template/modal/wait.tpl.html","template/simplegrid/footer.tpl.html","template/simplegrid/header.tpl.html","template/simplegrid/simpleGrid-normal.tpl.html","template/simplegrid/simpleGrid-simple.tpl.html","template/simplegrid/simpleGrid.tpl.html"]);
+angular.module("pzutil.tpls", ["template/modal/modal.html","template/modal/wait.html","template/simplegrid/footer.html","template/simplegrid/header.html","template/simplegrid/simpleGrid-normal.html","template/simplegrid/simpleGrid-simple.html","template/simplegrid/simpleGrid.html"]);
 /**
  * Created by gordon on 2014/4/25.
  */
@@ -16,7 +16,7 @@ angular.module('pzutil.modal', [])
             restrict:'E',
             replace: true,
             transclude: 'element',
-            templateUrl: 'template/modal/modal.tpl.html'
+            templateUrl: 'template/modal/modal.html'
         };
     })
     .factory('crudWait',['$http','$modal', function($http, $modal) {
@@ -24,7 +24,7 @@ angular.module('pzutil.modal', [])
         var mixin = {
             doWork : function(msg, promise, cb) {
                  var modalInstance = $modal.open({
-                    templateUrl: 'template/modal/wait.tpl.html',
+                    templateUrl: 'template/modal/wait.html',
                     controller: 'crudWaitCtrl',
                     resolve: {
                         msg: function () {
@@ -192,16 +192,16 @@ angular.module('pzutil.simplegrid', ['pzutil.services','pzutil.modal'])
                 templateUrl: function($element, $attrs) {
                     var t = $attrs.sgTemplate;
                     if (t) {
-                        var suffix = ".grid.tpl.html'";
+                        var suffix = ".grid.html'";
                         if (t.indexOf(suffix, t.length - suffix.length) !== -1) {
-                            return 'template/simplegrid/simpleGrid-simple.tpl.html';
+                            return 'template/simplegrid/simpleGrid-simple.html';
                         }
                         else {
-                            return 'template/simplegrid/simpleGrid.tpl.html';
+                            return 'template/simplegrid/simpleGrid.html';
                         }
                     }
                     else
-                        return 'template/simplegrid/simpleGrid-normal.tpl.html';
+                        return 'template/simplegrid/simpleGrid-normal.html';
                 },
                 link: function($scope, $element, $attrs, $controller) {
                    $scope.sorter = function(sortField, sortOrder) {
@@ -490,8 +490,8 @@ angular.module('pzutil.ztemplate', ['pzutil.services'])
         }
     }]);
 
-angular.module("template/modal/modal.tpl.html", []).run(["$templateCache", function($templateCache) {
-  $templateCache.put("template/modal/modal.tpl.html",
+angular.module("template/modal/modal.html", []).run(["$templateCache", function($templateCache) {
+  $templateCache.put("template/modal/modal.html",
     "<div>\n" +
     "    <div class=\"modal-header\">\n" +
     "        <h3>Edit {{heading()}}</h3>\n" +
@@ -508,8 +508,8 @@ angular.module("template/modal/modal.tpl.html", []).run(["$templateCache", funct
     "</div>");
 }]);
 
-angular.module("template/modal/wait.tpl.html", []).run(["$templateCache", function($templateCache) {
-  $templateCache.put("template/modal/wait.tpl.html",
+angular.module("template/modal/wait.html", []).run(["$templateCache", function($templateCache) {
+  $templateCache.put("template/modal/wait.html",
     "<div class=\"modal-body\">\n" +
     "    <div class=\"progress progress-striped active\">\n" +
     "        <div class=\"progress-bar\"  role=\"progressbar\" aria-valuenow=\"100\" aria-valuemin=\"0\" aria-valuemax=\"100\" style=\"width: 100%\">\n" +
@@ -519,8 +519,8 @@ angular.module("template/modal/wait.tpl.html", []).run(["$templateCache", functi
     "</div>");
 }]);
 
-angular.module("template/simplegrid/footer.tpl.html", []).run(["$templateCache", function($templateCache) {
-  $templateCache.put("template/simplegrid/footer.tpl.html",
+angular.module("template/simplegrid/footer.html", []).run(["$templateCache", function($templateCache) {
+  $templateCache.put("template/simplegrid/footer.html",
     "<div class=\"row\">\n" +
     "    <div class=\"col-md-9\">\n" +
     "        <pagination ng-if=\"!sgNoPager\" ng-show=\"totalItems>pageSize\"\n" +
@@ -533,8 +533,8 @@ angular.module("template/simplegrid/footer.tpl.html", []).run(["$templateCache",
     "</div>");
 }]);
 
-angular.module("template/simplegrid/header.tpl.html", []).run(["$templateCache", function($templateCache) {
-  $templateCache.put("template/simplegrid/header.tpl.html",
+angular.module("template/simplegrid/header.html", []).run(["$templateCache", function($templateCache) {
+  $templateCache.put("template/simplegrid/header.html",
     "<div class=\"row well well-sm sg-gridheader\" >\n" +
     "    <div class=\"{{col.$getColumnClass()}}\" ng-repeat=\"col in columns\">\n" +
     "        <a href ng-click=\"col.$sort()\" class=\"btn-header\">{{col.$getTitle()}}</a>\n" +
@@ -544,8 +544,8 @@ angular.module("template/simplegrid/header.tpl.html", []).run(["$templateCache",
     "</div>");
 }]);
 
-angular.module("template/simplegrid/simpleGrid-normal.tpl.html", []).run(["$templateCache", function($templateCache) {
-  $templateCache.put("template/simplegrid/simpleGrid-normal.tpl.html",
+angular.module("template/simplegrid/simpleGrid-normal.html", []).run(["$templateCache", function($templateCache) {
+  $templateCache.put("template/simplegrid/simpleGrid-normal.html",
     "<div class=\"sg-grid\">\n" +
     "    <ng-include src=\"'template/simplegrid/header.tpl.html'\"></ng-include>\n" +
     "    <div style=\"{{scrollStyle}}\">\n" +
@@ -562,16 +562,16 @@ angular.module("template/simplegrid/simpleGrid-normal.tpl.html", []).run(["$temp
     "</div>");
 }]);
 
-angular.module("template/simplegrid/simpleGrid-simple.tpl.html", []).run(["$templateCache", function($templateCache) {
-  $templateCache.put("template/simplegrid/simpleGrid-simple.tpl.html",
+angular.module("template/simplegrid/simpleGrid-simple.html", []).run(["$templateCache", function($templateCache) {
+  $templateCache.put("template/simplegrid/simpleGrid-simple.html",
     "<div class=\"sg-grid\">\n" +
     "    <ng-include src=\"itemtemplate\"></ng-include>\n" +
     "    <ng-include src=\"'template/simplegrid/footer.tpl.html'\"></ng-include>\n" +
     "</div>");
 }]);
 
-angular.module("template/simplegrid/simpleGrid.tpl.html", []).run(["$templateCache", function($templateCache) {
-  $templateCache.put("template/simplegrid/simpleGrid.tpl.html",
+angular.module("template/simplegrid/simpleGrid.html", []).run(["$templateCache", function($templateCache) {
+  $templateCache.put("template/simplegrid/simpleGrid.html",
     "<div class=\"form-horizontal sg-grid\">\n" +
     "    <div class=\"input-group\" style=\"width: 320px;margin-bottom: 15px\" ng-if=\"sgAddObject && sgSortOptions\">\n" +
     "        <span class=\"input-group-addon\"><i class=\"fa fa-check-circle\"></i></span>\n" +
