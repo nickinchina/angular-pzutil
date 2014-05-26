@@ -2,10 +2,10 @@
  * pzutil
  * 
 
- * Version: 0.0.8 - 2014-05-25
+ * Version: 0.0.9 - 2014-05-26
  * License: MIT
  */
-angular.module("pzutil", ["pzutil.tpls", "pzutil.modal","pzutil.services","pzutil.simplegrid"]);
+angular.module("pzutil", ["pzutil.tpls", "pzutil.modal","pzutil.services","pzutil.simplegrid","pzutil.ztemplate"]);
 angular.module("pzutil.tpls", ["template/modal/modal.tpl.html","template/modal/wait.tpl.html","template/simplegrid/footer.tpl.html","template/simplegrid/header.tpl.html","template/simplegrid/simpleGrid-normal.tpl.html","template/simplegrid/simpleGrid-simple.tpl.html","template/simplegrid/simpleGrid.tpl.html"]);
 /**
  * Created by gordon on 2014/4/25.
@@ -330,6 +330,28 @@ angular.module('pzutil.simplegrid', ['pzutil.services','pzutil.modal'])
                 }
             };
     }]);
+/**
+ * Created by gordon on 2014/5/4.
+ */
+/**
+ * Created by gordon on 2014/5/4.
+ */
+angular.module('pzutil.ztemplate', [])
+    .directive('zTemplate',['localizedMessages', '$compile', function (localizedMessages,$compile) {
+        return {
+            restrict: 'A',
+            scope: false,
+            compile: function(element, attrs)
+            {
+                return function(scope, element, attrs) {
+                    var sc = element.scope();
+                    var template = sc.$eval(attrs.zTemplate);
+                    element.append($compile(template)(sc));
+                };
+            }
+        }
+    }]);
+
 angular.module("template/modal/modal.tpl.html", []).run(["$templateCache", function($templateCache) {
   $templateCache.put("template/modal/modal.tpl.html",
     "<div>\n" +
