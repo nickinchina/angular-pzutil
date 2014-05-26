@@ -1,5 +1,6 @@
 /**
  * Created by gordon on 2014/4/25.
+ */
 angular.module('pzutil.modal', [])
     .directive('crudModal', function () {
         return {
@@ -37,4 +38,3 @@ angular.module('pzutil.modal', [])
         $scope.msg = msg;
 
 }]);
- */
