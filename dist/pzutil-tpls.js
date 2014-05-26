@@ -471,7 +471,7 @@ angular.module('pzutil.tree', [])
             }
         };
         return service;
-    }])
+    }]);
 /**
  * Created by gordon on 2014/5/4.
  */
