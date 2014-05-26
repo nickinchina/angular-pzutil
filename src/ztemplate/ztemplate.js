@@ -1,9 +1,6 @@
 /**
  * Created by gordon on 2014/5/4.
  */
-/**
- * Created by gordon on 2014/5/4.
- */
 angular.module('pzutil.ztemplate', [])
     .directive('zTemplate',['localizedMessages', '$compile', function (localizedMessages,$compile) {
         return {

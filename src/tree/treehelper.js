@@ -3,7 +3,6 @@
  */
 angular.module('pzutil.tree', [])
     .factory('zTreeHelper', [function () {
-
         var buildTreeHelper = function(items, parentItem, ForeignKeyValue, ForeignKey, recursive, pos) {
             var r = _.filter(items, function (i) {
                 var pid = i.parentid ? i.parentid : 0;

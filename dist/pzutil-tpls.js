@@ -9,7 +9,6 @@ angular.module("pzutil", ["pzutil.tpls", "pzutil.modal","pzutil.services","pzuti
 angular.module("pzutil.tpls", ["template/modal/modal.tpl.html","template/modal/wait.tpl.html","template/simplegrid/footer.tpl.html","template/simplegrid/header.tpl.html","template/simplegrid/simpleGrid-normal.tpl.html","template/simplegrid/simpleGrid-simple.tpl.html","template/simplegrid/simpleGrid.tpl.html"]);
 /**
  * Created by gordon on 2014/4/25.
- */
 angular.module('pzutil.modal', [])
     .directive('crudModal', function () {
         return {
@@ -47,6 +46,7 @@ angular.module('pzutil.modal', [])
         $scope.msg = msg;
 
 }]);
+ */
 /**
  * Created by gordon on 2014/4/4.
  */
@@ -335,7 +335,6 @@ angular.module('pzutil.simplegrid', ['pzutil.services','pzutil.modal'])
  */
 angular.module('pzutil.tree', [])
     .factory('zTreeHelper', [function () {
-
         var buildTreeHelper = function(items, parentItem, ForeignKeyValue, ForeignKey, recursive, pos) {
             var r = _.filter(items, function (i) {
                 var pid = i.parentid ? i.parentid : 0;
@@ -472,9 +471,6 @@ angular.module('pzutil.tree', [])
         };
         return service;
     }]);
-/**
- * Created by gordon on 2014/5/4.
- */
 /**
  * Created by gordon on 2014/5/4.
  */
