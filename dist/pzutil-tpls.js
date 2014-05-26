@@ -2,7 +2,7 @@
  * pzutil
  * 
 
- * Version: 0.0.10 - 2014-05-26
+ * Version: 0.0.11 - 2014-05-26
  * License: MIT
  */
 angular.module("pzutil", ["pzutil.tpls", "pzutil.modal","pzutil.services","pzutil.simplegrid","pzutil.tree","pzutil.ztemplate"]);
@@ -333,7 +333,7 @@ angular.module('pzutil.simplegrid', ['pzutil.services','pzutil.modal'])
 /**
  * Created by gordon on 2014/4/16.
  */
-angular.module('pzutil.ztree', [])
+angular.module('pzutil.tree', [])
     .factory('zTreeHelper', [function () {
 
         var buildTreeHelper = function(items, parentItem, ForeignKeyValue, ForeignKey, recursive, pos) {
