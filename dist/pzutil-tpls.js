@@ -2,7 +2,7 @@
  * pzutil
  * 
 
- * Version: 0.0.11 - 2014-05-26
+ * Version: 0.0.12 - 2014-05-26
  * License: MIT
  */
 angular.module("pzutil", ["pzutil.tpls", "pzutil.modal","pzutil.services","pzutil.simplegrid","pzutil.tree","pzutil.ztemplate"]);
