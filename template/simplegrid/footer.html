@@ -1,6 +1,6 @@
 <div class="row">
     <div class="col-md-9">
-        <pagination ng-if="!sgNoPager" ng-show="totalItems>pageSize"
+        <pagination ng-if="!sgNoPager && totalItems>pageSize"
                     total-items="totalItems" page="currentPage" items-per-page="pageSize"
                     max-size="5" class="pagination-sm" boundary-links="true"  on-select-page="changed(page)" />
     </div>

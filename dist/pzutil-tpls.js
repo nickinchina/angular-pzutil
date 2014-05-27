@@ -2,7 +2,7 @@
  * pzutil
  * 
 
- * Version: 0.0.14 - 2014-05-27
+ * Version: 0.0.15 - 2014-05-27
  * License: MIT
  */
 angular.module("pzutil", ["pzutil.tpls", "pzutil.modal","pzutil.services","pzutil.simplegrid","pzutil.tree","pzutil.ztemplate"]);
@@ -523,7 +523,7 @@ angular.module("template/simplegrid/footer.html", []).run(["$templateCache", fun
   $templateCache.put("template/simplegrid/footer.html",
     "<div class=\"row\">\n" +
     "    <div class=\"col-md-9\">\n" +
-    "        <pagination ng-if=\"!sgNoPager\" ng-show=\"totalItems>pageSize\"\n" +
+    "        <pagination ng-if=\"!sgNoPager && totalItems>pageSize\"\n" +
     "                    total-items=\"totalItems\" page=\"currentPage\" items-per-page=\"pageSize\"\n" +
     "                    max-size=\"5\" class=\"pagination-sm\" boundary-links=\"true\"  on-select-page=\"changed(page)\" />\n" +
     "    </div>\n" +
