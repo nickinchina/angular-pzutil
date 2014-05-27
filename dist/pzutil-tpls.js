@@ -2,7 +2,7 @@
  * pzutil
  * 
 
- * Version: 0.0.13 - 2014-05-26
+ * Version: 0.0.14 - 2014-05-27
  * License: MIT
  */
 angular.module("pzutil", ["pzutil.tpls", "pzutil.modal","pzutil.services","pzutil.simplegrid","pzutil.tree","pzutil.ztemplate"]);
@@ -547,7 +547,7 @@ angular.module("template/simplegrid/header.html", []).run(["$templateCache", fun
 angular.module("template/simplegrid/simpleGrid-normal.html", []).run(["$templateCache", function($templateCache) {
   $templateCache.put("template/simplegrid/simpleGrid-normal.html",
     "<div class=\"sg-grid\">\n" +
-    "    <ng-include src=\"'template/simplegrid/header.tpl.html'\"></ng-include>\n" +
+    "    <ng-include src=\"'template/simplegrid/header.html'\"></ng-include>\n" +
     "    <div style=\"{{scrollStyle}}\">\n" +
     "        <div ng-repeat=\"item in items\" class=\"row sg-gridrow\" ng-click=\"sgOnClick({id: item.id})\">\n" +
     "            <div class=\"{{col.$getColumnClass()}}\" ng-repeat=\"col in columns\">\n" +
@@ -558,7 +558,7 @@ angular.module("template/simplegrid/simpleGrid-normal.html", []).run(["$template
     "            </div>\n" +
     "        </div>\n" +
     "    </div>\n" +
-    "    <ng-include src=\"'template/simplegrid/footer.tpl.html'\"></ng-include>\n" +
+    "    <ng-include src=\"'template/simplegrid/footer.html'\"></ng-include>\n" +
     "</div>");
 }]);
 
@@ -566,7 +566,7 @@ angular.module("template/simplegrid/simpleGrid-simple.html", []).run(["$template
   $templateCache.put("template/simplegrid/simpleGrid-simple.html",
     "<div class=\"sg-grid\">\n" +
     "    <ng-include src=\"itemtemplate\"></ng-include>\n" +
-    "    <ng-include src=\"'template/simplegrid/footer.tpl.html'\"></ng-include>\n" +
+    "    <ng-include src=\"'template/simplegrid/footer.html'\"></ng-include>\n" +
     "</div>");
 }]);
 
@@ -584,12 +584,12 @@ angular.module("template/simplegrid/simpleGrid.html", []).run(["$templateCache",
     "            <button type=\"button\" class=\"btn btn-default\" ng-click=\"sgAddObject()\" ng-if=\"sgAddObject\"><span class=\"glyphicon glyphicon-plus\"></span></button>\n" +
     "        </div>\n" +
     "    </div>\n" +
-    "    <ng-include src=\"'template/simplegrid/header.tpl.html'\" ng-if=\"sgColumns\"></ng-include>\n" +
+    "    <ng-include src=\"'template/simplegrid/header.html'\" ng-if=\"sgColumns\"></ng-include>\n" +
     "    <div style=\"{{scrollStyle}}\">\n" +
     "        <div ng-repeat=\"item in items\" style=\"padding: 3px 0px 3px\">\n" +
     "            <ng-include src=\"itemtemplate\"></ng-include>\n" +
     "        </div>\n" +
     "    </div>\n" +
-    "    <ng-include src=\"'template/simplegrid/footer.tpl.html'\"></ng-include>\n" +
+    "    <ng-include src=\"'template/simplegrid/footer.html'\"></ng-include>\n" +
     "</div>");
 }]);

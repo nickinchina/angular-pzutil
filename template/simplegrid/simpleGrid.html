@@ -10,11 +10,11 @@
             <button type="button" class="btn btn-default" ng-click="sgAddObject()" ng-if="sgAddObject"><span class="glyphicon glyphicon-plus"></span></button>
         </div>
     </div>
-    <ng-include src="'template/simplegrid/header.tpl.html'" ng-if="sgColumns"></ng-include>
+    <ng-include src="'template/simplegrid/header.html'" ng-if="sgColumns"></ng-include>
     <div style="{{scrollStyle}}">
         <div ng-repeat="item in items" style="padding: 3px 0px 3px">
             <ng-include src="itemtemplate"></ng-include>
         </div>
     </div>
-    <ng-include src="'template/simplegrid/footer.tpl.html'"></ng-include>
+    <ng-include src="'template/simplegrid/footer.html'"></ng-include>
 </div>

@@ -1,5 +1,5 @@
 <div class="sg-grid">
-    <ng-include src="'template/simplegrid/header.tpl.html'"></ng-include>
+    <ng-include src="'template/simplegrid/header.html'"></ng-include>
     <div style="{{scrollStyle}}">
         <div ng-repeat="item in items" class="row sg-gridrow" ng-click="sgOnClick({id: item.id})">
             <div class="{{col.$getColumnClass()}}" ng-repeat="col in columns">
@@ -10,5 +10,5 @@
             </div>
         </div>
     </div>
-    <ng-include src="'template/simplegrid/footer.tpl.html'"></ng-include>
+    <ng-include src="'template/simplegrid/footer.html'"></ng-include>
 </div>
