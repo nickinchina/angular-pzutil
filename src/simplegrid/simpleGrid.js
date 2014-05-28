@@ -70,6 +70,10 @@ angular.module('pzutil.simplegrid', ['pzutil.services','pzutil.modal'])
                 templateUrl: function($element, $attrs) {
                     var t = $attrs.sgTemplate;
                     if (t) {
+                        var sc = $element.scope();
+                        t = sc.$eval(t);
+                    }
+                    if (t) {
                         var suffix = ".grid.html'";
                         if (t.indexOf(suffix, t.length - suffix.length) !== -1) {
                             return 'template/simplegrid/simpleGrid-simple.html';

@@ -2,7 +2,7 @@
  * pzutil
  * 
 
- * Version: 0.0.15 - 2014-05-27
+ * Version: 0.0.16 - 2014-05-28
  * License: MIT
  */
 angular.module("pzutil", ["pzutil.tpls", "pzutil.modal","pzutil.services","pzutil.simplegrid","pzutil.tree","pzutil.ztemplate"]);
@@ -191,6 +191,10 @@ angular.module('pzutil.simplegrid', ['pzutil.services','pzutil.modal'])
                     sgNoPager:'=', sgOnClick:'&', sgLookup:"&", sgGlobalSearch:"@",sgPageSize:"@" ,sgOptions:"=", sgOnChange:"&", sgLookupTitle:"&"},
                 templateUrl: function($element, $attrs) {
                     var t = $attrs.sgTemplate;
+                    if (t) {
+                        var sc = $element.scope();
+                        t = sc.$eval(t);
+                    }
                     if (t) {
                         var suffix = ".grid.html'";
                         if (t.indexOf(suffix, t.length - suffix.length) !== -1) {
