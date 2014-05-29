@@ -1,7 +1,22 @@
 /**
  * Created by gordon on 2014/4/4.
  */
-angular.module('pzutil.services', [])
+angular.module('pzutil.services', []).
+    factory('attrHelper', [
+        function(){
+            var attrService = {
+                parseIds : function(ids, taxons){
+                    var r=[];
+                    _(ids.split(',')).forEach(function(i){
+                        var f = _.find(taxons, {id: i});
+                        if (f)
+                            r.push(f.name);
+                    });
+                    return r.join(", ");
+                }
+            };
+            return attrService;
+        }])
     .factory('localizedMessages', ['$interpolate', 'I18N.MESSAGES', function ($interpolate, i18nmessages) {
 
     var handleNotFound = function (msg, msgKey) {
