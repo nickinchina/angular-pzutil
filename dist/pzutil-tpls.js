@@ -15,14 +15,14 @@ angular.module('pzutil.image', [])
         function(){
             var imageService = {
                 getUrl : function(image, container){
+                    console.info(image, container);
                     return "http://portalvhdsmzdfsgd15ll8f.blob.core.windows.net/" +
-                        container ? container : "" + "/"
-                        image;
+                        container ? container+ "/" : "" + image;
                 }
             };
             return imageService;
         }])
-    .filter('imageUrl', ['imageHelper',
+    .filter('zImageUrl', ['imageHelper',
         function (imageHelper){
             return function(image, container){
                 return imageHelper.getUrl(image, container);
