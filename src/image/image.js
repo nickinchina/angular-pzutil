@@ -14,7 +14,6 @@ angular.module('pzutil.image', [])
     .filter('zImageUrl', ['imageHelper',
         function (imageHelper){
             return function(image, container){
-                console.info(image, imageHelper.getUrl(image, container));
                 return imageHelper.getUrl(image, container);
             };
         }]);
