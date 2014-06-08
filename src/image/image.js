@@ -6,7 +6,6 @@ angular.module('pzutil.image', [])
         function(){
             var imageService = {
                 getUrl : function(image, container){
-                    console.info(image, container);
                     return "http://portalvhdsmzdfsgd15ll8f.blob.core.windows.net/" +
                         container ? container+ "/" : "" + image;
                 }
@@ -16,6 +15,7 @@ angular.module('pzutil.image', [])
     .filter('zImageUrl', ['imageHelper',
         function (imageHelper){
             return function(image, container){
+                console.info(image, imageHelper.getUrl(image, container));
                 return imageHelper.getUrl(image, container);
             };
         }]);
