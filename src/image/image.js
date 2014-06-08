@@ -13,7 +13,7 @@ angular.module('pzutil.image', [])
             };
             return imageService;
         }])
-    .filter('weekday', ['imageHelper',
+    .filter('imageUrl', ['imageHelper',
         function (imageHelper){
             return function(image, container){
                 return imageHelper.getUrl(image, container);
