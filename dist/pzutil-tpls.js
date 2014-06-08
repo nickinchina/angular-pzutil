@@ -2,11 +2,32 @@
  * pzutil
  * 
 
- * Version: 0.0.17 - 2014-05-29
+ * Version: 0.0.18 - 2014-06-08
  * License: MIT
  */
-angular.module("pzutil", ["pzutil.tpls", "pzutil.modal","pzutil.services","pzutil.simplegrid","pzutil.tree","pzutil.ztemplate"]);
+angular.module("pzutil", ["pzutil.tpls", "pzutil.image","pzutil.modal","pzutil.services","pzutil.simplegrid","pzutil.tree","pzutil.ztemplate"]);
 angular.module("pzutil.tpls", ["template/modal/modal.html","template/modal/wait.html","template/simplegrid/footer.html","template/simplegrid/header.html","template/simplegrid/simpleGrid-normal.html","template/simplegrid/simpleGrid-simple.html","template/simplegrid/simpleGrid.html"]);
+/**
+ * Created by s2k on 14-6-8.
+ */
+angular.module('pzutil.image', [])
+    .factory('imageHelper', [
+        function(){
+            var imageService = {
+                getUrl : function(image, container){
+                    return "http://portalvhdsmzdfsgd15ll8f.blob.core.windows.net/" +
+                        container ? container : "" + "/"
+                        image;
+                }
+            };
+            return imageService;
+        }])
+    .filter('weekday', ['imageHelper',
+        function (imageHelper){
+            return function(image, container){
+                return imageHelper.getUrl(image, container);
+            };
+        }]);
 /**
  * Created by gordon on 2014/4/25.
  */
