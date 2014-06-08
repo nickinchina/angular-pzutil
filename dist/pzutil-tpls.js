@@ -15,8 +15,7 @@ angular.module('pzutil.image', [])
         function(){
             var imageService = {
                 getUrl : function(image, container){
-                    return "http://portalvhdsmzdfsgd15ll8f.blob.core.windows.net/" +
-                        container ? container+ "/" : "" + image;
+                    return "http://portalvhdsmzdfsgd15ll8f.blob.core.windows.net/" + (container ? container+ "/" : "") + image;
                 }
             };
             return imageService;
