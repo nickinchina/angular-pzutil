@@ -38,7 +38,7 @@ angular.module('pzutil.tree', [])
                 if (i[ForeignKey])
                     result.push({id : i.id, name: text});
 
-                buildDropdownListHelper(result,ForeignKey, text + " >> ", i.children);
+                buildDropdownListHelper(result,ForeignKey, i.id ? text + " >> " :"", i.children);
             });
         }
 

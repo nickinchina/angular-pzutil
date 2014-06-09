@@ -2,7 +2,7 @@
  * pzutil
  * 
 
- * Version: 0.0.18 - 2014-06-08
+ * Version: 0.0.18 - 2014-06-09
  * License: MIT
  */
 angular.module("pzutil", ["pzutil.tpls", "pzutil.image","pzutil.modal","pzutil.services","pzutil.simplegrid","pzutil.tree","pzutil.ztemplate"]);
@@ -404,7 +404,7 @@ angular.module('pzutil.tree', [])
                 if (i[ForeignKey])
                     result.push({id : i.id, name: text});
 
-                buildDropdownListHelper(result,ForeignKey, text + " >> ", i.children);
+                buildDropdownListHelper(result,ForeignKey, i.id ? text + " >> " :"", i.children);
             });
         }
 
