@@ -285,9 +285,8 @@ angular.module('pzutil.simplegrid', ['pzutil.services','pzutil.modal'])
                     $scope.currentPage = 1;
                     $scope.totalItems = $scope.data.length;
 
-                    var hh = $attrs.gridHeight || "450px";
-                    if (hh!="0px")
-                        $scope.scrollStyle = "height:" + hh +";overflow-y:auto";
+                    if ($attrs.gridHeight)
+                        $scope.scrollStyle = "height:" + $attrs.gridHeight +";overflow-y:auto";
                     else
                         $scope.scrollStyle = "";
 
@@ -296,7 +295,7 @@ angular.module('pzutil.simplegrid', ['pzutil.services','pzutil.modal'])
                     else if ($scope.sgPageSize)
                         $scope.pageSize = parseInt($scope.sgPageSize);
                     else
-                        $scope.pageSize = 40;
+                        $scope.pageSize = 20;
 
                     $scope.getIndex = function(item){
                         return  $scope.items.indexOf(item)+1;
