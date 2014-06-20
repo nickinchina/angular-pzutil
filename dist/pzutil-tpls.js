@@ -2,7 +2,7 @@
  * pzutil
  * 
 
- * Version: 0.0.18 - 2014-06-09
+ * Version: 0.0.18 - 2014-06-20
  * License: MIT
  */
 angular.module("pzutil", ["pzutil.tpls", "pzutil.image","pzutil.modal","pzutil.services","pzutil.simplegrid","pzutil.tree","pzutil.ztemplate"]);
@@ -285,8 +285,9 @@ angular.module('pzutil.simplegrid', ['pzutil.services','pzutil.modal'])
                     $scope.currentPage = 1;
                     $scope.totalItems = $scope.data.length;
 
-                    if ($attrs.gridHeight)
-                        $scope.scrollStyle = "height:" + $attrs.gridHeight +";overflow-y:scroll";
+                    var hh = $attrs.gridHeight || "400px";
+                    if (hh!="0px")
+                        $scope.scrollStyle = "height:" + hh +";overflow-y:auto";
                     else
                         $scope.scrollStyle = "";
 
@@ -295,12 +296,13 @@ angular.module('pzutil.simplegrid', ['pzutil.services','pzutil.modal'])
                     else if ($scope.sgPageSize)
                         $scope.pageSize = parseInt($scope.sgPageSize);
                     else
-                        $scope.pageSize = 15;
+                        $scope.pageSize = 40;
 
                     $scope.getIndex = function(item){
                         return  $scope.items.indexOf(item)+1;
                     };
                     $scope.changed = function(page) {
+                        console.info('$scope.pageSize',$scope.pageSize);
                         $scope.currentPage = page;
                         var data = null;
                         if ($scope.sgGlobalSearch && breadcrumbs.listingSearch && breadcrumbs.listingSearch!="")
@@ -331,7 +333,7 @@ angular.module('pzutil.simplegrid', ['pzutil.services','pzutil.modal'])
                             else
                                 $scope.items = l;
 
-                            $scope.totalItems = $scope.data.length;
+                            $scope.totalItems = data.length;
                             $scope.footer = localizedMessages.get('common.totalcount',
                                 {
                                     from: $scope.pageSize * ($scope.currentPage - 1) + 1,
