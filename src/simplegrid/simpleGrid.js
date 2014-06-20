@@ -129,7 +129,8 @@ angular.module('pzutil.simplegrid', ['pzutil.services','pzutil.modal'])
                     $scope.currentPage = 1;
                     $scope.totalItems = $scope.data.length;
 
-                    if ($attrs.gridHeight)
+                    var hh = $attrs.gridHeight || "400px";
+                    if (hh!="0px")
                         $scope.scrollStyle = "height:" + $attrs.gridHeight +";overflow-y:scroll";
                     else
                         $scope.scrollStyle = "";
@@ -139,7 +140,7 @@ angular.module('pzutil.simplegrid', ['pzutil.services','pzutil.modal'])
                     else if ($scope.sgPageSize)
                         $scope.pageSize = parseInt($scope.sgPageSize);
                     else
-                        $scope.pageSize = 15;
+                        $scope.pageSize = 40;
 
                     $scope.getIndex = function(item){
                         return  $scope.items.indexOf(item)+1;
@@ -175,7 +176,7 @@ angular.module('pzutil.simplegrid', ['pzutil.services','pzutil.modal'])
                             else
                                 $scope.items = l;
 
-                            $scope.totalItems = $scope.data.length;
+                            $scope.totalItems = data.length;
                             $scope.footer = localizedMessages.get('common.totalcount',
                                 {
                                     from: $scope.pageSize * ($scope.currentPage - 1) + 1,
