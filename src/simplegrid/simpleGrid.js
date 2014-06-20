@@ -129,7 +129,7 @@ angular.module('pzutil.simplegrid', ['pzutil.services','pzutil.modal'])
                     $scope.currentPage = 1;
                     $scope.totalItems = $scope.data.length;
 
-                    var hh = $attrs.gridHeight || "400px";
+                    var hh = $attrs.gridHeight || "450px";
                     if (hh!="0px")
                         $scope.scrollStyle = "height:" + hh +";overflow-y:auto";
                     else
@@ -146,7 +146,6 @@ angular.module('pzutil.simplegrid', ['pzutil.services','pzutil.modal'])
                         return  $scope.items.indexOf(item)+1;
                     };
                     $scope.changed = function(page) {
-                        console.info('$scope.pageSize',$scope.pageSize);
                         $scope.currentPage = page;
                         var data = null;
                         if ($scope.sgGlobalSearch && breadcrumbs.listingSearch && breadcrumbs.listingSearch!="")
@@ -158,7 +157,7 @@ angular.module('pzutil.simplegrid', ['pzutil.services','pzutil.modal'])
                                     if ($scope.myLookup)
                                         value = $scope.myLookup({col: col, value:value});
                                     if (value) {
-                                        if (value.toString().indexOf(breadcrumbs.listingSearch)>-1)
+                                        if (value.toString().toLowerCase().indexOf(breadcrumbs.listingSearch.toLowerCase())>-1)
                                             return true;
                                     }
                                 }
