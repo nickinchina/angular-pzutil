@@ -165,12 +165,10 @@ angular.module('pzutil.simplegrid', ['pzutil.services','pzutil.modal'])
                     $scope.getIndex = function(item){
                         return  $scope.items.indexOf(item)+1;
                     };
-                    $scope.changed = function(page) {
+                    $scope.changed = function(page, reset) {
                         var ps = pageSetting.pageSize;
-                        if (page)
-                            pageSetting.currentPage = page;
-                        else {
-                            page = pageSetting.currentPage;
+                        pageSetting.currentPage = page;
+                        if (reset){
                             $scope.resetChecks();
                         }
                         console.log(page)

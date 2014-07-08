@@ -321,12 +321,10 @@ angular.module('pzutil.simplegrid', ['pzutil.services','pzutil.modal'])
                     $scope.getIndex = function(item){
                         return  $scope.items.indexOf(item)+1;
                     };
-                    $scope.changed = function(page) {
+                    $scope.changed = function(page, reset) {
                         var ps = pageSetting.pageSize;
-                        if (page)
-                            pageSetting.currentPage = page;
-                        else {
-                            page = pageSetting.currentPage;
+                        pageSetting.currentPage = page;
+                        if (reset){
                             $scope.resetChecks();
                         }
                         console.log(page)
@@ -587,7 +585,7 @@ angular.module("template/simplegrid/footer.html", []).run(["$templateCache", fun
     "    <div class=\"col-md-9\">\n" +
     "        <pagination ng-if=\"!sgNoPager && pageSetting.totalItems>pageSetting.pageSize\"\n" +
     "                    total-items=\"pageSetting.totalItems\" page=\"pageSetting.currentPage\" items-per-page=\"pageSetting.pageSize\" rotate=\"false\"\n" +
-    "                    max-size=\"5\" class=\"pagination-sm\" boundary-links=\"true\"  on-select-page=\"changed()\" />\n" +
+    "                    max-size=\"5\" class=\"pagination-sm\" boundary-links=\"true\"  on-select-page=\"changed(page, true)\" />\n" +
     "    </div>\n" +
     "    <div class=\"col-md-3 sg-footer\">\n" +
     "        <strong><a href=\"#\" editable-number=\"pageSetting.pageSize\" e-min=\"20\" e-max=\"200\" onaftersave=\"changed(1)\">\n" +

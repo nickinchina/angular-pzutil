@@ -2,7 +2,7 @@
     <div class="col-md-9">
         <pagination ng-if="!sgNoPager && pageSetting.totalItems>pageSetting.pageSize"
                     total-items="pageSetting.totalItems" page="pageSetting.currentPage" items-per-page="pageSetting.pageSize" rotate="false"
-                    max-size="5" class="pagination-sm" boundary-links="true"  on-select-page="changed()" />
+                    max-size="5" class="pagination-sm" boundary-links="true"  on-select-page="changed(page, true)" />
     </div>
     <div class="col-md-3 sg-footer">
         <strong><a href="#" editable-number="pageSetting.pageSize" e-min="20" e-max="200" onaftersave="changed(1)">
