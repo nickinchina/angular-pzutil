@@ -36,10 +36,11 @@ angular.module('pzutil.simplegrid', ['pzutil.services','pzutil.modal'])
 
             mixin.prototype.$getColumnClass = function(){
                 var w = this.width  ? this.width : 2;
+                var checkbox = this.checkbox ? "checkbox " :"";
                 if (this.align)
-                    return 'sg-gridrow-cell col-md-' + w + ' text-' + this.align;
+                    return checkbox + 'sg-gridrow-cell col-md-' + w + ' text-' + this.align;
                 else
-                    return 'sg-gridrow-cell col-md-' + w;
+                    return checkbox + 'sg-gridrow-cell col-md-' + w;
             };
             mixin.prototype.$sort = function(){
                 this.sortOrder = !this.sortOrder;

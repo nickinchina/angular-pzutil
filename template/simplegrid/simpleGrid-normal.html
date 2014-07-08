@@ -6,7 +6,8 @@
                 <i ng-if="col.bool" ng-class="{true: 'fa fa-check'}[item[col.name]]"></i>
                 <a href ng-if="$first && sgAllowDel" ng-click="DelObject(item)"><i class= 'glyphicon glyphicon-remove'></i></a>
                 <ng-include  ng-if="col.template" src="col.template"></ng-include>
-                <span ng-if="!col.template">{{col.$getText(item)}}</span>
+                <span ng-if="!col.template && !col.checkbox">{{col.$getText(item)}}</span>
+                <label ng-if="col.checkbox">{{col.$getText(item)}}<input type="checkbox" ng-model="item.selected"></label>
             </div>
         </div>
     </div>

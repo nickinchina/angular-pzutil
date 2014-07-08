@@ -192,10 +192,11 @@ angular.module('pzutil.simplegrid', ['pzutil.services','pzutil.modal'])
 
             mixin.prototype.$getColumnClass = function(){
                 var w = this.width  ? this.width : 2;
+                var checkbox = this.checkbox ? "checkbox " :"";
                 if (this.align)
-                    return 'sg-gridrow-cell col-md-' + w + ' text-' + this.align;
+                    return checkbox + 'sg-gridrow-cell col-md-' + w + ' text-' + this.align;
                 else
-                    return 'sg-gridrow-cell col-md-' + w;
+                    return checkbox + 'sg-gridrow-cell col-md-' + w;
             };
             mixin.prototype.$sort = function(){
                 this.sortOrder = !this.sortOrder;
@@ -591,7 +592,8 @@ angular.module("template/simplegrid/simpleGrid-normal.html", []).run(["$template
     "                <i ng-if=\"col.bool\" ng-class=\"{true: 'fa fa-check'}[item[col.name]]\"></i>\n" +
     "                <a href ng-if=\"$first && sgAllowDel\" ng-click=\"DelObject(item)\"><i class= 'glyphicon glyphicon-remove'></i></a>\n" +
     "                <ng-include  ng-if=\"col.template\" src=\"col.template\"></ng-include>\n" +
-    "                <span ng-if=\"!col.template\">{{col.$getText(item)}}</span>\n" +
+    "                <span ng-if=\"!col.template && !col.checkbox\">{{col.$getText(item)}}</span>\n" +
+    "                <label ng-if=\"col.checkbox\">{{col.$getText(item)}}<input type=\"checkbox\" ng-model=\"item.selected\"></label>\n" +
     "            </div>\n" +
     "        </div>\n" +
     "    </div>\n" +
