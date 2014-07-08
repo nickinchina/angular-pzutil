@@ -147,10 +147,6 @@ angular.module('pzutil.simplegrid', ['pzutil.services','pzutil.modal'])
                     $scope.getIndex = function(item){
                         return  $scope.items.indexOf(item)+1;
                     };
-                    $scope.cellClicked = function(checkbox){
-                        if (!checkbox)
-                            return $event.stopPropagation();
-                    };
                     $scope.changed = function(page) {
                         $scope.currentPage = page;
                         console.info('$scope.pageSize',$scope.pageSize);
