@@ -143,12 +143,20 @@ angular.module('pzutil.simplegrid', ['pzutil.services','pzutil.modal'])
                         else
                             $scope.pageSize = 20;
                     }
-
+                    $scope.checkedAll = false;
+                    $scope.checkAll = function(v){
+                        _($scope.items).forEach(function(i){
+                            i.__selected = v;
+                        });
+                    };
                     $scope.getIndex = function(item){
                         return  $scope.items.indexOf(item)+1;
                     };
                     $scope.changed = function(page) {
-                        $scope.currentPage = page;
+                        if ($scope.currentPage != page){
+                            $scope.currentPage = page;
+                            $scope.checkedAll = false;
+                        }
                         console.info('$scope.pageSize',$scope.pageSize);
                         var data = null;
                         if ($scope.sgGlobalSearch && breadcrumbs.listingSearch && breadcrumbs.listingSearch!="")

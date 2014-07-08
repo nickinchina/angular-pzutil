@@ -299,12 +299,20 @@ angular.module('pzutil.simplegrid', ['pzutil.services','pzutil.modal'])
                         else
                             $scope.pageSize = 20;
                     }
-
+                    $scope.checkedAll = false;
+                    $scope.checkAll = function(v){
+                        _($scope.items).forEach(function(i){
+                            i.__selected = v;
+                        });
+                    };
                     $scope.getIndex = function(item){
                         return  $scope.items.indexOf(item)+1;
                     };
                     $scope.changed = function(page) {
-                        $scope.currentPage = page;
+                        if ($scope.currentPage != page){
+                            $scope.currentPage = page;
+                            $scope.checkedAll = false;
+                        }
                         console.info('$scope.pageSize',$scope.pageSize);
                         var data = null;
                         if ($scope.sgGlobalSearch && breadcrumbs.listingSearch && breadcrumbs.listingSearch!="")
@@ -575,6 +583,7 @@ angular.module("template/simplegrid/header.html", []).run(["$templateCache", fun
   $templateCache.put("template/simplegrid/header.html",
     "<div class=\"row well well-sm sg-gridheader\" >\n" +
     "    <div class=\"{{col.$getColumnClass()}}\" ng-repeat=\"col in columns\">\n" +
+    "        <input type=\"checkbox\" ng-if=\"col.checkbox\" ng-model=\"checkedAll\" ng-change=\"checkAll(checkedAll)\">\n" +
     "        <a href ng-click=\"col.$sort()\" class=\"btn-header\">{{col.$getTitle()}}</a>\n" +
     "        <i class=\"fa fa-sort-desc\" ng-show=\"col.sortOrder\"></i>\n" +
     "        <i class=\"fa fa-sort-asc\" ng-show=\"!col.sortOrder && col.sortOrder!=undefined\"></i>\n" +
@@ -593,7 +602,7 @@ angular.module("template/simplegrid/simpleGrid-normal.html", []).run(["$template
     "                <a href ng-if=\"$first && sgAllowDel\" ng-click=\"DelObject(item)\"><i class= 'glyphicon glyphicon-remove'></i></a>\n" +
     "                <ng-include  ng-if=\"col.template\" src=\"col.template\"></ng-include>\n" +
     "                <span ng-if=\"!col.template && !col.checkbox\">{{col.$getText(item)}}</span>\n" +
-    "                <label ng-if=\"col.checkbox\" ng-click=\"$event.stopPropagation()\">{{col.$getText(item)}}<input type=\"checkbox\" ng-model=\"item.selected\"></label>\n" +
+    "                <label ng-if=\"col.checkbox\" ng-click=\"$event.stopPropagation()\">{{col.$getText(item)}}<input type=\"checkbox\" ng-model=\"item.__selected\"></label>\n" +
     "            </div>\n" +
     "        </div>\n" +
     "    </div>\n" +
