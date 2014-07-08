@@ -192,7 +192,7 @@ angular.module('pzutil.simplegrid', ['pzutil.services','pzutil.modal'])
 
             mixin.prototype.$getColumnClass = function(){
                 var w = this.width  ? this.width : 2;
-                var checkbox = this.checkbox ? "checkbox " :"";
+                var checkbox = this.checkbox ? "checkbox checkbox-cell" :"";
                 if (this.align)
                     return checkbox + 'sg-gridrow-cell col-md-' + w + ' text-' + this.align;
                 else
