@@ -72,7 +72,7 @@ angular.module('pzutil.simplegrid', ['pzutil.services','pzutil.modal'])
                 replace:true,
                 scope: { data:"=sgData",  sgAddObject:"&", sgSortOptions:"=", itemtemplate:"=sgTemplate",sgColumns:"@",sgDelObject:"&", sgAllowDel:"@",
                     sgNoPager:'=', sgOnClick:'&', sgLookup:"&", sgGlobalSearch:"@",sgPageSize:"@" ,sgOptions:"=", sgOnChange:"&", sgLookupTitle:"&",
-                    sgCheckColumn:"&"},
+                    sgCheckColumn:"@"},
                 templateUrl: function($element, $attrs) {
                     var t = $attrs.sgTemplate;
                     if (t) {
