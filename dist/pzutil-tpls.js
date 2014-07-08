@@ -303,6 +303,10 @@ angular.module('pzutil.simplegrid', ['pzutil.services','pzutil.modal'])
                     $scope.getIndex = function(item){
                         return  $scope.items.indexOf(item)+1;
                     };
+                    $scope.cellClicked = function(checkbox){
+                        if (!checkbox)
+                            return $event.stopPropagation();
+                    };
                     $scope.changed = function(page) {
                         $scope.currentPage = page;
                         console.info('$scope.pageSize',$scope.pageSize);
@@ -588,7 +592,7 @@ angular.module("template/simplegrid/simpleGrid-normal.html", []).run(["$template
     "    <ng-include src=\"'template/simplegrid/header.html'\"></ng-include>\n" +
     "    <div style=\"{{scrollStyle}}\">\n" +
     "        <div ng-repeat=\"item in items\" class=\"row sg-gridrow\" ng-click=\"sgOnClick({id: item.id})\">\n" +
-    "            <div class=\"{{col.$getColumnClass()}}\" ng-repeat=\"col in columns\" ng-click=\"$event.stopPropagation();\">\n" +
+    "            <div class=\"{{col.$getColumnClass()}}\" ng-repeat=\"col in columns\" ng-click=\"cellClicked(col.checkbox)\">\n" +
     "                <i ng-if=\"col.bool\" ng-class=\"{true: 'fa fa-check'}[item[col.name]]\"></i>\n" +
     "                <a href ng-if=\"$first && sgAllowDel\" ng-click=\"DelObject(item)\"><i class= 'glyphicon glyphicon-remove'></i></a>\n" +
     "                <ng-include  ng-if=\"col.template\" src=\"col.template\"></ng-include>\n" +
