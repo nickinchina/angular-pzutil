@@ -562,7 +562,7 @@ angular.module("template/simplegrid/footer.html", []).run(["$templateCache", fun
     "                    max-size=\"5\" class=\"pagination-sm\" boundary-links=\"true\"  on-select-page=\"changed(page)\" />\n" +
     "    </div>\n" +
     "    <div class=\"col-md-3 sg-footer\">\n" +
-    "        <strong>{{footer}}, <a href=\"#\" editable-number=\"pageSize\">{{ pageSize }} per page</a> </strong>\n" +
+    "        <strong>{{footer}} <a href=\"#\" editable-number=\"pageSize\" onaftersave=\"changed(page)\"> *** {{ pageSize }} per page</a> </strong>\n" +
     "    </div>\n" +
     "</div>");
 }]);
