@@ -166,7 +166,12 @@ angular.module('pzutil.simplegrid', ['pzutil.services','pzutil.modal'])
                         return  $scope.items.indexOf(item)+1;
                     };
                     $scope.changed = function(page) {
-                        $scope.currentPage = page;
+                        if (page)
+                            $scope.currentPage = page;
+                        else {
+                            page = $scope.currentPage;
+                            $scope.resetChecks();
+                        }
                         var data = null;
                         if ($scope.sgGlobalSearch && breadcrumbs.listingSearch && breadcrumbs.listingSearch!="")
                         {

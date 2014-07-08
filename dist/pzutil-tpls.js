@@ -322,7 +322,12 @@ angular.module('pzutil.simplegrid', ['pzutil.services','pzutil.modal'])
                         return  $scope.items.indexOf(item)+1;
                     };
                     $scope.changed = function(page) {
-                        $scope.currentPage = page;
+                        if (page)
+                            $scope.currentPage = page;
+                        else {
+                            page = $scope.currentPage;
+                            $scope.resetChecks();
+                        }
                         var data = null;
                         if ($scope.sgGlobalSearch && breadcrumbs.listingSearch && breadcrumbs.listingSearch!="")
                         {
@@ -579,8 +584,8 @@ angular.module("template/simplegrid/footer.html", []).run(["$templateCache", fun
     "<div class=\"row\">\n" +
     "    <div class=\"col-md-9\">\n" +
     "        <pagination ng-if=\"!sgNoPager && totalItems>pageSize\"\n" +
-    "                    total-items=\"totalItems\" page=\"currentPage\" items-per-page=\"pageSize\"\n" +
-    "                    max-size=\"5\" class=\"pagination-sm\" boundary-links=\"true\"  on-select-page=\"resetChecks();changed(page);\" />\n" +
+    "                    total-items=\"totalItems\" ng-model=\"currentPage\" items-per-page=\"pageSize\" rotate=\"false\"\n" +
+    "                    max-size=\"5\" class=\"pagination-sm\" boundary-links=\"true\"  ng-change=\"changed()\" />\n" +
     "    </div>\n" +
     "    <div class=\"col-md-3 sg-footer\">\n" +
     "        <strong><a href=\"#\" editable-number=\"pageSize\" e-min=\"20\" e-max=\"200\" onaftersave=\"changed(1)\">{{footer}}, {{ pageSize }} per page</a> </strong>\n" +
