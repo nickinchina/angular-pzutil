@@ -583,16 +583,18 @@ angular.module("template/simplegrid/footer.html", []).run(["$templateCache", fun
     "                    max-size=\"5\" class=\"pagination-sm\" boundary-links=\"true\"  on-select-page=\"resetChecks();changed(page);\" />\n" +
     "    </div>\n" +
     "    <div class=\"col-md-3 sg-footer\">\n" +
-    "        <strong><a href=\"#\" editable-number=\"pageSize\" onaftersave=\"changed(1)\">{{footer}}, {{ pageSize }} per page</a> </strong>\n" +
+    "        <strong><a href=\"#\" editable-number=\"pageSize\" e-min=\"20\" e-max=\"200\" onaftersave=\"changed(1)\">{{footer}}, {{ pageSize }} per page</a> </strong>\n" +
     "    </div>\n" +
-    "</div>");
+    "</div>\n" +
+    "{{pageSize}}");
 }]);
 
 angular.module("template/simplegrid/header.html", []).run(["$templateCache", function($templateCache) {
   $templateCache.put("template/simplegrid/header.html",
     "<div class=\"row well well-sm sg-gridheader\" >\n" +
     "    <div class=\"{{col.$getColumnClass()}}\" ng-repeat=\"col in columns\">\n" +
-    "        <input type=\"checkbox\" ng-if=\"col.checkbox\" ng-model=\"col.checkedAll\" ng-change=\"checkAll(col.checkedAll)\">\n" +
+    "        <input type=\"checkbox\" ng-if=\"col.checkbox\" ng-model=\"col.checkedAll\" ng-change=\"checkAll(col.checkedAll)\"\n" +
+    "               style=\"margin-top: 6px;margin-left: -20px\">\n" +
     "        <a href ng-click=\"col.$sort()\" class=\"btn-header\">{{col.$getTitle()}}</a>\n" +
     "        <i class=\"fa fa-sort-desc\" ng-show=\"col.sortOrder\"></i>\n" +
     "        <i class=\"fa fa-sort-asc\" ng-show=\"!col.sortOrder && col.sortOrder!=undefined\"></i>\n" +

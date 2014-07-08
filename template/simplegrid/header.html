@@ -1,6 +1,7 @@
 <div class="row well well-sm sg-gridheader" >
     <div class="{{col.$getColumnClass()}}" ng-repeat="col in columns">
-        <input type="checkbox" ng-if="col.checkbox" ng-model="col.checkedAll" ng-change="checkAll(col.checkedAll)">
+        <input type="checkbox" ng-if="col.checkbox" ng-model="col.checkedAll" ng-change="checkAll(col.checkedAll)"
+               style="margin-top: 6px;margin-left: -20px">
         <a href ng-click="col.$sort()" class="btn-header">{{col.$getTitle()}}</a>
         <i class="fa fa-sort-desc" ng-show="col.sortOrder"></i>
         <i class="fa fa-sort-asc" ng-show="!col.sortOrder && col.sortOrder!=undefined"></i>
