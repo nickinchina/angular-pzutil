@@ -6,11 +6,14 @@ angular.module('pzutil.simplegrid', ['pzutil.services','pzutil.modal'])
 
         var factory = function($scope) {
 
-            var sorter = $scope.sorter, lookup = $scope.myLookup,lookupTitle = $scope.myLookupTitle;
+            var sorter = $scope.sorter,
+                lookup = $scope.myLookup,
+                lookupTitle = $scope.myLookupTitle;
             var mixin = function (data) {
                 angular.extend(this, data);
             };
             mixin.sorter = sorter;
+            mixin.checkbox = $scope.sgCheckColumn;
             mixin.New = function(o) { return new mixin(o);};
             mixin.Parse = function(attr) {
                 if (attr) {
@@ -67,7 +70,8 @@ angular.module('pzutil.simplegrid', ['pzutil.services','pzutil.modal'])
                 restrict:'E',
                 replace:true,
                 scope: { data:"=sgData",  sgAddObject:"&", sgSortOptions:"=", itemtemplate:"=sgTemplate",sgColumns:"@",sgDelObject:"&", sgAllowDel:"@",
-                    sgNoPager:'=', sgOnClick:'&', sgLookup:"&", sgGlobalSearch:"@",sgPageSize:"@" ,sgOptions:"=", sgOnChange:"&", sgLookupTitle:"&"},
+                    sgNoPager:'=', sgOnClick:'&', sgLookup:"&", sgGlobalSearch:"@",sgPageSize:"@" ,sgOptions:"=", sgOnChange:"&", sgLookupTitle:"&",
+                    sgCheckColumn:"&"},
                 templateUrl: function($element, $attrs) {
                     var t = $attrs.sgTemplate;
                     if (t) {
@@ -143,17 +147,18 @@ angular.module('pzutil.simplegrid', ['pzutil.services','pzutil.modal'])
                         else
                             $scope.pageSize = 20;
                     }
-                    $scope.checkedAll = false;
-                    $scope.checkAll = function(){
+                    $scope.checkAll = function(v){
                         $scope.checkedAll = !$scope.checkedAll;
                         _($scope.items).forEach(function(i){
-                            i.__selected = $scope.checkedAll;
+                            i.__selected = v;
                         });
                     };
                     $scope.resetChecks = function(){
-                        $scope.checkedAll = false;
-                        _($scope.data).forEach(function(i){
-                            delete(i["__selected"]);
+                        var c = _.find($scope.columns, {name: $scope.sgCheckColumn});
+                        if (c) c.checkedAll = false;
+                        _($scope.items).forEach(function(i){
+                            if (i.hasOwnProperty("__selected"))
+                                delete(i["__selected"]);
                         });
                     };
                     $scope.getIndex = function(item){
