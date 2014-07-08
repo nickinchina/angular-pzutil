@@ -2,7 +2,7 @@
  * pzutil
  * 
 
- * Version: 0.0.18 - 2014-06-20
+ * Version: 0.0.18 - 2014-07-08
  * License: MIT
  */
 angular.module("pzutil", ["pzutil.tpls", "pzutil.image","pzutil.modal","pzutil.services","pzutil.simplegrid","pzutil.tree","pzutil.ztemplate"]);
@@ -562,7 +562,7 @@ angular.module("template/simplegrid/footer.html", []).run(["$templateCache", fun
     "                    max-size=\"5\" class=\"pagination-sm\" boundary-links=\"true\"  on-select-page=\"changed(page)\" />\n" +
     "    </div>\n" +
     "    <div class=\"col-md-3 sg-footer\">\n" +
-    "        <strong>{{footer}}</strong>\n" +
+    "        <strong>Page Size: <a href=\"#\" editable-text=\"pageSize\">{{ pageSize }}</a> {{footer}}</strong>\n" +
     "    </div>\n" +
     "</div>");
 }]);
