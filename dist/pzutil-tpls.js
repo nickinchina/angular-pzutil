@@ -586,8 +586,8 @@ angular.module("template/simplegrid/footer.html", []).run(["$templateCache", fun
     "<div class=\"row\">\n" +
     "    <div class=\"col-md-9\">\n" +
     "        <pagination ng-if=\"!sgNoPager && pageSetting.totalItems>pageSetting.pageSize\"\n" +
-    "                    total-items=\"pageSetting.totalItems\" ng-model=\"pageSetting.currentPage\" items-per-page=\"pageSetting.pageSize\" rotate=\"false\"\n" +
-    "                    max-size=\"5\" class=\"pagination-sm\" boundary-links=\"true\"  ng-change=\"changed()\" />\n" +
+    "                    total-items=\"pageSetting.totalItems\" page=\"pageSetting.currentPage\" items-per-page=\"pageSetting.pageSize\" rotate=\"false\"\n" +
+    "                    max-size=\"5\" class=\"pagination-sm\" boundary-links=\"true\"  on-select-page=\"changed()\" />\n" +
     "    </div>\n" +
     "    <div class=\"col-md-3 sg-footer\">\n" +
     "        <strong><a href=\"#\" editable-number=\"pageSetting.pageSize\" e-min=\"20\" e-max=\"200\" onaftersave=\"changed(1)\">\n" +

@@ -1,8 +1,8 @@
 <div class="row">
     <div class="col-md-9">
         <pagination ng-if="!sgNoPager && pageSetting.totalItems>pageSetting.pageSize"
-                    total-items="pageSetting.totalItems" ng-model="pageSetting.currentPage" items-per-page="pageSetting.pageSize" rotate="false"
-                    max-size="5" class="pagination-sm" boundary-links="true"  ng-change="changed()" />
+                    total-items="pageSetting.totalItems" page="pageSetting.currentPage" items-per-page="pageSetting.pageSize" rotate="false"
+                    max-size="5" class="pagination-sm" boundary-links="true"  on-select-page="changed()" />
     </div>
     <div class="col-md-3 sg-footer">
         <strong><a href="#" editable-number="pageSetting.pageSize" e-min="20" e-max="200" onaftersave="changed(1)">
