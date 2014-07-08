@@ -588,7 +588,7 @@ angular.module("template/simplegrid/simpleGrid-normal.html", []).run(["$template
     "    <ng-include src=\"'template/simplegrid/header.html'\"></ng-include>\n" +
     "    <div style=\"{{scrollStyle}}\">\n" +
     "        <div ng-repeat=\"item in items\" class=\"row sg-gridrow\" ng-click=\"sgOnClick({id: item.id})\">\n" +
-    "            <div class=\"{{col.$getColumnClass()}}\" ng-repeat=\"col in columns\">\n" +
+    "            <div class=\"{{col.$getColumnClass()}}\" ng-repeat=\"col in columns\" ng-click=\"$event.stopPropagation();\">\n" +
     "                <i ng-if=\"col.bool\" ng-class=\"{true: 'fa fa-check'}[item[col.name]]\"></i>\n" +
     "                <a href ng-if=\"$first && sgAllowDel\" ng-click=\"DelObject(item)\"><i class= 'glyphicon glyphicon-remove'></i></a>\n" +
     "                <ng-include  ng-if=\"col.template\" src=\"col.template\"></ng-include>\n" +
