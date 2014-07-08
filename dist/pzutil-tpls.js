@@ -290,12 +290,14 @@ angular.module('pzutil.simplegrid', ['pzutil.services','pzutil.modal'])
                     else
                         $scope.scrollStyle = "";
 
-                    if ($scope.sgNoPager)
-                        $scope.pageSize = 100;
-                    else if ($scope.sgPageSize)
-                        $scope.pageSize = parseInt($scope.sgPageSize);
-                    else
-                        $scope.pageSize = 20;
+                    if ($scope.pageSize ==undefined) {
+                        if ($scope.sgNoPager)
+                            $scope.pageSize = 100;
+                        else if ($scope.sgPageSize)
+                            $scope.pageSize = parseInt($scope.sgPageSize);
+                        else
+                            $scope.pageSize = 20;
+                    }
 
                     $scope.getIndex = function(item){
                         return  $scope.items.indexOf(item)+1;
