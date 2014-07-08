@@ -10,6 +10,7 @@ angular.module('pzutil.simplegrid', ['pzutil.services','pzutil.modal'])
                 lookup = $scope.myLookup,
                 lookupTitle = $scope.myLookupTitle;
             var mixin = function (data) {
+                console.info(data.name,$scope.sgCheckColumn);
                 data.checkbox = ($scope.sgCheckColumn == data.name);
                 angular.extend(this, data);
             };
@@ -166,7 +167,6 @@ angular.module('pzutil.simplegrid', ['pzutil.services','pzutil.modal'])
                     };
                     $scope.changed = function(page) {
                         $scope.currentPage = page;
-                        console.info('$scope.pageSize',$scope.pageSize);
                         var data = null;
                         if ($scope.sgGlobalSearch && breadcrumbs.listingSearch && breadcrumbs.listingSearch!="")
                         {
