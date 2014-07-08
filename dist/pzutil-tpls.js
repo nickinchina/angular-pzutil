@@ -166,10 +166,10 @@ angular.module('pzutil.simplegrid', ['pzutil.services','pzutil.modal'])
                 lookup = $scope.myLookup,
                 lookupTitle = $scope.myLookupTitle;
             var mixin = function (data) {
+                data.checkbox = ($scope.sgCheckColumn == data.name);
                 angular.extend(this, data);
             };
             mixin.sorter = sorter;
-            mixin.checkbox = ($scope.sgCheckColumn == mixin.name);
             mixin.New = function(o) { return new mixin(o);};
             mixin.Parse = function(attr) {
                 if (attr) {
