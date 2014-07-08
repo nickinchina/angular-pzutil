@@ -2,7 +2,7 @@
  * pzutil
  * 
 
- * Version: 0.0.18 - 2014-07-08
+ * Version: 0.0.18 - 2014-07-09
  * License: MIT
  */
 angular.module("pzutil", ["pzutil.tpls", "pzutil.image","pzutil.modal","pzutil.services","pzutil.simplegrid","pzutil.tree","pzutil.ztemplate"]);
@@ -300,19 +300,23 @@ angular.module('pzutil.simplegrid', ['pzutil.services','pzutil.modal'])
                             $scope.pageSize = 20;
                     }
                     $scope.checkedAll = false;
-                    $scope.checkAll = function(v){
+                    $scope.checkAll = function(){
+                        $scope.checkedAll = !$scope.checkedAll;
                         _($scope.items).forEach(function(i){
-                            i.__selected = v;
+                            i.__selected = $scope.checkedAll;
+                        });
+                    };
+                    $scope.resetChecks = function(){
+                        $scope.checkedAll = false;
+                        _($scope.data).forEach(function(i){
+                            delete(i["__selected"]);
                         });
                     };
                     $scope.getIndex = function(item){
                         return  $scope.items.indexOf(item)+1;
                     };
                     $scope.changed = function(page) {
-                        if ($scope.currentPage != page){
-                            $scope.currentPage = page;
-                            $scope.checkedAll = false;
-                        }
+                        $scope.currentPage = page;
                         console.info('$scope.pageSize',$scope.pageSize);
                         var data = null;
                         if ($scope.sgGlobalSearch && breadcrumbs.listingSearch && breadcrumbs.listingSearch!="")
@@ -571,7 +575,7 @@ angular.module("template/simplegrid/footer.html", []).run(["$templateCache", fun
     "    <div class=\"col-md-9\">\n" +
     "        <pagination ng-if=\"!sgNoPager && totalItems>pageSize\"\n" +
     "                    total-items=\"totalItems\" page=\"currentPage\" items-per-page=\"pageSize\"\n" +
-    "                    max-size=\"5\" class=\"pagination-sm\" boundary-links=\"true\"  on-select-page=\"changed(page)\" />\n" +
+    "                    max-size=\"5\" class=\"pagination-sm\" boundary-links=\"true\"  on-select-page=\"resetChecks();changed(page);\" />\n" +
     "    </div>\n" +
     "    <div class=\"col-md-3 sg-footer\">\n" +
     "        <strong><a href=\"#\" editable-number=\"pageSize\" onaftersave=\"changed(1)\">{{footer}}, {{ pageSize }} per page</a> </strong>\n" +
