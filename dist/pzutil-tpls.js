@@ -587,7 +587,7 @@ angular.module("template/simplegrid/header.html", []).run(["$templateCache", fun
   $templateCache.put("template/simplegrid/header.html",
     "<div class=\"row well well-sm sg-gridheader\" >\n" +
     "    <div class=\"{{col.$getColumnClass()}}\" ng-repeat=\"col in columns\">\n" +
-    "        <input type=\"checkbox\" ng-if=\"col.checkbox\" ng-model=\"checkedAll\" ng-change=\"checkAll(checkedAll)\">\n" +
+    "        <input type=\"checkbox\" ng-if=\"col.checkbox\" ng-change=\"checkAll()\">\n" +
     "        <a href ng-click=\"col.$sort()\" class=\"btn-header\">{{col.$getTitle()}}</a>\n" +
     "        <i class=\"fa fa-sort-desc\" ng-show=\"col.sortOrder\"></i>\n" +
     "        <i class=\"fa fa-sort-asc\" ng-show=\"!col.sortOrder && col.sortOrder!=undefined\"></i>\n" +
