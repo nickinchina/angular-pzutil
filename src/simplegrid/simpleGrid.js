@@ -13,7 +13,7 @@ angular.module('pzutil.simplegrid', ['pzutil.services','pzutil.modal'])
                 angular.extend(this, data);
             };
             mixin.sorter = sorter;
-            mixin.checkbox = $scope.sgCheckColumn;
+            mixin.checkbox = ($scope.sgCheckColumn == mixin.name);
             mixin.New = function(o) { return new mixin(o);};
             mixin.Parse = function(attr) {
                 if (attr) {
