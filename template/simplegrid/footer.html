@@ -1,11 +1,11 @@
 <div class="row">
     <div class="col-md-9">
-        <pagination ng-if="!sgNoPager && totalItems>pageSize"
-                    total-items="totalItems" ng-model="currentPage" items-per-page="pageSize" rotate="false"
+        <pagination ng-if="!sgNoPager && pageSetting.totalItems>pageSetting.pageSize"
+                    total-items="pageSetting.totalItems" ng-model="pageSetting.currentPage" items-per-page="pageSetting.pageSize" rotate="false"
                     max-size="5" class="pagination-sm" boundary-links="true"  ng-change="changed()" />
     </div>
     <div class="col-md-3 sg-footer">
-        <strong><a href="#" editable-number="pageSize" e-min="20" e-max="200" onaftersave="changed(1)">{{footer}}, {{ pageSize }} per page</a> </strong>
+        <strong><a href="#" editable-number="pageSetting.pageSize" e-min="20" e-max="200" onaftersave="changed(1)">
+            {{footer}}, {{ pageSetting.pageSize }} per page</a> </strong>
     </div>
 </div>
-{{pageSize}}

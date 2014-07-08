@@ -132,22 +132,22 @@ angular.module('pzutil.simplegrid', ['pzutil.services','pzutil.modal'])
                         }
                     };
                     $scope.sortGrid(true);
-                    $scope.currentPage = 1;
-                    $scope.totalItems = $scope.data.length;
 
                     if ($attrs.gridHeight)
                         $scope.scrollStyle = "height:" + $attrs.gridHeight +";overflow-y:auto";
                     else
                         $scope.scrollStyle = "";
 
-                    if ($scope.pageSize ==undefined) {
-                        if ($scope.sgNoPager)
-                            $scope.pageSize = 100;
-                        else if ($scope.sgPageSize)
-                            $scope.pageSize = parseInt($scope.sgPageSize);
-                        else
-                            $scope.pageSize = 20;
-                    }
+                    var pageSetting = $scope.pageSetting = {};
+                    if ($scope.sgNoPager)
+                        pageSetting.pageSize = 100;
+                    else if ($scope.sgPageSize)
+                        pageSetting.pageSize = parseInt($scope.sgPageSize);
+                    else
+                        pageSetting.pageSize = 20;
+                    pageSetting.currentPage = 1;
+                    pageSetting.totalItems = $scope.data.length;
+
                     $scope.checkAll = function(v){
                         $scope.checkedAll = !$scope.checkedAll;
                         _($scope.items).forEach(function(i){
@@ -166,11 +166,11 @@ angular.module('pzutil.simplegrid', ['pzutil.services','pzutil.modal'])
                         return  $scope.items.indexOf(item)+1;
                     };
                     $scope.changed = function(page) {
-                        console.log(page)
+                        var ps = pageSetting.pageSize;
                         if (page)
-                            $scope.currentPage = page;
+                            pageSetting.currentPage = page;
                         else {
-                            page = $scope.currentPage;
+                            page = pageSetting.currentPage;
                             $scope.resetChecks();
                         }
                         console.log(page)
@@ -190,11 +190,11 @@ angular.module('pzutil.simplegrid', ['pzutil.services','pzutil.modal'])
                                 }
                                 return false;
                             });
-                            $scope.totalItems = data.length;
+                            pageSetting.totalItems = data.length;
                         }
                         else
                             data =  $scope.data;
-                        var l = _.take(_.rest(data, (page - 1) * $scope.pageSize), $scope.pageSize);
+                        var l = _.take(_.rest(data, (page - 1) * ps), ps);
                         var loader = function(){
                             if ($scope.items) {
                                 $scope.items.length = 0;
@@ -203,12 +203,12 @@ angular.module('pzutil.simplegrid', ['pzutil.services','pzutil.modal'])
                             else
                                 $scope.items = l;
 
-                            $scope.totalItems = data.length;
+                            pageSetting.totalItems = data.length;
                             $scope.footer = localizedMessages.get('common.totalcount',
                                 {
-                                    from: $scope.pageSize * ($scope.currentPage - 1) + 1,
-                                    to: Math.min($scope.pageSize * $scope.currentPage,$scope.totalItems) ,
-                                    total: $scope.totalItems
+                                    from: ps * (page - 1) + 1,
+                                    to: Math.min(ps* page,pageSetting.totalItems) ,
+                                    total: pageSetting.totalItems
                                 } );
                         };
                         if ($attrs.sgOnChange) {
@@ -222,14 +222,14 @@ angular.module('pzutil.simplegrid', ['pzutil.services','pzutil.modal'])
                         $scope.$watch(function() {
                             return breadcrumbs.listingSearch ;
                         }, function() {
-                            $scope.changed($scope.currentPage);
+                            $scope.changed(pageSetting.currentPage);
                         });
                     }
 
                     $scope.$watchCollection(function() {
                         return $scope.data ;
                     }, function() {
-                        $scope.changed($scope.currentPage);
+                        $scope.changed(pageSetting.currentPage);
                     });
 
 
