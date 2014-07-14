@@ -1,7 +1,7 @@
 /**
  * Created by gordon on 2014/5/26.
  */
-angular.module('pzutil.aditem')
+angular.module('pzutil.aditem',[])
     .directive('adItem',['rest',function(rest) {
         return {
             restrict: 'E',

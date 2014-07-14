@@ -7,7 +7,7 @@
  {id:4, name:localizedMessages.get('adpublish.place.homeFixeTop') },
  {id:5, name:localizedMessages.get('adpublish.place.storeTV') }];
  */
-angular.module('pzutil.adpublish')
+angular.module('pzutil.adpublish',[])
     .directive('adPublish',['rest','retailHelper',function(rest,retailHelper) {
         return {
             restrict: 'E',
