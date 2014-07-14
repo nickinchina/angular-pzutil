@@ -1,0 +1,10 @@
+<div>
+    <i class="fa fa-spinner fa-spin fa-2x" ng-if="loading"/>
+    <div  ng-if="!loading">
+        <carousel interval="5000">
+            <slide ng-repeat="item in items" active="item.active">
+                <ad-item item="item" item-class="itemClass" item-style="itemStyle"></ad-item>
+            </slide>
+        </carousel>
+    </div>
+</div>
