@@ -1,7 +1,7 @@
 /**
  * Created by s2k on 14-5-27.
  */
-angular.module('pzutil.retailhelper')
+angular.module('pzutil.retailhelper', [])
     .factory('retailHelper', [
         function(){
             var retailService = {

@@ -10,7 +10,7 @@ angular.module("pzutil.tpls", ["template/aditem/aditem.tpl.html","template/adpub
 /**
  * Created by gordon on 2014/5/26.
  */
-angular.module('pzutil.aditem')
+angular.module('pzutil.aditem',[])
     .directive('adItem',['rest',function(rest) {
         return {
             restrict: 'E',
@@ -59,7 +59,7 @@ angular.module('pzutil.aditem')
  {id:4, name:localizedMessages.get('adpublish.place.homeFixeTop') },
  {id:5, name:localizedMessages.get('adpublish.place.storeTV') }];
  */
-angular.module('pzutil.adpublish')
+angular.module('pzutil.adpublish',[])
     .directive('adPublish',['rest','retailHelper',function(rest,retailHelper) {
         return {
             restrict: 'E',
@@ -184,7 +184,7 @@ angular.module('pzutil.modal', [])
 /**
  * Created by gordon on 2014/5/26.
  */
-angular.module('pzutil.rest').
+angular.module('pzutil.rest', []).
     factory('rest', ['$http',
         function($http){
             var url = '/api/public';
@@ -200,7 +200,7 @@ angular.module('pzutil.rest').
 /**
  * Created by s2k on 14-5-27.
  */
-angular.module('pzutil.retailhelper')
+angular.module('pzutil.retailhelper', [])
     .factory('retailHelper', [
         function(){
             var retailService = {

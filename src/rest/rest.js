@@ -1,7 +1,7 @@
 /**
  * Created by gordon on 2014/5/26.
  */
-angular.module('pzutil.rest').
+angular.module('pzutil.rest', []).
     factory('rest', ['$http',
         function($http){
             var url = '/api/public';
