@@ -14,11 +14,11 @@ angular.module('pzutil.adpublish')
             scope: {place: '=',itemClass:'@',itemStyle:'@'},
             templateUrl: function($element, $attrs) {
                 if ($attrs.template)
-                    return 'common/directives/adpublish/' + $attrs.template + '.tpl.html';
+                    return 'template/adpublish/' + $attrs.template + '.tpl.html';
                 else if ($attrs.place==3)
-                    return 'common/directives/adpublish/adpublish_slide.tpl.html';
+                    return 'template/adpublish/adpublish_slide.tpl.html';
                 else
-                    return 'common/directives/adpublish/adpublish_grid.tpl.html';
+                    return 'template/adpublish/adpublish_grid.tpl.html';
             },
             link: function ($scope, iElement, iAttrs) {
                 $scope.loading = true;
