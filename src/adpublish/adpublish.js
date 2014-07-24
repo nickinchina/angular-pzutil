@@ -34,6 +34,9 @@ angular.module('pzutil.adpublish',[])
                         case 2:
                             $scope.placeText = "adpublish.place.staffPick";
                             break;
+                        case 50:
+                            $scope.placeText = 'adpublish.place.adminHighlights';
+                            break;
                     }
                     _($scope.items).forEach(function(i){
                         i.props = angular.fromJson(i.props) || {};

@@ -2,7 +2,7 @@
  * pzutil
  * 
 
- * Version: 0.0.18 - 2014-07-14
+ * Version: 0.0.18 - 2014-07-24
  * License: MIT
  */
 angular.module("pzutil", ["pzutil.tpls", "pzutil.aditem","pzutil.adpublish","pzutil.image","pzutil.modal","pzutil.rest","pzutil.retailhelper","pzutil.services","pzutil.simplegrid","pzutil.tree","pzutil.ztemplate"]);
@@ -85,6 +85,9 @@ angular.module('pzutil.adpublish',[])
                             break;
                         case 2:
                             $scope.placeText = "adpublish.place.staffPick";
+                            break;
+                        case 50:
+                            $scope.placeText = 'adpublish.place.adminHighlights';
                             break;
                     }
                     _($scope.items).forEach(function(i){
