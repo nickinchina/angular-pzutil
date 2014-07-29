@@ -20,7 +20,8 @@ angular.module('pzutil.services', []).
     .factory('localizedMessages', ['$interpolate', 'I18N.MESSAGES', function ($interpolate, i18nmessages) {
 
     var handleNotFound = function (msg, msgKey) {
-        return msg || '?' + msgKey + '?';
+        //return msg || '?' + msgKey + '?';
+        return msg || msgKey;
     };
 
     return {
