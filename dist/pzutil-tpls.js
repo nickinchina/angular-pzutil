@@ -2,7 +2,7 @@
  * pzutil
  * 
 
- * Version: 0.0.18 - 2014-07-24
+ * Version: 0.0.18 - 2014-07-29
  * License: MIT
  */
 angular.module("pzutil", ["pzutil.tpls", "pzutil.aditem","pzutil.adpublish","pzutil.image","pzutil.modal","pzutil.rest","pzutil.retailhelper","pzutil.services","pzutil.simplegrid","pzutil.tree","pzutil.ztemplate"]);
@@ -237,7 +237,8 @@ angular.module('pzutil.services', []).
     .factory('localizedMessages', ['$interpolate', 'I18N.MESSAGES', function ($interpolate, i18nmessages) {
 
     var handleNotFound = function (msg, msgKey) {
-        return msg || '?' + msgKey + '?';
+        //return msg || '?' + msgKey + '?';
+        return msg || msgKey;
     };
 
     return {
