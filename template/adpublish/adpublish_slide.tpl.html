@@ -1,5 +1,4 @@
 <div>
-    <i class="fa fa-spinner fa-spin fa-2x" ng-if="loading"/>
     <div  ng-if="!loading">
         <carousel interval="5000">
             <slide ng-repeat="item in items" active="item.active">
@@ -7,4 +6,5 @@
             </slide>
         </carousel>
     </div>
+    <i class="fa fa-spinner fa-spin fa-2x" ng-if="loading" style="position: absolute;left: 50%;top: 50%;"/>
 </div>

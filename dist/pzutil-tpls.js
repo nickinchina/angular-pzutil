@@ -6,7 +6,7 @@
  * License: MIT
  */
 angular.module("pzutil", ["pzutil.tpls", "pzutil.aditem","pzutil.adpublish","pzutil.image","pzutil.modal","pzutil.rest","pzutil.retailhelper","pzutil.services","pzutil.simplegrid","pzutil.tree","pzutil.ztemplate"]);
-angular.module("pzutil.tpls", ["template/aditem/aditem.tpl.html","template/adpublish/adpublish_grid.tpl.html","template/adpublish/adpublish_slide.tpl.html","template/modal/modal.html","template/modal/wait.html","template/simplegrid/footer.html","template/simplegrid/header.html","template/simplegrid/simpleGrid-normal.html","template/simplegrid/simpleGrid-simple.html","template/simplegrid/simpleGrid.html"]);
+angular.module("pzutil.tpls", ["template/aditem/aditem.tpl.html","template/adpublish/adpublish_grid.tpl.html","template/adpublish/adpublish_list.tpl.html","template/adpublish/adpublish_slide.tpl.html","template/modal/modal.html","template/modal/wait.html","template/simplegrid/footer.html","template/simplegrid/header.html","template/simplegrid/simpleGrid-normal.html","template/simplegrid/simpleGrid-simple.html","template/simplegrid/simpleGrid.html"]);
 /**
  * Created by gordon on 2014/5/26.
  */
@@ -749,7 +749,6 @@ angular.module("template/aditem/aditem.tpl.html", []).run(["$templateCache", fun
 angular.module("template/adpublish/adpublish_grid.tpl.html", []).run(["$templateCache", function($templateCache) {
   $templateCache.put("template/adpublish/adpublish_grid.tpl.html",
     "<div>\n" +
-    "    <i class=\"fa fa-spinner fa-spin fa-2x\" ng-if=\"loading\"/>\n" +
     "    <div  ng-if=\"!loading && items && items.length\">\n" +
     "        <div class=\"page-header\" >\n" +
     "            <h3>{{ placeText | i18n }}</h3>\n" +
@@ -758,6 +757,22 @@ angular.module("template/adpublish/adpublish_grid.tpl.html", []).run(["$template
     "            <ad-item item=\"item\" item-class=\"itemClass\" item-style=\"itemStyle\"></ad-item>\n" +
     "        </div>\n" +
     "    </div>\n" +
+    "    <i class=\"fa fa-spinner fa-spin fa-2x\" ng-if=\"loading\" style=\"position: absolute;left: 50%;top: 50%;\"/>\n" +
+    "</div>\n" +
+    "\n" +
+    "");
+}]);
+
+angular.module("template/adpublish/adpublish_list.tpl.html", []).run(["$templateCache", function($templateCache) {
+  $templateCache.put("template/adpublish/adpublish_list.tpl.html",
+    "<div>\n" +
+    "    <div  ng-if=\"!loading && items && items.length\">\n" +
+    "        <div ng-repeat=\"item in items\" class=\"col-md-12\" style=\"padding-top:10px;padding-bottom: 10px\">\n" +
+    "            <ad-item item=\"item\" item-class=\"itemClass\" item-style=\"itemStyle\"></ad-item>\n" +
+    "        </div>\n" +
+    "    </div>\n" +
+    "    <i class=\"fa fa-spinner fa-spin fa-2x\" ng-if=\"loading\" style=\"position: absolute;left: 50%;top: 50%;\"/>\n" +
+    "\n" +
     "</div>\n" +
     "\n" +
     "");
@@ -766,7 +781,6 @@ angular.module("template/adpublish/adpublish_grid.tpl.html", []).run(["$template
 angular.module("template/adpublish/adpublish_slide.tpl.html", []).run(["$templateCache", function($templateCache) {
   $templateCache.put("template/adpublish/adpublish_slide.tpl.html",
     "<div>\n" +
-    "    <i class=\"fa fa-spinner fa-spin fa-2x\" ng-if=\"loading\"/>\n" +
     "    <div  ng-if=\"!loading\">\n" +
     "        <carousel interval=\"5000\">\n" +
     "            <slide ng-repeat=\"item in items\" active=\"item.active\">\n" +
@@ -774,6 +788,7 @@ angular.module("template/adpublish/adpublish_slide.tpl.html", []).run(["$templat
     "            </slide>\n" +
     "        </carousel>\n" +
     "    </div>\n" +
+    "    <i class=\"fa fa-spinner fa-spin fa-2x\" ng-if=\"loading\" style=\"position: absolute;left: 50%;top: 50%;\"/>\n" +
     "</div>");
 }]);
 
