@@ -1,0 +1,41 @@
+<script type="text/ng-template"  id="html.tpl.html">
+    <div ng-style="itemStyle" ng-class="itemClass"  >
+        <span z-template="item.props.html" ></span>
+    </div>
+</script>
+<script type="text/ng-template"  id="taxonImage.tpl.html">
+    <a href="#" target="_blank">
+        <img ng-src="{{item.props.images | zImageUrl:'s2kcontainer'}}" ng-style="itemStyle" ng-class="itemClass"  />
+        <div class="carousel-caption">
+            <p>{{item.props.title}}</p>
+        </div>
+    </a>
+
+</script>
+<script type="text/ng-template"  id="productImagePrice.tpl.html">
+    <a href="product/{{item.product.productid}}" target="_blank">
+        <img ng-src="{{item.product.image | zImageUrl:'s2kcontainer'}}"  ng-style="itemStyle" ng-class="itemClass"  />
+        <div class="carousel-caption">
+            <p>{{item.product.retail}}</p>
+        </div>
+    </a>
+</script>
+<script type="text/ng-template"  id="promotion.tpl.html">
+    <a href="#" target="_blank">
+        <img ng-src="{{item.props.images | zImageUrl:'s2kcontainer'}}"  ng-style="itemStyle"  ng-class="itemClass" />
+        <div class="carousel-caption">
+            <p>{{item.props.title}}</p>
+        </div>
+    </a>
+
+</script>
+<script type="text/ng-template"  id="imageClickable.tpl.html">
+    <a href="{{item.props.targetUrl}}" target="_blank">
+        <img ng-src="{{item.props.images | zImageUrl:'s2kcontainer'}}" ng-style="itemStyle"  ng-class="itemClass"/></a>
+</script>
+<script type="text/ng-template"  id="imageNotClickable.tpl.html">
+    <img ng-src="{{item.props.images | zImageUrl:'s2kcontainer'}}" ng-style="itemStyle"  ng-class="itemClass" />
+</script>
+<div ng-include="getItemTemplate()">
+</div>
+

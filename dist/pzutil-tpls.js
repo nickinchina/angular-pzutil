@@ -2,11 +2,129 @@
  * pzutil
  * 
 
- * Version: 0.0.18 - 2014-07-29
+ * Version: 0.0.18 - 2014-07-24
  * License: MIT
  */
-angular.module("pzutil", ["pzutil.tpls", "pzutil.image","pzutil.modal","pzutil.services","pzutil.simplegrid","pzutil.tree","pzutil.ztemplate"]);
-angular.module("pzutil.tpls", ["template/modal/modal.html","template/modal/wait.html","template/simplegrid/footer.html","template/simplegrid/header.html","template/simplegrid/simpleGrid-normal.html","template/simplegrid/simpleGrid-simple.html","template/simplegrid/simpleGrid.html"]);
+angular.module("pzutil", ["pzutil.tpls", "pzutil.aditem","pzutil.adpublish","pzutil.image","pzutil.modal","pzutil.rest","pzutil.retailhelper","pzutil.services","pzutil.simplegrid","pzutil.tree","pzutil.ztemplate"]);
+angular.module("pzutil.tpls", ["template/aditem/aditem.tpl.html","template/adpublish/adpublish_grid.tpl.html","template/adpublish/adpublish_slide.tpl.html","template/modal/modal.html","template/modal/wait.html","template/simplegrid/footer.html","template/simplegrid/header.html","template/simplegrid/simpleGrid-normal.html","template/simplegrid/simpleGrid-simple.html","template/simplegrid/simpleGrid.html"]);
+/**
+ * Created by gordon on 2014/5/26.
+ */
+angular.module('pzutil.aditem',[])
+    .directive('adItem',['rest',function(rest) {
+        return {
+            restrict: 'E',
+            // restrict and template attributes are the same as before.
+            // we don't need anymore to bind the value to the external ngModel
+            // as we require its controller and thus can access it directly
+
+            scope: {item: '=',itemClass:'=',itemStyle:'='},
+            templateUrl:  "template/aditem/aditem.tpl.html" ,
+            link: function ($scope, iElement, iAttrs) {
+
+                $scope.getItemTemplate = function() {
+                    switch ($scope.item.type) {
+                        case 0:
+                            return "html.tpl.html";
+                        case 1:
+                            return "taxonImage.tpl.html";
+                        case 2:
+                            return 'productImagePrice.tpl.html';
+                        case 3:
+                            return "promotion.tpl.html";
+                        case 4:
+                            return "imageClickable.tpl.html";
+                        case 5:
+                            return 'imageNotClickable.tpl.html';
+                    }
+                }
+
+
+                $scope.itemStyle = angular.fromJson($scope.itemStyle)||{};
+
+                console.log( $scope.itemClass);
+
+
+            }
+
+        }
+    }]);
+
+/**
+ * Created by gordon on 2014/5/26.
+ {id:0, name:localizedMessages.get('adpublish.place.feature')},
+ {id:1, name:localizedMessages.get('adpublish.place.new') },
+ {id:2, name:localizedMessages.get('adpublish.place.staffPick') },
+ {id:3, name:localizedMessages.get('adpublish.place.homeSlider') },
+ {id:4, name:localizedMessages.get('adpublish.place.homeFixeTop') },
+ {id:5, name:localizedMessages.get('adpublish.place.storeTV') }];
+ */
+angular.module('pzutil.adpublish',[])
+    .directive('adPublish',['rest','retailHelper',function(rest,retailHelper) {
+        return {
+            restrict: 'E',
+            scope: {place: '=',itemClass:'@',itemStyle:'@'},
+            templateUrl: function($element, $attrs) {
+                if ($attrs.template)
+                    return 'template/adpublish/' + $attrs.template + '.tpl.html';
+                else if ($attrs.place==3)
+                    return 'template/adpublish/adpublish_slide.tpl.html';
+                else
+                    return 'template/adpublish/adpublish_grid.tpl.html';
+            },
+            link: function ($scope, iElement, iAttrs) {
+                $scope.loading = true;
+                rest.callApi('adpublish',{place:$scope.place}).then(function(r){
+                    $scope.items = r.data[0];
+                    switch ($scope.place) {
+                        case 0:
+                            $scope.placeText = "adpublish.place.feature";
+                            break;
+                        case 1:
+                            $scope.placeText = "adpublish.place.new";
+                            break;
+                        case 2:
+                            $scope.placeText = "adpublish.place.staffPick";
+                            break;
+                        case 50:
+                            $scope.placeText = 'adpublish.place.adminHighlights';
+                            break;
+                    }
+                    _($scope.items).forEach(function(i){
+                        i.props = angular.fromJson(i.props) || {};
+
+                        if (i.type==2){
+                            rest.callApi('getProduct',{pid:i.props.product})
+                                .then(function(r){
+                                    i.product = r.data[0][0];
+                                    var max = _.max(r.data[1], 'retail');
+                                    var min = _.min(r.data[1], 'retail');
+
+                                    i.product.retail = retailHelper.getRetail(min.retail, max.retail);
+
+                                    var images = [];
+                                    _(r.data[1]).forEach(function(v){
+                                        if (v.images) {
+                                            _(v.images.split(',')).forEach(function(img){
+                                                images.push(img);
+                                            });
+                                        }
+                                    });
+                                    i.product.images = images;
+                                    if (images.length>0)
+                                        i.product.image = images[0];
+                              });
+                        }
+
+
+                    });
+
+                    $scope.loading = false;
+                });
+
+            }
+        }
+    }]);
 /**
  * Created by s2k on 14-6-8.
  */
@@ -67,6 +185,37 @@ angular.module('pzutil.modal', [])
 
 }]);
 /**
+ * Created by gordon on 2014/5/26.
+ */
+angular.module('pzutil.rest', []).
+    factory('rest', ['$http',
+        function($http){
+            var url = '/api/public';
+            var restService = {
+                callApi : function(method, params){
+                    params = params || {};
+                    params.aid = 401;
+                    return $http.post(url + '/' + method, params);
+                }
+            };
+            return restService;
+        }]);
+/**
+ * Created by s2k on 14-5-27.
+ */
+angular.module('pzutil.retailhelper', [])
+    .factory('retailHelper', [
+        function(){
+            var retailService = {
+                getRetail : function(retailmin, retailmax){
+                    return retailmin == retailmax
+                        ? accounting.formatMoney(retailmax)
+                        : accounting.formatMoney(retailmin) + " ~ " + accounting.formatMoney(retailmax);
+                }
+            };
+            return retailService;
+        }]);
+/**
  * Created by gordon on 2014/4/4.
  */
 angular.module('pzutil.services', []).
@@ -88,8 +237,7 @@ angular.module('pzutil.services', []).
     .factory('localizedMessages', ['$interpolate', 'I18N.MESSAGES', function ($interpolate, i18nmessages) {
 
     var handleNotFound = function (msg, msgKey) {
-        //return msg || '?' + msgKey + '?';
-        return msg || msgKey;
+        return msg || '?' + msgKey + '?';
     };
 
     return {
@@ -550,6 +698,83 @@ angular.module('pzutil.ztemplate', ['pzutil.services'])
             }
         }
     }]);
+
+angular.module("template/aditem/aditem.tpl.html", []).run(["$templateCache", function($templateCache) {
+  $templateCache.put("template/aditem/aditem.tpl.html",
+    "<script type=\"text/ng-template\"  id=\"html.tpl.html\">\n" +
+    "    <div ng-style=\"itemStyle\" ng-class=\"itemClass\"  >\n" +
+    "        <span z-template=\"item.props.html\" ></span>\n" +
+    "    </div>\n" +
+    "</script>\n" +
+    "<script type=\"text/ng-template\"  id=\"taxonImage.tpl.html\">\n" +
+    "    <a href=\"#\" target=\"_blank\">\n" +
+    "        <img ng-src=\"{{item.props.images | zImageUrl:'s2kcontainer'}}\" ng-style=\"itemStyle\" ng-class=\"itemClass\"  />\n" +
+    "        <div class=\"carousel-caption\">\n" +
+    "            <p>{{item.props.title}}</p>\n" +
+    "        </div>\n" +
+    "    </a>\n" +
+    "\n" +
+    "</script>\n" +
+    "<script type=\"text/ng-template\"  id=\"productImagePrice.tpl.html\">\n" +
+    "    <a href=\"product/{{item.product.productid}}\" target=\"_blank\">\n" +
+    "        <img ng-src=\"{{item.product.image | zImageUrl:'s2kcontainer'}}\"  ng-style=\"itemStyle\" ng-class=\"itemClass\"  />\n" +
+    "        <div class=\"carousel-caption\">\n" +
+    "            <p>{{item.product.retail}}</p>\n" +
+    "        </div>\n" +
+    "    </a>\n" +
+    "</script>\n" +
+    "<script type=\"text/ng-template\"  id=\"promotion.tpl.html\">\n" +
+    "    <a href=\"#\" target=\"_blank\">\n" +
+    "        <img ng-src=\"{{item.props.images | zImageUrl:'s2kcontainer'}}\"  ng-style=\"itemStyle\"  ng-class=\"itemClass\" />\n" +
+    "        <div class=\"carousel-caption\">\n" +
+    "            <p>{{item.props.title}}</p>\n" +
+    "        </div>\n" +
+    "    </a>\n" +
+    "\n" +
+    "</script>\n" +
+    "<script type=\"text/ng-template\"  id=\"imageClickable.tpl.html\">\n" +
+    "    <a href=\"{{item.props.targetUrl}}\" target=\"_blank\">\n" +
+    "        <img ng-src=\"{{item.props.images | zImageUrl:'s2kcontainer'}}\" ng-style=\"itemStyle\"  ng-class=\"itemClass\"/></a>\n" +
+    "</script>\n" +
+    "<script type=\"text/ng-template\"  id=\"imageNotClickable.tpl.html\">\n" +
+    "    <img ng-src=\"{{item.props.images | zImageUrl:'s2kcontainer'}}\" ng-style=\"itemStyle\"  ng-class=\"itemClass\" />\n" +
+    "</script>\n" +
+    "<div ng-include=\"getItemTemplate()\">\n" +
+    "</div>\n" +
+    "\n" +
+    "");
+}]);
+
+angular.module("template/adpublish/adpublish_grid.tpl.html", []).run(["$templateCache", function($templateCache) {
+  $templateCache.put("template/adpublish/adpublish_grid.tpl.html",
+    "<div>\n" +
+    "    <i class=\"fa fa-spinner fa-spin fa-2x\" ng-if=\"loading\"/>\n" +
+    "    <div  ng-if=\"!loading && items && items.length\">\n" +
+    "        <div class=\"page-header\" >\n" +
+    "            <h3>{{ placeText | i18n }}</h3>\n" +
+    "        </div>\n" +
+    "        <div ng-repeat=\"item in items\" class=\"col-md-4\" style=\"padding-top:10px;padding-bottom: 10px\">\n" +
+    "            <ad-item item=\"item\" item-class=\"itemClass\" item-style=\"itemStyle\"></ad-item>\n" +
+    "        </div>\n" +
+    "    </div>\n" +
+    "</div>\n" +
+    "\n" +
+    "");
+}]);
+
+angular.module("template/adpublish/adpublish_slide.tpl.html", []).run(["$templateCache", function($templateCache) {
+  $templateCache.put("template/adpublish/adpublish_slide.tpl.html",
+    "<div>\n" +
+    "    <i class=\"fa fa-spinner fa-spin fa-2x\" ng-if=\"loading\"/>\n" +
+    "    <div  ng-if=\"!loading\">\n" +
+    "        <carousel interval=\"5000\">\n" +
+    "            <slide ng-repeat=\"item in items\" active=\"item.active\">\n" +
+    "                <ad-item item=\"item\" item-class=\"itemClass\" item-style=\"itemStyle\"></ad-item>\n" +
+    "            </slide>\n" +
+    "        </carousel>\n" +
+    "    </div>\n" +
+    "</div>");
+}]);
 
 angular.module("template/modal/modal.html", []).run(["$templateCache", function($templateCache) {
   $templateCache.put("template/modal/modal.html",
