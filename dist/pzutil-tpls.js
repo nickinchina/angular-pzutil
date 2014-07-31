@@ -2,7 +2,7 @@
  * pzutil
  * 
 
- * Version: 0.0.18 - 2014-07-24
+ * Version: 0.0.18 - 2014-07-31
  * License: MIT
  */
 angular.module("pzutil", ["pzutil.tpls", "pzutil.aditem","pzutil.adpublish","pzutil.image","pzutil.modal","pzutil.rest","pzutil.retailhelper","pzutil.services","pzutil.simplegrid","pzutil.tree","pzutil.ztemplate"]);
@@ -485,7 +485,7 @@ angular.module('pzutil.simplegrid', ['pzutil.services','pzutil.modal'])
                                     var col =  $scope.columns[c].name;
                                     var value = i[col];
                                     if ($scope.myLookup)
-                                        value = $scope.myLookup({col: col, value:value});
+                                        value = $scope.myLookup({col: col, value:value, item:i});
                                     if (value) {
                                         if (value.toString().toLowerCase().indexOf(breadcrumbs.listingSearch.toLowerCase())>-1)
                                             return true;

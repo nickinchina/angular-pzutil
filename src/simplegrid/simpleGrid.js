@@ -180,7 +180,7 @@ angular.module('pzutil.simplegrid', ['pzutil.services','pzutil.modal'])
                                     var col =  $scope.columns[c].name;
                                     var value = i[col];
                                     if ($scope.myLookup)
-                                        value = $scope.myLookup({col: col, value:value});
+                                        value = $scope.myLookup({col: col, value:value, item:i});
                                     if (value) {
                                         if (value.toString().toLowerCase().indexOf(breadcrumbs.listingSearch.toLowerCase())>-1)
                                             return true;
