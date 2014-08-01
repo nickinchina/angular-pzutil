@@ -378,7 +378,7 @@ angular.module('pzutil.simplegrid', ['pzutil.services','pzutil.modal'])
                 replace:true,
                 scope: { data:"=sgData",  sgAddObject:"&", sgSortOptions:"=", itemtemplate:"=sgTemplate",sgColumns:"@",sgDelObject:"&", sgAllowDel:"@",
                     sgNoPager:'=', sgOnClick:'&', sgLookup:"&", sgGlobalSearch:"@",sgPageSize:"@" ,sgOptions:"=", sgOnChange:"&", sgLookupTitle:"&",
-                    sgCheckColumn:"@"},
+                    sgCheckColumn:"@", sgCustomSearch:"&"},
                 templateUrl: function($element, $attrs) {
                     var t = $attrs.sgTemplate;
                     if (t) {
@@ -481,6 +481,7 @@ angular.module('pzutil.simplegrid', ['pzutil.services','pzutil.modal'])
                         var data = null;
                         if ($scope.sgGlobalSearch && breadcrumbs.listingSearch && breadcrumbs.listingSearch!="")
                         {
+                            var searchString = breadcrumbs.listingSearch.toLowerCase();
                             data = _.filter($scope.data, function(i){
                                 for (var c = 0; c< $scope.columns.length; c++){
                                     var col =  $scope.columns[c].name;
@@ -488,9 +489,12 @@ angular.module('pzutil.simplegrid', ['pzutil.services','pzutil.modal'])
                                     if ($scope.myLookup)
                                         value = $scope.myLookup({col: col, value:value, item:i});
                                     if (value) {
-                                        if (value.toString().toLowerCase().indexOf(breadcrumbs.listingSearch.toLowerCase())>-1)
+                                        if (value.toString().toLowerCase().indexOf(searchString)>-1)
                                             return true;
                                     }
+                                }
+                                if ($scope.sgCustomSearch){
+                                    return $scope.sgCustomSearch({item: i, search: searchString});
                                 }
                                 return false;
                             });
