@@ -2,7 +2,7 @@
  * pzutil
  * 
 
- * Version: 0.0.18 - 2014-07-31
+ * Version: 0.0.18 - 2014-08-01
  * License: MIT
  */
 angular.module("pzutil", ["pzutil.tpls", "pzutil.aditem","pzutil.adpublish","pzutil.image","pzutil.modal","pzutil.rest","pzutil.retailhelper","pzutil.services","pzutil.simplegrid","pzutil.tree","pzutil.ztemplate"]);
@@ -841,7 +841,7 @@ angular.module("template/simplegrid/header.html", []).run(["$templateCache", fun
     "<div class=\"row well well-sm sg-gridheader\" >\n" +
     "    <div class=\"{{col.$getColumnClass()}}\" ng-repeat=\"col in columns\">\n" +
     "        <input type=\"checkbox\" ng-if=\"col.checkbox\" ng-model=\"col.checkedAll\" ng-change=\"checkAll(col.checkedAll)\"\n" +
-    "               style=\"margin-top: 6px;margin-left: -20px\">\n" +
+    "               style=\"margin-top: 8px;margin-left: -10px\">\n" +
     "        <a href ng-click=\"col.$sort()\" class=\"btn-header\">{{col.$getTitle()}}</a>\n" +
     "        <i class=\"fa fa-sort-desc\" ng-show=\"col.sortOrder\"></i>\n" +
     "        <i class=\"fa fa-sort-asc\" ng-show=\"!col.sortOrder && col.sortOrder!=undefined\"></i>\n" +
