@@ -152,12 +152,13 @@ angular.module('pzutil.simplegrid', ['pzutil.services','pzutil.modal'])
                     pageSetting.currentPage = 1;
                     pageSetting.totalItems = $scope.data.length;
 
-                    $scope.clickRow = function(row,shift){
-                        if (shift == 1) {
+                    $scope.clickRow = function(row,e){
+                        console.log(e);
+                        if (e.shift == 1) {
                             i.$__selected = !i.$__selected;
                         }
                         else
-                            sgOnClick({id: row.id});
+                            $scope.sgOnClick({id: row.id});
                     }
                     $scope.checkAll = function(v){
                         $scope.checkedAll = !$scope.checkedAll;

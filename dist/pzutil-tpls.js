@@ -458,12 +458,13 @@ angular.module('pzutil.simplegrid', ['pzutil.services','pzutil.modal'])
                     pageSetting.currentPage = 1;
                     pageSetting.totalItems = $scope.data.length;
 
-                    $scope.clickRow = function(row,shift){
-                        if (shift == 1) {
+                    $scope.clickRow = function(row,e){
+                        console.log(e);
+                        if (e.shift == 1) {
                             i.$__selected = !i.$__selected;
                         }
                         else
-                            sgOnClick({id: row.id});
+                            $scope.sgOnClick({id: row.id});
                     }
                     $scope.checkAll = function(v){
                         $scope.checkedAll = !$scope.checkedAll;
@@ -869,7 +870,7 @@ angular.module("template/simplegrid/simpleGrid-normal.html", []).run(["$template
     "<div class=\"sg-grid\">\n" +
     "    <ng-include src=\"'template/simplegrid/header.html'\"></ng-include>\n" +
     "    <div style=\"{{scrollStyle}}\">\n" +
-    "        <div ng-repeat=\"item in items\" class=\"row sg-gridrow\" ng-click=\"clickRow(item,$event.shift)\">\n" +
+    "        <div ng-repeat=\"item in items\" class=\"row sg-gridrow\" ng-click=\"clickRow(item,$event)\">\n" +
     "            <div class=\"{{col.$getColumnClass()}}\" ng-class=\"{true: 'active'}[item.$__selected]\" ng-repeat=\"col in columns\">\n" +
     "                <i ng-if=\"col.bool\" ng-class=\"{true: 'fa fa-check'}[item[col.name]]\"></i>\n" +
     "                <a href ng-if=\"$first && sgAllowDel\" ng-click=\"DelObject(item)\"><i class= 'glyphicon glyphicon-remove'></i></a>\n" +
