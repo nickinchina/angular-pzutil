@@ -394,24 +394,27 @@ angular.module('pzutil.simplegrid', ['pzutil.services','pzutil.modal'])
                         return 'template/simplegrid/simpleGrid-normal.html';
                 },
                 link: function($scope, $element, $attrs, $controller) {
+                   var sortIt = function(fieldName, sortOrder, sortField) {
+                       var sortField = sortField || fieldName;
+                       _($scope.columns).forEach(function(c){
+                           if (c.name != fieldName)
+                               c.sortOrder = undefined;
+                       });
+                       $scope.data.sort(function(a,b) {
+                           var a1 = a[sortField];
+                           var b1 = b[sortField];
+                           var r;
+                           if (a1==null)
+                               r = -1;
+                           else if (b1==null)
+                               r = 1;
+                           else
+                               r = (a1 < b1 ? -1:1);
+                           return r*(sortOrder? 1:-1);
+                       });
+                   }
                    $scope.sorter = function(col) {
-                       var sortField = col.sortField || col.name;
-                        _($scope.columns).forEach(function(c){
-                            if (c.name != col.name)
-                                c.sortOrder = undefined;
-                        });
-                        $scope.data.sort(function(a,b) {
-                            var a1 = a[sortField];
-                            var b1 = b[sortField];
-                            var r;
-                            if (a1==null)
-                                r = -1;
-                            else if (b1==null)
-                                r = 1;
-                            else
-                                r = (a1 < b1 ? -1:1);
-                            return r*(col.sortOrder? 1:-1);
-                        });
+                       sortIt(col.name, col.sortOrder, col.sortField);
                     };
                     $scope.AddObject = function(){
                         $scope.data.push(sgColumn.New($scope.sgAddObject()));
@@ -434,7 +437,7 @@ angular.module('pzutil.simplegrid', ['pzutil.services','pzutil.modal'])
                         if ($scope.sgSortOptions) {
                             var sortBy = _.find($scope.sgSortOptions, { 'selected': true });
                             if (sortBy) {
-                                $scope.sorter(sortBy.name, sortOrder);
+                                sortIt(sortBy.name, sortOrder);
                             }
                         }
                     };
@@ -455,18 +458,25 @@ angular.module('pzutil.simplegrid', ['pzutil.services','pzutil.modal'])
                     pageSetting.currentPage = 1;
                     pageSetting.totalItems = $scope.data.length;
 
+                    $scope.clickRow = function(row){
+                        if ($event.shift == 1) {
+                            i.$__selected = !i.$__selected;
+                        }
+                        else
+                            sgOnClick({id: row.id});
+                    }
                     $scope.checkAll = function(v){
                         $scope.checkedAll = !$scope.checkedAll;
                         _($scope.items).forEach(function(i){
-                            i.__selected = v;
+                            i.$__selected = v;
                         });
                     };
                     $scope.resetChecks = function(){
                         var c = _.find($scope.columns, {name: $scope.sgCheckColumn});
                         if (c) c.checkedAll = false;
                         _($scope.items).forEach(function(i){
-                            if (i.hasOwnProperty("__selected"))
-                                delete(i["__selected"]);
+                            if (i.hasOwnProperty("$__selected"))
+                                delete(i["$__selected"]);
                         });
                     };
                     $scope.getIndex = function(item){
@@ -859,8 +869,8 @@ angular.module("template/simplegrid/simpleGrid-normal.html", []).run(["$template
     "<div class=\"sg-grid\">\n" +
     "    <ng-include src=\"'template/simplegrid/header.html'\"></ng-include>\n" +
     "    <div style=\"{{scrollStyle}}\">\n" +
-    "        <div ng-repeat=\"item in items\" class=\"row sg-gridrow\" ng-click=\"sgOnClick({id: item.id})\">\n" +
-    "            <div class=\"{{col.$getColumnClass()}}\" ng-repeat=\"col in columns\">\n" +
+    "        <div ng-repeat=\"item in items\" class=\"row sg-gridrow\" ng-click=\"clickRow(item)\">\n" +
+    "            <div class=\"{{col.$getColumnClass()}}\" ng-class=\"{true: 'active'}[item.$__selected]\" ng-repeat=\"col in columns\">\n" +
     "                <i ng-if=\"col.bool\" ng-class=\"{true: 'fa fa-check'}[item[col.name]]\"></i>\n" +
     "                <a href ng-if=\"$first && sgAllowDel\" ng-click=\"DelObject(item)\"><i class= 'glyphicon glyphicon-remove'></i></a>\n" +
     "                <ng-include  ng-if=\"col.template\" src=\"col.template\"></ng-include>\n" +
