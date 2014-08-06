@@ -153,8 +153,7 @@ angular.module('pzutil.simplegrid', ['pzutil.services','pzutil.modal'])
                     pageSetting.totalItems = $scope.data.length;
 
                     $scope.clickRow = function(row,e){
-                        console.log(e);
-                        if (e.shift == 1) {
+                        if (e.shiftKey) {
                             i.$__selected = !i.$__selected;
                         }
                         else
