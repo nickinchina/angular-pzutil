@@ -154,7 +154,7 @@ angular.module('pzutil.simplegrid', ['pzutil.services','pzutil.modal'])
 
                     $scope.clickRow = function(row,e){
                         if (e.shiftKey) {
-                            i.$__selected = !i.$__selected;
+                            row.$__selected = !row.$__selected;
                         }
                         else
                             $scope.sgOnClick({id: row.id});
