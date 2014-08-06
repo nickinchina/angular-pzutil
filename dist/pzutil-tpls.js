@@ -408,8 +408,13 @@ angular.module('pzutil.simplegrid', ['pzutil.services','pzutil.modal'])
                                r = -1;
                            else if (b1==null)
                                r = 1;
-                           else
-                               r = (a1 < b1 ? -1:1);
+                           else {
+                               if (angular.isString(a1))
+                                    r = a1.localeCompare(b1);
+                               else
+                                    r = (a1 < b1 ? -1:1);
+                           }
+
                            return r*(sortOrder? 1:-1);
                        });
                    }
