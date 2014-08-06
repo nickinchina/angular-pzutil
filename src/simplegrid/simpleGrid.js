@@ -48,7 +48,7 @@ angular.module('pzutil.simplegrid', ['pzutil.services','pzutil.modal'])
             };
             mixin.prototype.$sort = function(){
                 this.sortOrder = !this.sortOrder;
-                mixin.sorter(this.name, this.sortOrder)
+                mixin.sorter(this);
             }
             mixin.prototype.$getText = function(item){
                 var v = item[this.name];
@@ -88,9 +88,10 @@ angular.module('pzutil.simplegrid', ['pzutil.services','pzutil.modal'])
                         return 'template/simplegrid/simpleGrid-normal.html';
                 },
                 link: function($scope, $element, $attrs, $controller) {
-                   $scope.sorter = function(sortField, sortOrder) {
+                   $scope.sorter = function(col) {
+                       var sortField = col.sortField || col.name;
                         _($scope.columns).forEach(function(c){
-                            if (c.name != sortField)
+                            if (c.name != col.name)
                                 c.sortOrder = undefined;
                         });
                         $scope.data.sort(function(a,b) {
@@ -103,7 +104,7 @@ angular.module('pzutil.simplegrid', ['pzutil.services','pzutil.modal'])
                                 r = 1;
                             else
                                 r = (a1 < b1 ? -1:1);
-                            return r*(sortOrder? 1:-1);
+                            return r*(col.sortOrder? 1:-1);
                         });
                     };
                     $scope.AddObject = function(){
