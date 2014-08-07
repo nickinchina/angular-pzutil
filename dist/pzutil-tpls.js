@@ -465,6 +465,8 @@ angular.module('pzutil.simplegrid', ['pzutil.services','pzutil.modal'])
 
 
                     $scope.modalSearch = function() {
+                        var s = $scope.sgModalSearchResolve;
+                        s.item = $scope.modalSearchCriteria || {};
                         var  modalInstance = $modal.open({
                             templateUrl: $scope.sgModalSearchTemplate,
                             controller: $scope.sgModalSearchController,
@@ -884,10 +886,10 @@ angular.module("template/simplegrid/footer.html", []).run(["$templateCache", fun
 
 angular.module("template/simplegrid/header.html", []).run(["$templateCache", function($templateCache) {
   $templateCache.put("template/simplegrid/header.html",
+    "<div class=\"row\">\n" +
+    "    <button type=\"button\" class=\"btn btn-success pull-right\"  ng-click=\"modalSearch()\"><i class=\"fa fa-refresh\"></i> Search</button>\n" +
+    "</div>\n" +
     "<div class=\"row well well-sm sg-gridheader\" >\n" +
-    "    <div class=\"pull-right\" ng-if=\"sgModalSearchTemplate\" >\n" +
-    "        <button type=\"button\" class=\"btn btn-success\"  ng-click=\"modalSearch()\"><i class=\"fa fa-refresh\"></i> Search</button>\n" +
-    "    </div>\n" +
     "    <div class=\"{{col.$getColumnClass()}}\" ng-repeat=\"col in columns\">\n" +
     "        <input type=\"checkbox\" ng-if=\"col.checkbox\" ng-model=\"col.checkedAll\" ng-change=\"checkAll(col.checkedAll)\"\n" +
     "               style=\"margin-top: 8px;margin-left: -10px\">\n" +

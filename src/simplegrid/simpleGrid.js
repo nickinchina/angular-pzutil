@@ -159,6 +159,8 @@ angular.module('pzutil.simplegrid', ['pzutil.services','pzutil.modal'])
 
 
                     $scope.modalSearch = function() {
+                        var s = $scope.sgModalSearchResolve;
+                        s.item = $scope.modalSearchCriteria || {};
                         var  modalInstance = $modal.open({
                             templateUrl: $scope.sgModalSearchTemplate,
                             controller: $scope.sgModalSearchController,
