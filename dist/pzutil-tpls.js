@@ -515,7 +515,7 @@ angular.module('pzutil.simplegrid', ['pzutil.services','pzutil.modal'])
                                 return false;
                             });
                             pageSetting.totalItems = data.length;
-                            var maxPages = math.ceiling(pageSetting.totalItems / ps);
+                            var maxPages = Math.ceiling(pageSetting.totalItems / ps);
                             if (page>maxPages){
                                 page = 1;
                                 pageSetting.currentPage = page;
