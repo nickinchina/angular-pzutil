@@ -65,14 +65,14 @@ angular.module('pzutil.simplegrid', ['pzutil.services','pzutil.modal'])
         }
         return factory;
     }])
-    .directive('simpleGrid', ['sgColumn', 'breadcrumbs', 'localizedMessages','crudWait',
-        function (sgColumn, breadcrumbs, localizedMessages,crudWait) {
+    .directive('simpleGrid', ['sgColumn', 'breadcrumbs', 'localizedMessages','crudWait', '$modal',
+        function (sgColumn, breadcrumbs, localizedMessages,crudWait,$modal) {
             return {
                 restrict:'E',
                 replace:true,
                 scope: { data:"=sgData",  sgAddObject:"&", sgSortOptions:"=", itemtemplate:"=sgTemplate",sgColumns:"@",sgDelObject:"&", sgAllowDel:"@",
                     sgNoPager:'=', sgOnClick:'&', sgLookup:"&", sgGlobalSearch:"@",sgPageSize:"@" ,sgOptions:"=", sgOnChange:"&", sgLookupTitle:"&",
-                    sgCheckColumn:"@", sgCustomSearch:"&"},
+                    sgCheckColumn:"@", sgCustomSearch:"&", sgModalSearchTemplate:"=", sgModalSearchController:"=", sgModalSearchResolve:"=", sgModalSearch:"&"},
                 templateUrl: function($element, $attrs) {
                     var t = $attrs.sgTemplate;
                     if (t) {
@@ -157,6 +157,22 @@ angular.module('pzutil.simplegrid', ['pzutil.services','pzutil.modal'])
                     pageSetting.currentPage = 1;
                     pageSetting.totalItems = $scope.data.length;
 
+
+                    $scope.modalSearch = function() {
+                        var  modalInstance = $modal.open({
+                            templateUrl: $scope.sgModalSearchTemplate,
+                            controller: $scope.sgModalSearchController,
+                            resolve: $scope.sgModalSearchResolve
+                        });
+
+                        modalInstance.result.then(function (r) {
+                            $scope.modalSearchCriteria = r;
+                            $scope.changed(pageSetting.currentPage);
+                        }, function () {
+                        });
+
+                    };
+
                     $scope.clickRow = function(row,e){
                         if (e.ctrlKey) {
                             row.$__selected = !row.$__selected;
@@ -187,12 +203,15 @@ angular.module('pzutil.simplegrid', ['pzutil.services','pzutil.modal'])
                         if (reset){
                             $scope.resetChecks();
                         }
-                        console.log(page)
+                        var scopeData = $scope.data;
+                        if ($scope.modalSearchCriteria){
+                            scopeData = $scope.modalSearch({list:scopeData,c:$scope.modalSearchCriteria});
+                        }
                         var data = null;
                         if ($scope.sgGlobalSearch && breadcrumbs.listingSearch && breadcrumbs.listingSearch!="")
                         {
                             var searchString = breadcrumbs.listingSearch.toLowerCase();
-                            data = _.filter($scope.data, function(i){
+                            data = _.filter(scopeData, function(i){
                                 for (var c = 0; c< $scope.columns.length; c++){
                                     var col =  $scope.columns[c].name;
                                     var value = i[col];
@@ -216,7 +235,7 @@ angular.module('pzutil.simplegrid', ['pzutil.services','pzutil.modal'])
                             }
                         }
                         else
-                            data =  $scope.data;
+                            data =  scopeData;
                         var l = _.take(_.rest(data, (page - 1) * ps), ps);
                         var loader = function(){
                             if ($scope.items) {
