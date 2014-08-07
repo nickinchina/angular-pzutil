@@ -2,7 +2,7 @@
  * pzutil
  * 
 
- * Version: 0.0.18 - 2014-08-06
+ * Version: 0.0.18 - 2014-08-07
  * License: MIT
  */
 angular.module("pzutil", ["pzutil.tpls", "pzutil.aditem","pzutil.adpublish","pzutil.image","pzutil.modal","pzutil.rest","pzutil.retailhelper","pzutil.services","pzutil.simplegrid","pzutil.tree","pzutil.ztemplate"]);
@@ -515,6 +515,11 @@ angular.module('pzutil.simplegrid', ['pzutil.services','pzutil.modal'])
                                 return false;
                             });
                             pageSetting.totalItems = data.length;
+                            var maxPages = math.ceiling(pageSetting.totalItems / ps);
+                            if (page>maxPages){
+                                page = 1;
+                                pageSetting.currentPage = page;
+                            }
                         }
                         else
                             data =  $scope.data;
