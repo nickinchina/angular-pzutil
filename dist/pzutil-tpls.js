@@ -463,7 +463,10 @@ angular.module('pzutil.simplegrid', ['pzutil.services','pzutil.modal'])
                     pageSetting.currentPage = 1;
                     pageSetting.totalItems = $scope.data.length;
 
-
+                    $scope.modalSearchReset = function(){
+                        $scope.modalSearchCriteria = undefined;
+                        $scope.changed(pageSetting.currentPage);
+                    }
                     $scope.modalSearch = function() {
                         var s = $scope.sgModalSearchResolve;
                         s.item = function () {
@@ -889,7 +892,8 @@ angular.module("template/simplegrid/footer.html", []).run(["$templateCache", fun
 angular.module("template/simplegrid/header.html", []).run(["$templateCache", function($templateCache) {
   $templateCache.put("template/simplegrid/header.html",
     "<div class=\"row well well-sm sg-gridSearch\"  ng-if=\"sgModalSearchTemplate\">\n" +
-    "    <button type=\"button\" class=\"btn btn-success\"  ng-click=\"modalSearch()\"><i class=\"fa fa-refresh\"></i> Search</button>\n" +
+    "    <button type=\"button\" class=\"btn btn-success\"  ng-click=\"modalSearch()\"><i class=\"fa fa-search\"></i> {{'common.searchAdv' | i18n}}</button>\n" +
+    "    <button type=\"button\" class=\"btn btn-default\"  ng-click=\"modalSearchReset()\"><i class=\"fa fa-undo\"></i> {{'common.Reset' | i18n}}<</button>\n" +
     "</div>\n" +
     "<div class=\"row well well-sm sg-gridheader\" >\n" +
     "    <div class=\"{{col.$getColumnClass()}}\" ng-repeat=\"col in columns\">\n" +

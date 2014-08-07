@@ -157,7 +157,10 @@ angular.module('pzutil.simplegrid', ['pzutil.services','pzutil.modal'])
                     pageSetting.currentPage = 1;
                     pageSetting.totalItems = $scope.data.length;
 
-
+                    $scope.modalSearchReset = function(){
+                        $scope.modalSearchCriteria = undefined;
+                        $scope.changed(pageSetting.currentPage);
+                    }
                     $scope.modalSearch = function() {
                         var s = $scope.sgModalSearchResolve;
                         s.item = function () {
