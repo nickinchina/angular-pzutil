@@ -232,7 +232,8 @@ angular.module('pzutil.simplegrid', ['pzutil.services','pzutil.modal'])
                                 {
                                     from: ps * (page - 1) + 1,
                                     to: Math.min(ps* page,pageSetting.totalItems) ,
-                                    total: pageSetting.totalItems
+                                    total: pageSetting.totalItems,
+                                    size : pageSetting.pageSize
                                 } );
                         };
                         if ($attrs.sgOnChange) {

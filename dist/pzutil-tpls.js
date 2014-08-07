@@ -538,7 +538,8 @@ angular.module('pzutil.simplegrid', ['pzutil.services','pzutil.modal'])
                                 {
                                     from: ps * (page - 1) + 1,
                                     to: Math.min(ps* page,pageSetting.totalItems) ,
-                                    total: pageSetting.totalItems
+                                    total: pageSetting.totalItems,
+                                    size : pageSetting.pageSize
                                 } );
                         };
                         if ($attrs.sgOnChange) {
@@ -857,7 +858,7 @@ angular.module("template/simplegrid/footer.html", []).run(["$templateCache", fun
     "    </div>\n" +
     "    <div class=\"col-md-3 sg-footer\">\n" +
     "        <strong><a href=\"#\" editable-number=\"pageSetting.pageSize\" e-min=\"20\" e-max=\"200\" onaftersave=\"changed(1)\">\n" +
-    "            {{footer}}, {{ pageSetting.pageSize }} per page</a> </strong>\n" +
+    "            {{footer}}</a> </strong>\n" +
     "    </div>\n" +
     "</div>");
 }]);
