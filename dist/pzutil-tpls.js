@@ -851,7 +851,7 @@ angular.module("template/modal/modal.html", []).run(["$templateCache", function(
   $templateCache.put("template/modal/modal.html",
     "<div>\n" +
     "    <div class=\"modal-header\">\n" +
-    "        <h3>Edit {{heading()}}</h3>\n" +
+    "        <h3>{{heading()}}</h3>\n" +
     "    </div>\n" +
     "    <div class=\"modal-body\">\n" +
     "        <div ng-transclude></div>\n" +
