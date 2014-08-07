@@ -888,7 +888,7 @@ angular.module("template/simplegrid/footer.html", []).run(["$templateCache", fun
 
 angular.module("template/simplegrid/header.html", []).run(["$templateCache", function($templateCache) {
   $templateCache.put("template/simplegrid/header.html",
-    "<div class=\"row well well-sm\">\n" +
+    "<div class=\"row well well-sm sg-gridSearch\"  ng-if=\"sgModalSearchTemplate\">\n" +
     "    <button type=\"button\" class=\"btn btn-success\"  ng-click=\"modalSearch()\"><i class=\"fa fa-refresh\"></i> Search</button>\n" +
     "</div>\n" +
     "<div class=\"row well well-sm sg-gridheader\" >\n" +
