@@ -209,7 +209,7 @@ angular.module('pzutil.simplegrid', ['pzutil.services','pzutil.modal'])
                         }
                         var scopeData = $scope.data;
                         if ($scope.modalSearchCriteria){
-                            scopeData = $scope.modalSearch({list:scopeData,c:$scope.modalSearchCriteria});
+                            scopeData = $scope.sgModalSearch({list:scopeData,c:$scope.modalSearchCriteria});
                         }
                         var data = null;
                         if ($scope.sgGlobalSearch && breadcrumbs.listingSearch && breadcrumbs.listingSearch!="")

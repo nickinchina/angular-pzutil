@@ -515,7 +515,7 @@ angular.module('pzutil.simplegrid', ['pzutil.services','pzutil.modal'])
                         }
                         var scopeData = $scope.data;
                         if ($scope.modalSearchCriteria){
-                            scopeData = $scope.modalSearch({list:scopeData,c:$scope.modalSearchCriteria});
+                            scopeData = $scope.sgModalSearch({list:scopeData,c:$scope.modalSearchCriteria});
                         }
                         var data = null;
                         if ($scope.sgGlobalSearch && breadcrumbs.listingSearch && breadcrumbs.listingSearch!="")
@@ -888,7 +888,7 @@ angular.module("template/simplegrid/footer.html", []).run(["$templateCache", fun
 
 angular.module("template/simplegrid/header.html", []).run(["$templateCache", function($templateCache) {
   $templateCache.put("template/simplegrid/header.html",
-    "<div class=\"row\">\n" +
+    "<div class=\"row well well-sm\">\n" +
     "    <button type=\"button\" class=\"btn btn-success\"  ng-click=\"modalSearch()\"><i class=\"fa fa-refresh\"></i> Search</button>\n" +
     "</div>\n" +
     "<div class=\"row well well-sm sg-gridheader\" >\n" +
