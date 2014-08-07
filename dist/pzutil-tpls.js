@@ -466,7 +466,9 @@ angular.module('pzutil.simplegrid', ['pzutil.services','pzutil.modal'])
 
                     $scope.modalSearch = function() {
                         var s = $scope.sgModalSearchResolve;
-                        s.item = $scope.modalSearchCriteria || {};
+                        s.item = function () {
+                            return   $scope.modalSearchCriteria || {};
+                        };
                         var  modalInstance = $modal.open({
                             templateUrl: $scope.sgModalSearchTemplate,
                             controller: $scope.sgModalSearchController,
@@ -887,7 +889,7 @@ angular.module("template/simplegrid/footer.html", []).run(["$templateCache", fun
 angular.module("template/simplegrid/header.html", []).run(["$templateCache", function($templateCache) {
   $templateCache.put("template/simplegrid/header.html",
     "<div class=\"row\">\n" +
-    "    <button type=\"button\" class=\"btn btn-success pull-right\"  ng-click=\"modalSearch()\"><i class=\"fa fa-refresh\"></i> Search</button>\n" +
+    "    <button type=\"button\" class=\"btn btn-success\"  ng-click=\"modalSearch()\"><i class=\"fa fa-refresh\"></i> Search</button>\n" +
     "</div>\n" +
     "<div class=\"row well well-sm sg-gridheader\" >\n" +
     "    <div class=\"{{col.$getColumnClass()}}\" ng-repeat=\"col in columns\">\n" +
