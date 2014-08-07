@@ -533,7 +533,8 @@ angular.module('pzutil.simplegrid', ['pzutil.services','pzutil.modal'])
                                 $scope.items = l;
 
                             pageSetting.totalItems = data.length;
-                            $scope.footer = localizedMessages.get('common.totalcount',
+
+                            $scope.footer = localizedMessages.get(pageSetting.totalItems<=pageSetting.pageSize,'common.totalcount1Page', 'common.totalcount',
                                 {
                                     from: ps * (page - 1) + 1,
                                     to: Math.min(ps* page,pageSetting.totalItems) ,
