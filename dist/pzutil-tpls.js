@@ -2,7 +2,7 @@
  * pzutil
  * 
 
- * Version: 0.0.18 - 2014-08-07
+ * Version: 0.0.18 - 2014-08-08
  * License: MIT
  */
 angular.module("pzutil", ["pzutil.tpls", "pzutil.aditem","pzutil.adpublish","pzutil.image","pzutil.modal","pzutil.rest","pzutil.retailhelper","pzutil.services","pzutil.simplegrid","pzutil.tree","pzutil.ztemplate"]);
@@ -363,9 +363,14 @@ angular.module('pzutil.simplegrid', ['pzutil.services','pzutil.modal'])
                 else {
                     if (lookup)
                         v = lookup({col: this.name, value:v, item: item});
-
                     return v ;
                 }
+            };
+            mixin.prototype.$getValue = function(item){
+                var v = item[this.name];
+                if (lookup)
+                    v = lookup({col: this.name, value:v, item: item});
+                return v ;
             };
             return mixin;
         }
@@ -899,8 +904,6 @@ angular.module("template/simplegrid/header.html", []).run(["$templateCache", fun
     "</div>\n" +
     "<div class=\"row well well-sm sg-gridheader\" >\n" +
     "    <div class=\"{{col.$getColumnClass()}}\" ng-repeat=\"col in columns\">\n" +
-    "        <input type=\"checkbox\" ng-if=\"col.checkbox\" ng-model=\"col.checkedAll\" ng-change=\"checkAll(col.checkedAll)\"\n" +
-    "               style=\"margin-top: 8px;margin-left: -10px\">\n" +
     "        <a href ng-click=\"col.$sort()\" class=\"btn-header\">{{col.$getTitle()}}</a>\n" +
     "        <i class=\"fa fa-sort-desc\" ng-show=\"col.sortOrder\"></i>\n" +
     "        <i class=\"fa fa-sort-asc\" ng-show=\"!col.sortOrder && col.sortOrder!=undefined\"></i>\n" +
@@ -915,11 +918,10 @@ angular.module("template/simplegrid/simpleGrid-normal.html", []).run(["$template
     "    <div style=\"{{scrollStyle}}\">\n" +
     "        <div ng-repeat=\"item in items\" class=\"row sg-gridrow\" ng-click=\"clickRow(item,$event)\" ng-class=\"{true: 'sg-gridrow-active'}[item.$__selected]\" >\n" +
     "            <div class=\"{{col.$getColumnClass()}}\" ng-repeat=\"col in columns\">\n" +
-    "                <i ng-if=\"col.bool\" ng-class=\"{true: 'fa fa-check'}[item[col.name]]\"></i>\n" +
+    "                <i ng-if=\"col.bool\" ng-class=\"{true: 'fa fa-check'}[col.$getValue(item)]\"></i>\n" +
     "                <a href ng-if=\"$first && sgAllowDel\" ng-click=\"DelObject(item)\"><i class= 'glyphicon glyphicon-remove'></i></a>\n" +
     "                <ng-include  ng-if=\"col.template\" src=\"col.template\"></ng-include>\n" +
-    "                <span ng-if=\"!col.template && !col.checkbox\">{{col.$getText(item)}}</span>\n" +
-    "                <label ng-if=\"col.checkbox\" ng-click=\"$event.stopPropagation()\">{{col.$getText(item)}}<input type=\"checkbox\" ng-model=\"item.__selected\"></label>\n" +
+    "                <span ng-if=\"!col.template\">{{col.$getText(item)}}</span>\n" +
     "            </div>\n" +
     "        </div>\n" +
     "    </div>\n" +
