@@ -1,14 +1,6 @@
 <div class="form-horizontal sg-grid">
-    <div class="input-group" style="width: 320px;margin-bottom: 15px" ng-if="sgAddObject && sgSortOptions">
-        <span class="input-group-addon"><i class="fa fa-check-circle"></i></span>
-        <select class="form-control">
-            <option ng-repeat="item in sgSortOptions" ng-selected="item.selected" value="item.name">{{item.text}}</option>
-        </select>
-        <div class="input-group-btn">
-            <button type="button" class="btn btn-default" ng-click="sortGrid(true)"><i class="fa fa-sort-amount-asc"></i></button>
-            <button type="button" class="btn btn-default" ng-click="sortGrid(false)"><i class="fa fa-sort-amount-desc"></i></button>
-            <button type="button" class="btn btn-default" ng-click="sgAddObject()" ng-if="sgAddObject"><span class="glyphicon glyphicon-plus"></span></button>
-        </div>
+    <div>
+        <button type="button" class="btn btn-default"  ng-click="sgAddObject()"  ng-if="sgAddObject"><i class="fa fa-plus"></i> New</button>
     </div>
     <ng-include src="'template/simplegrid/header.html'" ng-if="sgColumns"></ng-include>
     <div style="{{scrollStyle}}">

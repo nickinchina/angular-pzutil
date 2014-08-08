@@ -940,16 +940,8 @@ angular.module("template/simplegrid/simpleGrid-simple.html", []).run(["$template
 angular.module("template/simplegrid/simpleGrid.html", []).run(["$templateCache", function($templateCache) {
   $templateCache.put("template/simplegrid/simpleGrid.html",
     "<div class=\"form-horizontal sg-grid\">\n" +
-    "    <div class=\"input-group\" style=\"width: 320px;margin-bottom: 15px\" ng-if=\"sgAddObject && sgSortOptions\">\n" +
-    "        <span class=\"input-group-addon\"><i class=\"fa fa-check-circle\"></i></span>\n" +
-    "        <select class=\"form-control\">\n" +
-    "            <option ng-repeat=\"item in sgSortOptions\" ng-selected=\"item.selected\" value=\"item.name\">{{item.text}}</option>\n" +
-    "        </select>\n" +
-    "        <div class=\"input-group-btn\">\n" +
-    "            <button type=\"button\" class=\"btn btn-default\" ng-click=\"sortGrid(true)\"><i class=\"fa fa-sort-amount-asc\"></i></button>\n" +
-    "            <button type=\"button\" class=\"btn btn-default\" ng-click=\"sortGrid(false)\"><i class=\"fa fa-sort-amount-desc\"></i></button>\n" +
-    "            <button type=\"button\" class=\"btn btn-default\" ng-click=\"sgAddObject()\" ng-if=\"sgAddObject\"><span class=\"glyphicon glyphicon-plus\"></span></button>\n" +
-    "        </div>\n" +
+    "    <div>\n" +
+    "        <button type=\"button\" class=\"btn btn-default\"  ng-click=\"sgAddObject()\"  ng-if=\"sgAddObject\"><i class=\"fa fa-plus\"></i> New</button>\n" +
     "    </div>\n" +
     "    <ng-include src=\"'template/simplegrid/header.html'\" ng-if=\"sgColumns\"></ng-include>\n" +
     "    <div style=\"{{scrollStyle}}\">\n" +
