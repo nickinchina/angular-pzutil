@@ -250,16 +250,23 @@ angular.module('pzutil.simplegrid', ['pzutil.services','pzutil.modal'])
                         }
                         else
                             data =  scopeData;
-                        var l = _.take(_.rest(data, (page - 1) * ps), ps);
+
+                        if ($scope.listItems && angular.isArray($scope.listItems))
+                            $scope.listItems.length = 0;
+                        else
+                            $scope.listItems = [];
+
+                        $scope.listItems.push.apply($scope.listItems, data);
+                        var l = _.take(_.rest($scope.listItems, (page - 1) * ps), ps);
                         var loader = function(){
-                            if ($scope.items && angular.isArray($scope.items)) {
+                            if ($scope.items) {
                                 $scope.items.length = 0;
                                 $scope.items.push.apply($scope.items, l);
                             }
                             else
                                 $scope.items = l;
 
-                            pageSetting.totalItems = data.length;
+                            pageSetting.totalItems = $scope.listItems.length;
 
                             $scope.footer = localizedMessages.get(pageSetting.totalItems<=pageSetting.pageSize?'common.totalcount1Page': 'common.totalcount',
                                 {
