@@ -194,10 +194,10 @@ angular.module('pzutil.simplegrid', ['pzutil.services','pzutil.modal'])
                         else
                             $scope.sgOnClick({id: row.id});
                     }
-                    $scope.checkAll = function(v){
+                    $scope.checkAll = function(){
                         $scope.checkedAll = !$scope.checkedAll;
                         _($scope.items).forEach(function(i){
-                            i.$__selected = v;
+                            i.$__selected = $scope.checkedAll;
                         });
                     };
                     $scope.resetChecks = function(){

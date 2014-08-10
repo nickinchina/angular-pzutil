@@ -500,10 +500,10 @@ angular.module('pzutil.simplegrid', ['pzutil.services','pzutil.modal'])
                         else
                             $scope.sgOnClick({id: row.id});
                     }
-                    $scope.checkAll = function(v){
+                    $scope.checkAll = function(){
                         $scope.checkedAll = !$scope.checkedAll;
                         _($scope.items).forEach(function(i){
-                            i.$__selected = v;
+                            i.$__selected = $scope.checkedAll;
                         });
                     };
                     $scope.resetChecks = function(){
@@ -908,7 +908,7 @@ angular.module("template/simplegrid/header.html", []).run(["$templateCache", fun
     "<div class=\"row well well-sm sg-gridSearch\"  ng-if=\"sgModalSearchTemplate\">\n" +
     "    <button type=\"button\" class=\"btn btn-success\"  ng-click=\"modalSearch()\"><i class=\"fa fa-search\"></i> {{'common.searchAdv' | i18n}}</button>\n" +
     "    <button type=\"button\" class=\"btn btn-default\"  ng-click=\"modalSearchReset()\"><i class=\"fa fa-undo\"></i> {{'common.Reset' | i18n}}</button>\n" +
-    "    <button type=\"button\" class=\"btn btn-default pull-right\"  ng-click=\"checkAll()\"><i class=\"fa fa-undo\"></i> {{'common.checkAll' | i18n}}</button>\n" +
+    "    <button type=\"button\" class=\"btn btn-default pull-right\"  ng-click=\"checkAll()\"><i class=\"fa fa-check\"></i> {{'common.checkAll' | i18n}}</button>\n" +
     "</div>\n" +
     "<div class=\"row well well-sm sg-gridheader\" >\n" +
     "    <div class=\"{{col.$getColumnClass()}}\" ng-repeat=\"col in columns\">\n" +
