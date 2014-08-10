@@ -557,12 +557,10 @@ angular.module('pzutil.simplegrid', ['pzutil.services','pzutil.modal'])
                         else
                             data =  scopeData;
 
-                        if ($scope.listItems && angular.isArray($scope.listItems))
+                        if ($scope.listItems && angular.isArray($scope.listItems)){
                             $scope.listItems.length = 0;
-                        else
-                            $scope.listItems = [];
-
-                        $scope.listItems.push.apply($scope.listItems, data);
+                            $scope.listItems.push.apply($scope.listItems, data);
+                        }
                         var l = _.take(_.rest($scope.listItems, (page - 1) * ps), ps);
                         var loader = function(){
                             if ($scope.items) {
