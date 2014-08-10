@@ -75,7 +75,7 @@ angular.module('pzutil.simplegrid', ['pzutil.services','pzutil.modal'])
             return {
                 restrict:'E',
                 replace:true,
-                scope: { data:"=sgData",  sgAddObject:"&", sgSortOptions:"=", itemtemplate:"=sgTemplate",sgColumns:"@",sgDelObject:"&", sgAllowDel:"@",
+                scope: { data:"=sgData", items:"=",  sgAddObject:"&", sgSortOptions:"=", itemtemplate:"=sgTemplate",sgColumns:"@",sgDelObject:"&", sgAllowDel:"@",
                     sgNoPager:'=', sgOnClick:'&', sgLookup:"&", sgGlobalSearch:"@",sgPageSize:"@" ,sgOptions:"=", sgOnChange:"&", sgLookupTitle:"&",
                     sgCheckColumn:"@", sgCustomSearch:"&", sgModalSearchTemplate:"=", sgModalSearchController:"=", sgModalSearchResolve:"=", sgModalSearch:"&"},
                 templateUrl: function($element, $attrs) {
@@ -252,7 +252,7 @@ angular.module('pzutil.simplegrid', ['pzutil.services','pzutil.modal'])
                             data =  scopeData;
                         var l = _.take(_.rest(data, (page - 1) * ps), ps);
                         var loader = function(){
-                            if ($scope.items) {
+                            if ($scope.items && angular.isArray($scope.items)) {
                                 $scope.items.length = 0;
                                 $scope.items.push.apply($scope.items, l);
                             }
