@@ -675,6 +675,24 @@ angular.module('pzutil.tree', [])
             return uuid.v4();
         };
         var service = {
+            updateTreeValue : function(o, propName, treeValue, replace){
+                if (replace)
+                    o[propName] =  treeValue;
+                else {
+                    var v = o[propName];
+                    if (v){
+                        var vArray = v.split(',');
+                        _(treeValue.split(',')).forEach(function(i){
+                            if (vArray.indexOf(i)<0){
+                                vArray.push(i);
+                            }
+                        });
+                        o[propName] =  vArray.join(',');
+                    }
+                    else
+                        o[propName] =  treeValue;
+                }
+            },
             buildTree : function(primary, foreign, foreignKey, recursive, pos)
             {
                 if (foreignKey) {
