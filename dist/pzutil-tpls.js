@@ -407,7 +407,7 @@ angular.module('pzutil.simplegrid', ['pzutil.services','pzutil.modal'])
                        });
                        $scope.data.sort(function(a,b) {
                            var a1,b1;
-                           if (a.hasOwnProperty(sortField)){
+                           if (!a.hasOwnProperty(sortField)){
                                a1 = $scope.myLookup ?$scope.myLookup(sortField, undefined, a):undefined;
                                b1 = $scope.myLookup ?$scope.myLookup(sortField, undefined, b):undefined;
                            }
