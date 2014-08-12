@@ -924,8 +924,8 @@ angular.module("template/simplegrid/header.html", []).run(["$templateCache", fun
     "<div class=\"row well well-sm sg-gridSearch\"  ng-if=\"sgModalSearchTemplate\">\n" +
     "    <button type=\"button\" class=\"btn btn-success\"  ng-click=\"modalSearch()\"><i class=\"fa fa-search\"></i> {{'common.searchAdv' | i18n}}</button>\n" +
     "    <button type=\"button\" class=\"btn btn-default\"  ng-click=\"modalSearchReset()\"><i class=\"fa fa-undo\"></i> {{'common.Reset' | i18n}}</button>\n" +
-    "    <span class=\"pull-right\"  ><small>To select, press <kbd>ctrl</kbd> key to click</small></span>\n" +
     "    <button type=\"button\" class=\"btn btn-default pull-right\"  ng-click=\"checkAll()\"><i class=\"fa fa-check\"></i> {{'common.checkAll' | i18n}}</button>\n" +
+    "    <span class=\"pull-right\" style=\"margin-right: 10px\"><small>To select, press <kbd>CTRL</kbd> key to click</small></span>\n" +
     "</div>\n" +
     "<div class=\"row well well-sm sg-gridheader\" >\n" +
     "    <div class=\"{{col.$getColumnClass()}}\" ng-repeat=\"col in columns\">\n" +
