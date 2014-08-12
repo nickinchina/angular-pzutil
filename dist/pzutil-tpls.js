@@ -893,20 +893,10 @@ angular.module("template/adpublish/adpublish_slide.tpl.html", []).run(["$templat
 angular.module("template/modal/modal-form.html", []).run(["$templateCache", function($templateCache) {
   $templateCache.put("template/modal/modal-form.html",
     "<div>\n" +
-    "    <form name=\"form\"  class=\"form-horizontal\" crud-edit-simple=\"item\">\n" +
-    "        <div class=\"modal-header\">\n" +
-    "            <h3>{{heading()}}</h3>\n" +
-    "        </div>\n" +
-    "        <div class=\"modal-body\">\n" +
-    "            <div ng-transclude></div>\n" +
-    "        </div>\n" +
-    "        <div class=\"modal-footer\">\n" +
-    "            <div class=\"btn-toolbar page-header-ztree\" role=\"toolbar\">\n" +
-    "                <button type=\"button\" class=\"btn btn-default\"  ng-click=\"ok()\" ng-disabled=\"!canSave()\"><i class=\"fa fa-save\"></i> OK</button>\n" +
-    "                <button type=\"button\" class=\"btn btn-default\" ng-click=\"cancel()\"><i class=\"fa fa-undo\"></i> Cancel</button>\n" +
-    "            </div>\n" +
-    "        </div>\n" +
-    "    </form>\n" +
+    "    <div class=\"modal-header\">\n" +
+    "        <h3>{{heading()}}</h3>\n" +
+    "    </div>\n" +
+    "    <div ng-transclude></div>\n" +
     "</div>");
 }]);
 
