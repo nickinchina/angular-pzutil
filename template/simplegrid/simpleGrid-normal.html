@@ -3,6 +3,7 @@
     <div style="{{scrollStyle}}">
         <div ng-repeat="item in items" class="row sg-gridrow" ng-click="clickRow(item,$event)" ng-class="{true: 'sg-gridrow-active'}[item.$__selected]" >
             <div class="{{col.$getColumnClass()}}" ng-repeat="col in columns">
+                <i ng-if="$first && item.$__selected" class="fa fa-circle"></i>
                 <i ng-if="col.bool" ng-class="{true: 'fa fa-check'}[col.$getValue(item)]"></i>
                 <a href ng-if="$first && sgAllowDel" ng-click="DelObject(item)"><i class= 'glyphicon glyphicon-remove'></i></a>
                 <ng-include  ng-if="col.template" src="col.template"></ng-include>
