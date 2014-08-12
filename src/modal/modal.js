@@ -10,6 +10,14 @@ angular.module('pzutil.modal', [])
             templateUrl: 'template/modal/modal.html'
         };
     })
+    .directive('crudModalForm', function () {
+        return {
+            restrict:'E',
+            replace: true,
+            transclude: 'element',
+            templateUrl: 'template/modal/modal-form.html'
+        };
+    })
     .factory('crudWait',['$http','$modal', function($http, $modal) {
         var arrSelected = [];
         var mixin = {

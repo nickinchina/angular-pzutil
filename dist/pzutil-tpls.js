@@ -6,7 +6,7 @@
  * License: MIT
  */
 angular.module("pzutil", ["pzutil.tpls", "pzutil.aditem","pzutil.adpublish","pzutil.image","pzutil.modal","pzutil.rest","pzutil.retailhelper","pzutil.services","pzutil.simplegrid","pzutil.tree","pzutil.ztemplate"]);
-angular.module("pzutil.tpls", ["template/aditem/aditem.tpl.html","template/adpublish/adpublish_grid.tpl.html","template/adpublish/adpublish_list.tpl.html","template/adpublish/adpublish_slide.tpl.html","template/modal/modal.html","template/modal/wait.html","template/simplegrid/footer.html","template/simplegrid/header.html","template/simplegrid/simpleGrid-normal.html","template/simplegrid/simpleGrid-simple.html","template/simplegrid/simpleGrid.html"]);
+angular.module("pzutil.tpls", ["template/aditem/aditem.tpl.html","template/adpublish/adpublish_grid.tpl.html","template/adpublish/adpublish_list.tpl.html","template/adpublish/adpublish_slide.tpl.html","template/modal/modal-form.html","template/modal/modal.html","template/modal/wait.html","template/simplegrid/footer.html","template/simplegrid/header.html","template/simplegrid/simpleGrid-normal.html","template/simplegrid/simpleGrid-simple.html","template/simplegrid/simpleGrid.html"]);
 /**
  * Created by gordon on 2014/5/26.
  */
@@ -154,6 +154,14 @@ angular.module('pzutil.modal', [])
             replace: true,
             transclude: 'element',
             templateUrl: 'template/modal/modal.html'
+        };
+    })
+    .directive('crudModalForm', function () {
+        return {
+            restrict:'E',
+            replace: true,
+            transclude: 'element',
+            templateUrl: 'template/modal/modal-form.html'
         };
     })
     .factory('crudWait',['$http','$modal', function($http, $modal) {
@@ -879,6 +887,26 @@ angular.module("template/adpublish/adpublish_slide.tpl.html", []).run(["$templat
     "        </carousel>\n" +
     "    </div>\n" +
     "    <i class=\"fa fa-spinner fa-spin fa-2x\" ng-if=\"loading\" style=\"position: absolute;left: 50%;top: 50%;\"/>\n" +
+    "</div>");
+}]);
+
+angular.module("template/modal/modal-form.html", []).run(["$templateCache", function($templateCache) {
+  $templateCache.put("template/modal/modal-form.html",
+    "<div>\n" +
+    "    <form name=\"form\"  class=\"form-horizontal\" crud-edit=\"item\">\n" +
+    "        <div class=\"modal-header\">\n" +
+    "            <h3>{{heading()}}</h3>\n" +
+    "        </div>\n" +
+    "        <div class=\"modal-body\">\n" +
+    "            <div ng-transclude></div>\n" +
+    "        </div>\n" +
+    "        <div class=\"modal-footer\">\n" +
+    "            <div class=\"btn-toolbar page-header-ztree\" role=\"toolbar\">\n" +
+    "                <button type=\"button\" class=\"btn btn-default\"  ng-click=\"ok()\" ng-disabled=\"!canSave()\"><i class=\"fa fa-save\"></i> OK</button>\n" +
+    "                <button type=\"button\" class=\"btn btn-default\" ng-click=\"cancel()\"><i class=\"fa fa-undo\"></i> Cancel</button>\n" +
+    "            </div>\n" +
+    "        </div>\n" +
+    "    </form>\n" +
     "</div>");
 }]);
 

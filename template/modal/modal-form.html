@@ -1,0 +1,16 @@
+<div>
+    <form name="form"  class="form-horizontal" crud-edit="item">
+        <div class="modal-header">
+            <h3>{{heading()}}</h3>
+        </div>
+        <div class="modal-body">
+            <div ng-transclude></div>
+        </div>
+        <div class="modal-footer">
+            <div class="btn-toolbar page-header-ztree" role="toolbar">
+                <button type="button" class="btn btn-default"  ng-click="ok()" ng-disabled="!canSave()"><i class="fa fa-save"></i> OK</button>
+                <button type="button" class="btn btn-default" ng-click="cancel()"><i class="fa fa-undo"></i> Cancel</button>
+            </div>
+        </div>
+    </form>
+</div>
