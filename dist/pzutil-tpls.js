@@ -893,7 +893,7 @@ angular.module("template/adpublish/adpublish_slide.tpl.html", []).run(["$templat
 angular.module("template/modal/modal-form.html", []).run(["$templateCache", function($templateCache) {
   $templateCache.put("template/modal/modal-form.html",
     "<div>\n" +
-    "    <form name=\"form\"  class=\"form-horizontal\" crud-edit=\"item\">\n" +
+    "    <form name=\"form\"  class=\"form-horizontal\" crud-edit-simple=\"item\">\n" +
     "        <div class=\"modal-header\">\n" +
     "            <h3>{{heading()}}</h3>\n" +
     "        </div>\n" +
