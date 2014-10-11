@@ -2,7 +2,7 @@
  * pzutil
  * 
 
- * Version: 0.0.18 - 2014-08-12
+ * Version: 0.0.18 - 2014-10-11
  * License: MIT
  */
 angular.module("pzutil", ["pzutil.tpls", "pzutil.aditem","pzutil.adpublish","pzutil.image","pzutil.modal","pzutil.rest","pzutil.retailhelper","pzutil.services","pzutil.simplegrid","pzutil.tree","pzutil.ztemplate"]);
@@ -512,8 +512,13 @@ angular.module('pzutil.simplegrid', ['pzutil.services','pzutil.modal'])
                         if (e.ctrlKey) {
                             row.$__selected = !row.$__selected;
                         }
-                        else
-                            $scope.sgOnClick({id: row.id});
+                        else {
+                            if (row.hasOwnProperty("id"))
+                                $scope.sgOnClick({id: row.id});
+                            else
+                                $scope.sgOnClick({id: row});
+                        }
+
                     }
                     $scope.checkAll = function(){
                         $scope.checkedAll = !$scope.checkedAll;

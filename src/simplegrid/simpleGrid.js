@@ -198,8 +198,13 @@ angular.module('pzutil.simplegrid', ['pzutil.services','pzutil.modal'])
                         if (e.ctrlKey) {
                             row.$__selected = !row.$__selected;
                         }
-                        else
-                            $scope.sgOnClick({id: row.id});
+                        else {
+                            if (row.hasOwnProperty("id"))
+                                $scope.sgOnClick({id: row.id});
+                            else
+                                $scope.sgOnClick({id: row});
+                        }
+
                     }
                     $scope.checkAll = function(){
                         $scope.checkedAll = !$scope.checkedAll;
