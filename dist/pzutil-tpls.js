@@ -2,7 +2,7 @@
  * pzutil
  * 
 
- * Version: 0.0.18 - 2014-10-11
+ * Version: 0.0.18 - 2014-10-12
  * License: MIT
  */
 angular.module("pzutil", ["pzutil.tpls", "pzutil.aditem","pzutil.adpublish","pzutil.image","pzutil.modal","pzutil.rest","pzutil.retailhelper","pzutil.services","pzutil.simplegrid","pzutil.tree","pzutil.ztemplate"]);
@@ -957,11 +957,11 @@ angular.module("template/simplegrid/header.html", []).run(["$templateCache", fun
     "    <button type=\"button\" class=\"btn btn-default pull-right\"  ng-click=\"checkAll()\"><i class=\"fa fa-check\"></i> {{'common.checkAll' | i18n}}</button>\n" +
     "    <span class=\"pull-right\" style=\"margin-right: 10px\"><small>To select, press <kbd>CTRL</kbd> key to click</small></span>\n" +
     "</div>\n" +
-    "<div class=\"row well well-sm sg-gridheader\" >\n" +
-    "    <div class=\"{{col.$getColumnClass()}}\" ng-repeat=\"col in columns\">\n" +
-    "        <a href ng-click=\"col.$sort()\" class=\"btn-header\">{{col.$getTitle()}}</a>\n" +
-    "        <i class=\"fa fa-sort-desc\" ng-show=\"col.sortOrder\"></i>\n" +
-    "        <i class=\"fa fa-sort-asc\" ng-show=\"!col.sortOrder && col.sortOrder!=undefined\"></i>\n" +
+    "<div class=\"row sg-gridheader\" >\n" +
+    "    <div class=\"{{col.$getColumnClass()}}\" ng-click=\"col.$sort()\" ng-repeat=\"col in columns\">\n" +
+    "        <span>{{col.$getTitle()}}</span>\n" +
+    "        <i class=\"fa fa-sort-desc pull-right\" ng-show=\"col.sortOrder\"></i>\n" +
+    "        <i class=\"fa fa-sort-asc pull-right\" ng-show=\"!col.sortOrder && col.sortOrder!=undefined\"></i>\n" +
     "    </div>\n" +
     "</div>");
 }]);

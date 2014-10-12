@@ -4,10 +4,10 @@
     <button type="button" class="btn btn-default pull-right"  ng-click="checkAll()"><i class="fa fa-check"></i> {{'common.checkAll' | i18n}}</button>
     <span class="pull-right" style="margin-right: 10px"><small>To select, press <kbd>CTRL</kbd> key to click</small></span>
 </div>
-<div class="row well well-sm sg-gridheader" >
-    <div class="{{col.$getColumnClass()}}" ng-repeat="col in columns">
-        <a href ng-click="col.$sort()" class="btn-header">{{col.$getTitle()}}</a>
-        <i class="fa fa-sort-desc" ng-show="col.sortOrder"></i>
-        <i class="fa fa-sort-asc" ng-show="!col.sortOrder && col.sortOrder!=undefined"></i>
+<div class="row sg-gridheader" >
+    <div class="{{col.$getColumnClass()}}" ng-click="col.$sort()" ng-repeat="col in columns">
+        <span>{{col.$getTitle()}}</span>
+        <i class="fa fa-sort-desc pull-right" ng-show="col.sortOrder"></i>
+        <i class="fa fa-sort-asc pull-right" ng-show="!col.sortOrder && col.sortOrder!=undefined"></i>
     </div>
 </div>
