@@ -8,6 +8,7 @@
                 <a href ng-if="$first && sgAllowDel" ng-click="DelObject(item)"><i class= 'glyphicon glyphicon-remove'></i></a>
                 <ng-include  ng-if="col.template" src="col.template"></ng-include>
                 <span ng-if="!col.template">{{col.$getText(item)}}</span>
+                <i ng-if="$last && angular.isFunction(item.$core) && item.$core()" class="fa fa-lock"></i>
             </div>
         </div>
     </div>
