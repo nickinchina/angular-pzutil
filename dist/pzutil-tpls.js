@@ -202,7 +202,7 @@ angular.module('pzutil.rest', []).
             var restService = {
                 callApi : function(method, params){
                     params = params || {};
-                    params.aid = 401;
+                    params.aid = 2;
                     return $http.post(url + '/' + method, params);
                 }
             };
@@ -960,8 +960,8 @@ angular.module("template/simplegrid/header.html", []).run(["$templateCache", fun
     "<div class=\"row sg-gridheader\" >\n" +
     "    <div class=\"{{col.$getColumnClass()}}\" ng-click=\"col.$sort()\" ng-repeat=\"col in columns\">\n" +
     "        <span>{{col.$getTitle()}}</span>\n" +
-    "        <i class=\"fa fa-sort-desc pull-right\" ng-show=\"col.sortOrder\"></i>\n" +
-    "        <i class=\"fa fa-sort-asc pull-right\" ng-show=\"!col.sortOrder && col.sortOrder!=undefined\"></i>\n" +
+    "        <i class=\"fa fa-long-arrow-down pull-right\" ng-show=\"col.sortOrder\" style=\"top:50%;\"></i>\n" +
+    "        <i class=\"fa fa-long-arrow-up pull-right\" ng-show=\"!col.sortOrder && col.sortOrder!=undefined\" style=\"top:50%;\"></i>\n" +
     "    </div>\n" +
     "</div>");
 }]);
