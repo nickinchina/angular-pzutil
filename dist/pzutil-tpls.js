@@ -2,7 +2,7 @@
  * pzutil
  * 
 
- * Version: 0.0.18 - 2014-10-14
+ * Version: 0.0.18 - 2014-10-15
  * License: MIT
  */
 angular.module("pzutil", ["pzutil.tpls", "pzutil.aditem","pzutil.adpublish","pzutil.image","pzutil.modal","pzutil.rest","pzutil.retailhelper","pzutil.services","pzutil.simplegrid","pzutil.tree","pzutil.ztemplate"]);
@@ -978,7 +978,7 @@ angular.module("template/simplegrid/simpleGrid-normal.html", []).run(["$template
     "                <a href ng-if=\"$first && sgAllowDel\" ng-click=\"DelObject(item)\"><i class= 'glyphicon glyphicon-remove'></i></a>\n" +
     "                <ng-include  ng-if=\"col.template\" src=\"col.template\"></ng-include>\n" +
     "                <span ng-if=\"!col.template\">{{col.$getText(item)}}</span>\n" +
-    "                <i ng-if=\"$last && angular.isFunction(item.$core) && item.$core()\" class=\"fa fa-lock\"></i>\n" +
+    "                <i ng-if=\"$last && item.$core && item.$core()\" class=\"fa fa-lock\"></i>\n" +
     "            </div>\n" +
     "        </div>\n" +
     "    </div>\n" +
