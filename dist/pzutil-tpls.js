@@ -2,7 +2,7 @@
  * pzutil
  * 
 
- * Version: 0.0.18 - 2014-10-15
+ * Version: 0.0.18 - 2014-10-16
  * License: MIT
  */
 angular.module("pzutil", ["pzutil.tpls", "pzutil.aditem","pzutil.adpublish","pzutil.image","pzutil.modal","pzutil.rest","pzutil.retailhelper","pzutil.services","pzutil.simplegrid","pzutil.tree","pzutil.ztemplate"]);
@@ -513,8 +513,12 @@ angular.module('pzutil.simplegrid', ['pzutil.services','pzutil.modal'])
                             row.$__selected = !row.$__selected;
                         }
                         else {
-                            if (row.hasOwnProperty("id"))
-                                $scope.sgOnClick({id: row.id});
+                            if (row.hasOwnProperty("id")){
+                                if (angular.isFunction(row.$core) && row.$core() && row.hasOwnProperty("accountid"))
+                                    $scope.sgOnClick({id: row.id + '*' + row.accountid});
+                                else
+                                    $scope.sgOnClick({id: row.id});
+                            }
                             else
                                 $scope.sgOnClick({id: row});
                         }
