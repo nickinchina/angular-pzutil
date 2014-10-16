@@ -199,8 +199,12 @@ angular.module('pzutil.simplegrid', ['pzutil.services','pzutil.modal'])
                             row.$__selected = !row.$__selected;
                         }
                         else {
-                            if (row.hasOwnProperty("id"))
-                                $scope.sgOnClick({id: row.id});
+                            if (row.hasOwnProperty("id")){
+                                if (angular.isFunction(row.$core) && row.$core() && row.hasOwnProperty("accountid"))
+                                    $scope.sgOnClick({id: row.id + '*' + row.accountid});
+                                else
+                                    $scope.sgOnClick({id: row.id});
+                            }
                             else
                                 $scope.sgOnClick({id: row});
                         }
