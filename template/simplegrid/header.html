@@ -7,7 +7,7 @@
 <div class="row sg-gridheader" >
     <div class="{{col.$getColumnClass()}}" ng-click="col.$sort()" ng-repeat="col in columns">
         <span>{{col.$getTitle()}}</span>
-        <i class="fa fa-long-arrow-down pull-right" ng-show="col.sortOrder" style="top:50%;"></i>
-        <i class="fa fa-long-arrow-up pull-right" ng-show="!col.sortOrder && col.sortOrder!=undefined" style="top:50%;"></i>
+        <i class="fa fa-long-arrow-down pull-right sg_gridIcon" ng-show="col.sortOrder" style="top:50%;"></i>
+        <i class="fa fa-long-arrow-up pull-right sg_gridIcon" ng-show="!col.sortOrder && col.sortOrder!=undefined" style="top:50%;"></i>
     </div>
 </div>
