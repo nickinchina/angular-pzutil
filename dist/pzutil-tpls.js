@@ -515,7 +515,7 @@ angular.module('pzutil.simplegrid', ['pzutil.services','pzutil.modal'])
                         else {
                             if (row.hasOwnProperty("id")){
                                 if (angular.isFunction(row.$core) && row.$core() && row.hasOwnProperty("accountid"))
-                                    $scope.sgOnClick({id: row.id + '#-*#' + row.accountid});
+                                    $scope.sgOnClick({id: row});
                                 else
                                     $scope.sgOnClick({id: row.id});
                             }
