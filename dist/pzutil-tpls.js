@@ -157,12 +157,13 @@ angular.module('pzutil.download', []).
                             else {
                                 // Try using other saveBlob implementations, if available
                                 var saveBlob = navigator.webkitSaveBlob || navigator.mozSaveBlob || navigator.saveBlob;
-                                if(saveBlob === undefined) throw "Not supported";
-                                saveBlob(blob, filename);
+                                if(saveBlob){
+                                    saveBlob(blob, filename);
+                                    console.log("saveBlob succeeded");
+                                    success = true;
+                                    deferred.resolve(filename);
+                                }
                             }
-                            console.log("saveBlob succeeded");
-                            success = true;
-                            deferred.resolve(filename);
                         } catch(ex)
                         {
                             console.log("saveBlob method failed with the following exception:");
@@ -549,6 +550,9 @@ angular.module('pzutil.simplegrid', ['pzutil.services','pzutil.modal'])
                 downloadHelper.downloadFile("/pzclient/todocument", "post", p)
                     .then(function(i){
                         $modalInstance.close();
+                    },function(e){
+                        console.log(e);
+                        alert(e.message);
                     });
             };
             $scope.cancel = function () {
