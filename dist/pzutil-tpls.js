@@ -519,8 +519,8 @@ angular.module('pzutil.simplegrid', ['pzutil.services','pzutil.modal'])
         };
         return service;
     }])
-    .controller('simpleGridExportCtrl', [ '$scope', '$modalInstance','columns','data','docTitle','downloadHelper',
-        function( $scope, $modalInstance,columns,data,docTitle,downloadHelper) {
+    .controller('simpleGridExportCtrl', [ '$scope', '$modalInstance','columns','data','docTitle','downloadHelper','localizedMessages',
+        function( $scope, $modalInstance,columns,data,docTitle,downloadHelper,localizedMessages) {
             $scope.item = {};
             $scope.columns = columns;
             $scope.data = data;
