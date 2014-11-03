@@ -70,6 +70,40 @@ angular.module('pzutil.simplegrid', ['pzutil.services','pzutil.modal'])
         }
         return factory;
     }])
+    .factory('simpleGridExport', ['$modal', '$location','$q','zTreeHelper', function($modal,zrest,$q,zTreeHelper){
+        var service = {
+
+            export : function()
+            {
+                var deferred = $q.defer();
+                var  modalInstance = $modal.open({
+                    templateUrl: "template/simplegrid/export.html",
+                    controller: "simpleGridExportCtrl"
+                });
+                //{selectAllStores:false,selectedStores:[],allStores:stores};
+                modalInstance.result.then(function (r) {
+                    r.selectedStores = service.calcStoreSelected(r.selectedStores,r.allStores);
+                    deferred.resolve(r);
+                }, function () {
+                    deferred.reject();
+                });
+                return deferred.promise;
+            }
+        };
+        return service;
+    }])
+    .controller('simpleGridExportCtrl', [ '$scope', '$modalInstance',function( $scope, $modalInstance) {
+        $scope.item = {};
+        $scope.heading = function() {
+            return localizedMessages.get('common.storeselect') + (subTitle || '');
+        };
+        $scope.ok = function () {
+            $modalInstance.close($scope.item);
+        };
+        $scope.cancel = function () {
+            $modalInstance.dismiss('cancel');
+        };
+    }])
     .directive('simpleGrid', ['sgColumn', 'breadcrumbs', 'localizedMessages','crudWait', '$modal',
         function (sgColumn, breadcrumbs, localizedMessages,crudWait,$modal) {
             return {

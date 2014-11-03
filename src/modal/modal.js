@@ -44,5 +44,4 @@ angular.module('pzutil.modal', [])
     }])
     .controller('crudWaitCtrl', [ '$scope', '$modalInstance','msg',function( $scope, $modalInstance,msg) {
         $scope.msg = msg;
-
 }]);
