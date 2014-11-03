@@ -84,7 +84,7 @@ angular.module('pzutil.simplegrid', ['pzutil.services','pzutil.modal'])
                         columns: function(){
                             var cols = [];
                             _(columns).forEach(function(i){
-                                cols.push({name: i.name, title: i.$getText()});
+                                cols.push({name: i.name, title: i.$getTitle()});
                             });
                             return cols;
                         },
@@ -93,7 +93,7 @@ angular.module('pzutil.simplegrid', ['pzutil.services','pzutil.modal'])
                             _(data).forEach(function(i){
                                 var o = {};
                                 _(columns).forEach(function(c){
-                                    o[i.name] = c.$getValue(i);
+                                    o[c.name] = c.$getValue(i);
                                 });
                             });
                         }

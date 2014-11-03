@@ -2,7 +2,7 @@
  * pzutil
  * 
 
- * Version: 0.0.18 - 2014-11-03
+ * Version: 0.0.18 - 2014-11-04
  * License: MIT
  */
 angular.module("pzutil", ["pzutil.tpls", "pzutil.aditem","pzutil.adpublish","pzutil.download","pzutil.image","pzutil.modal","pzutil.rest","pzutil.retailhelper","pzutil.services","pzutil.simplegrid","pzutil.tree","pzutil.ztemplate"]);
@@ -489,7 +489,7 @@ angular.module('pzutil.simplegrid', ['pzutil.services','pzutil.modal'])
                         columns: function(){
                             var cols = [];
                             _(columns).forEach(function(i){
-                                cols.push({name: i.name, title: i.$getText()});
+                                cols.push({name: i.name, title: i.$getTitle()});
                             });
                             return cols;
                         },
@@ -498,7 +498,7 @@ angular.module('pzutil.simplegrid', ['pzutil.services','pzutil.modal'])
                             _(data).forEach(function(i){
                                 var o = {};
                                 _(columns).forEach(function(c){
-                                    o[i.name] = c.$getValue(i);
+                                    o[c.name] = c.$getValue(i);
                                 });
                             });
                         }
