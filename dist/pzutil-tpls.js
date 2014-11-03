@@ -489,7 +489,10 @@ angular.module('pzutil.simplegrid', ['pzutil.services','pzutil.modal'])
                         columns: function(){
                             var cols = [];
                             _(columns).forEach(function(i){
-                                cols.push({name: i.name, title: i.$getTitle()});
+                                cols.push({
+                                    name: i.name,
+                                    title: i.$getTitle()
+                                });
                             });
                             return cols;
                         },
@@ -521,6 +524,18 @@ angular.module('pzutil.simplegrid', ['pzutil.services','pzutil.modal'])
             $scope.item = {};
             $scope.columns = columns;
             $scope.data = data;
+            $scope.groupbys = [];
+            _(columns).forEach(function(i){
+                $scope.groupbys.push({
+                    id: i.name,
+                    name: i.title
+                })
+            })
+            $scope.formats = [
+                {id:"xlsx", name:"xlsx"},
+                {id:"pdf", name:"pdf"},
+                {id:"csv", name:"csv"}
+            ];
             $scope.heading = function() {
                 return localizedMessages.get('common.storeselect') + (docTitle || '');
             };
@@ -1102,10 +1117,10 @@ angular.module("template/simplegrid/export.html", []).run(["$templateCache", fun
     "<crud-modal>\n" +
     "    <form name=\"form\"  class=\"form-horizontal\">\n" +
     "        <div class=\"form-group\">\n" +
-    "            <z-input res=\"common.Export.format\" cols=\"2,4\" for=\"format\" type=\"select\" z-options=\"t.id as t.name for t in formats| orderBy:'name'\" required></z-input>\n" +
+    "            <z-input res=\"common.Export.format\" cols=\"2,6\" for=\"format\" type=\"select\" z-options=\"t.id as t.name for t in formats| orderBy:'name'\" required></z-input>\n" +
     "        </div>\n" +
     "        <div class=\"form-group\">\n" +
-    "            <z-input res=\"common.Export.groupby\" cols=\"2,10\" for=\"groupby\" type=\"select\" z-options=\"t.id as t.name for t in groupbys| orderBy:'name'\"></z-input>\n" +
+    "            <z-input res=\"common.Export.groupby\" cols=\"2,6\" for=\"groupby\" type=\"select\" z-options=\"t.id as t.name for t in groupbys| orderBy:'name'\"></z-input>\n" +
     "        </div>\n" +
     "    </form>\n" +
     "</crud-modal>\n" +
@@ -1132,7 +1147,7 @@ angular.module("template/simplegrid/header.html", []).run(["$templateCache", fun
     "<div class=\"row well well-sm sg-gridSearch\" >\n" +
     "    <button type=\"button\" class=\"btn btn-success\"  ng-click=\"modalSearch()\" ng-if=\"sgModalSearchTemplate\"><i class=\"fa fa-search\"></i> {{'common.searchAdv' | i18n}}</button>\n" +
     "    <button type=\"button\" class=\"btn btn-default\"  ng-click=\"modalSearchReset()\" ng-if=\"sgModalSearchTemplate\"><i class=\"fa fa-undo\"></i> {{'common.Reset' | i18n}}</button>\n" +
-    "    <button type=\"button\" class=\"btn btn-default\"  ng-click=\"export()\"><i class=\"fa-file-excel-o\"></i> {{'common.Export' | i18n}}</button>\n" +
+    "    <button type=\"button\" class=\"btn btn-default\"  ng-click=\"export()\"><i class=\"fa fa-file-excel-o\"></i> {{'common.Export' | i18n}}</button>\n" +
     "    <button type=\"button\" class=\"btn btn-default pull-right\"  ng-click=\"checkAll()\"><i class=\"fa fa-check\"></i> {{'common.checkAll' | i18n}}</button>\n" +
     "    <span class=\"pull-right\" style=\"margin-right: 10px\"><small>To select, press <kbd>CTRL</kbd> key to click</small></span>\n" +
     "</div>\n" +
