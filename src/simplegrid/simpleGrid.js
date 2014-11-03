@@ -73,12 +73,31 @@ angular.module('pzutil.simplegrid', ['pzutil.services','pzutil.modal'])
     .factory('simpleGridExport', ['$modal', '$location','$q','zTreeHelper', function($modal,zrest,$q,zTreeHelper){
         var service = {
 
-            export : function()
+            export : function(columns, data, docTitle)
             {
                 var deferred = $q.defer();
                 var  modalInstance = $modal.open({
                     templateUrl: "template/simplegrid/export.html",
-                    controller: "simpleGridExportCtrl"
+                    controller: "simpleGridExportCtrl",
+                    resolve: {
+                        docTitle: function(){return docTitle},
+                        columns: function(){
+                            var cols = [];
+                            _(columns).forEach(function(i){
+                                cols.push({name: i.name, title: i.$getText()});
+                            });
+                            return cols;
+                        },
+                        data: function(){
+                            var rows = [];
+                            _(data).forEach(function(i){
+                                var o = {};
+                                _(columns).forEach(function(c){
+                                    o[i.name] = c.$getValue(i);
+                                });
+                            });
+                        }
+                    }
                 });
                 //{selectAllStores:false,selectedStores:[],allStores:stores};
                 modalInstance.result.then(function (r) {
@@ -92,18 +111,27 @@ angular.module('pzutil.simplegrid', ['pzutil.services','pzutil.modal'])
         };
         return service;
     }])
-    .controller('simpleGridExportCtrl', [ '$scope', '$modalInstance',function( $scope, $modalInstance) {
-        $scope.item = {};
-        $scope.heading = function() {
-            return localizedMessages.get('common.storeselect') + (subTitle || '');
-        };
-        $scope.ok = function () {
-            $modalInstance.close($scope.item);
-        };
-        $scope.cancel = function () {
-            $modalInstance.dismiss('cancel');
-        };
-    }])
+    .controller('simpleGridExportCtrl', [ '$scope', '$modalInstance','columns','data','docTitle','downloadHelper',
+        function( $scope, $modalInstance,columns,data,docTitle,downloadHelper) {
+            $scope.item = {};
+            $scope.columns = columns;
+            $scope.data = data;
+            $scope.heading = function() {
+                return localizedMessages.get('common.storeselect') + (docTitle || '');
+            };
+            $scope.ok = function () {
+                var p = {
+                    columns : $scope.columns,
+                    data : $scope.data,
+                    format: $scope.item.format,
+                    title : docTitle
+                };
+                $modalInstance.close($scope.item);
+            };
+            $scope.cancel = function () {
+                $modalInstance.dismiss('cancel');
+            };
+        }])
     .directive('simpleGrid', ['sgColumn', 'breadcrumbs', 'localizedMessages','crudWait', '$modal',
         function (sgColumn, breadcrumbs, localizedMessages,crudWait,$modal) {
             return {
