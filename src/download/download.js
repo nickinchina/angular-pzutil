@@ -30,12 +30,13 @@ angular.module('pzutil.download', []).
                             else {
                                 // Try using other saveBlob implementations, if available
                                 var saveBlob = navigator.webkitSaveBlob || navigator.mozSaveBlob || navigator.saveBlob;
-                                if(saveBlob === undefined) throw "Not supported";
-                                saveBlob(blob, filename);
+                                if(saveBlob){
+                                    saveBlob(blob, filename);
+                                    console.log("saveBlob succeeded");
+                                    success = true;
+                                    deferred.resolve(filename);
+                                }
                             }
-                            console.log("saveBlob succeeded");
-                            success = true;
-                            deferred.resolve(filename);
                         } catch(ex)
                         {
                             console.log("saveBlob method failed with the following exception:");

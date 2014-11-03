@@ -144,6 +144,9 @@ angular.module('pzutil.simplegrid', ['pzutil.services','pzutil.modal'])
                 downloadHelper.downloadFile("/pzclient/todocument", "post", p)
                     .then(function(i){
                         $modalInstance.close();
+                    },function(e){
+                        console.log(e);
+                        alert(e.message);
                     });
             };
             $scope.cancel = function () {
