@@ -469,7 +469,7 @@ angular.module('pzutil.simplegrid', ['pzutil.services','pzutil.modal'])
                 var v = item[this.name];
                 if (lookup)
                     v = lookup({col: this.name, value:v, item: item});
-                return v ;
+                return v;
             };
             return mixin;
         }
