@@ -137,7 +137,9 @@ angular.module('pzutil.download', []).
                 // Use an arraybuffer
                 var params = { responseType: 'arraybuffer' };
                 params.data = data;
-                $http[method](httpPath, params)
+                params.url = httpPath;
+                params.method = method;
+                $http(params)
                     .success( function(data, status, headers) {
                         var octetStreamMime = 'application/octet-stream';
                         var success = false;
