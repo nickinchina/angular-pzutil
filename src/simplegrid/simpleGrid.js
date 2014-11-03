@@ -135,8 +135,8 @@ angular.module('pzutil.simplegrid', ['pzutil.services','pzutil.modal'])
                 $modalInstance.dismiss('cancel');
             };
         }])
-    .directive('simpleGrid', ['sgColumn', 'breadcrumbs', 'localizedMessages','crudWait', '$modal',
-        function (sgColumn, breadcrumbs, localizedMessages,crudWait,$modal) {
+    .directive('simpleGrid', ['sgColumn', 'breadcrumbs', 'localizedMessages','crudWait', '$modal','simpleGridExport',
+        function (sgColumn, breadcrumbs, localizedMessages,crudWait,$modal,simpleGridExport) {
             return {
                 restrict:'E',
                 replace:true,
@@ -219,6 +219,9 @@ angular.module('pzutil.simplegrid', ['pzutil.services','pzutil.modal'])
                     };
                     $scope.sortGrid(true);
 
+                    $scope.export = function(){
+                        simpleGridExport.export($scope.columns, $scope.data, "export")
+                    };
                     if ($attrs.gridHeight)
                         $scope.scrollStyle = "height:" + $attrs.gridHeight +";overflow-y:auto";
                     else

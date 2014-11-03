@@ -2,11 +2,11 @@
  * pzutil
  * 
 
- * Version: 0.0.18 - 2014-10-20
+ * Version: 0.0.18 - 2014-11-03
  * License: MIT
  */
-angular.module("pzutil", ["pzutil.tpls", "pzutil.aditem","pzutil.adpublish","pzutil.image","pzutil.modal","pzutil.rest","pzutil.retailhelper","pzutil.services","pzutil.simplegrid","pzutil.tree","pzutil.ztemplate"]);
-angular.module("pzutil.tpls", ["template/aditem/aditem.tpl.html","template/adpublish/adpublish_grid.tpl.html","template/adpublish/adpublish_list.tpl.html","template/adpublish/adpublish_slide.tpl.html","template/modal/modal-form.html","template/modal/modal.html","template/modal/wait.html","template/simplegrid/footer.html","template/simplegrid/header.html","template/simplegrid/simpleGrid-normal.html","template/simplegrid/simpleGrid-simple.html","template/simplegrid/simpleGrid.html"]);
+angular.module("pzutil", ["pzutil.tpls", "pzutil.aditem","pzutil.adpublish","pzutil.download","pzutil.image","pzutil.modal","pzutil.rest","pzutil.retailhelper","pzutil.services","pzutil.simplegrid","pzutil.tree","pzutil.ztemplate"]);
+angular.module("pzutil.tpls", ["template/aditem/aditem.tpl.html","template/adpublish/adpublish_grid.tpl.html","template/adpublish/adpublish_list.tpl.html","template/adpublish/adpublish_slide.tpl.html","template/modal/modal-form.html","template/modal/modal.html","template/modal/wait.html","template/simplegrid/export.html","template/simplegrid/footer.html","template/simplegrid/header.html","template/simplegrid/simpleGrid-normal.html","template/simplegrid/simpleGrid-simple.html","template/simplegrid/simpleGrid.html"]);
 /**
  * Created by gordon on 2014/5/26.
  */
@@ -126,6 +126,98 @@ angular.module('pzutil.adpublish',[])
         }
     }]);
 /**
+ * Created by gordon on 2014/11/3.
+ */
+angular.module('pzutil.download', []).
+    factory('downloadHelper', ['$http','$q',
+        function($http,$q){
+            var service = { };
+            service.downloadFile = function(httpPath,method,data) {
+                var deferred = $q.defer();
+                // Use an arraybuffer
+                var params = { responseType: 'arraybuffer' };
+                params.data = data;
+                $http[method](httpPath, params)
+                    .success( function(data, status, headers) {
+                        var octetStreamMime = 'application/octet-stream';
+                        var success = false;
+                        // Get the headers
+                        headers = headers();
+                        // Get the filename from the x-filename header or default to "download.bin"
+                        var filename = headers['x-filename'] || 'download.bin';
+                        // Determine the content type from the header or default to "application/octet-stream"
+                        var contentType = headers['content-type'] || octetStreamMime;
+                        try
+                        {
+                            // Try using msSaveBlob if supported
+                            console.log("Trying saveBlob method ...");
+                            var blob = new Blob([data], { type: contentType });
+                            if(navigator.msSaveBlob)
+                                navigator.msSaveBlob(blob, filename);
+                            else {
+                                // Try using other saveBlob implementations, if available
+                                var saveBlob = navigator.webkitSaveBlob || navigator.mozSaveBlob || navigator.saveBlob;
+                                if(saveBlob === undefined) throw "Not supported";
+                                saveBlob(blob, filename);
+                            }
+                            console.log("saveBlob succeeded");
+                            success = true;
+                            deferred.resolve(filename);
+                        } catch(ex)
+                        {
+                            console.log("saveBlob method failed with the following exception:");
+                            console.log(ex);
+                        }
+
+                        if(!success)
+                        {
+                            // Get the blob url creator
+                            var urlCreator = window.URL || window.webkitURL || window.mozURL || window.msURL;
+                            if(urlCreator)
+                            {
+                                // Try to use a download link
+                                var link = document.createElement('a');
+                                if('download' in link)
+                                {
+                                    // Try to simulate a click
+                                    try
+                                    {
+                                        // Prepare a blob URL
+                                        console.log("Trying download link method with simulated click ...");
+                                        var blob = new Blob([data], { type: contentType });
+                                        var url = urlCreator.createObjectURL(blob);
+                                        link.setAttribute('href', url);
+
+                                        // Set the download attribute (Supported in Chrome 14+ / Firefox 20+)
+                                        link.setAttribute("download", filename);
+
+                                        // Simulate clicking the download link
+                                        var event = document.createEvent('MouseEvents');
+                                        event.initMouseEvent('click', true, true, window, 1, 0, 0, 0, 0, false, false, false, false, 0, null);
+                                        link.dispatchEvent(event);
+                                        console.log("Download link method with simulated click succeeded");
+                                        success = true;
+                                        deferred.resolve(filename);
+
+                                    } catch(ex) {
+                                        console.log("Download link method with simulated click failed with the following exception:");
+                                        console.log(ex);
+                                        deferred.reject( "Download link method with simulated click failed with the following exception:: " + ex);
+                                    }
+                                }
+
+                            }
+                        }
+                    })
+                    .error(function(data, status) {
+                        console.log("Request failed with status: " + status);
+                        deferred.reject( "Request failed with status: " + status);
+                    });
+                return deferred.promise;
+            };
+            return service;
+        }])
+/**
  * Created by s2k on 14-6-8.
  */
 angular.module('pzutil.image', [])
@@ -190,7 +282,6 @@ angular.module('pzutil.modal', [])
     }])
     .controller('crudWaitCtrl', [ '$scope', '$modalInstance','msg',function( $scope, $modalInstance,msg) {
         $scope.msg = msg;
-
 }]);
 /**
  * Created by gordon on 2014/5/26.
@@ -384,8 +475,73 @@ angular.module('pzutil.simplegrid', ['pzutil.services','pzutil.modal'])
         }
         return factory;
     }])
-    .directive('simpleGrid', ['sgColumn', 'breadcrumbs', 'localizedMessages','crudWait', '$modal',
-        function (sgColumn, breadcrumbs, localizedMessages,crudWait,$modal) {
+    .factory('simpleGridExport', ['$modal', '$location','$q','zTreeHelper', function($modal,zrest,$q,zTreeHelper){
+        var service = {
+
+            export : function(columns, data, docTitle)
+            {
+                var deferred = $q.defer();
+                var  modalInstance = $modal.open({
+                    templateUrl: "template/simplegrid/export.html",
+                    controller: "simpleGridExportCtrl",
+                    resolve: {
+                        docTitle: function(){return docTitle},
+                        columns: function(){
+                            var cols = [];
+                            _(columns).forEach(function(i){
+                                cols.push({name: i.name, title: i.$getText()});
+                            });
+                            return cols;
+                        },
+                        data: function(){
+                            var rows = [];
+                            _(data).forEach(function(i){
+                                var o = {};
+                                _(columns).forEach(function(c){
+                                    o[i.name] = c.$getValue(i);
+                                });
+                            });
+                        }
+                    }
+                });
+                //{selectAllStores:false,selectedStores:[],allStores:stores};
+                modalInstance.result.then(function (r) {
+                    r.selectedStores = service.calcStoreSelected(r.selectedStores,r.allStores);
+                    deferred.resolve(r);
+                }, function () {
+                    deferred.reject();
+                });
+                return deferred.promise;
+            }
+        };
+        return service;
+    }])
+    .controller('simpleGridExportCtrl', [ '$scope', '$modalInstance','columns','data','docTitle','downloadHelper',
+        function( $scope, $modalInstance,columns,data,docTitle,downloadHelper) {
+            $scope.item = {};
+            $scope.columns = columns;
+            $scope.data = data;
+            $scope.heading = function() {
+                return localizedMessages.get('common.storeselect') + (docTitle || '');
+            };
+            $scope.ok = function () {
+                var p = {
+                    columns : $scope.columns,
+                    data : $scope.data,
+                    format: $scope.item.format,
+                    title : docTitle
+                };
+                downloadHelper.downloadFile("/pzclient/todocument", "post", p)
+                    .then(function(i){
+                        $modalInstance.close();
+                    });
+            };
+            $scope.cancel = function () {
+                $modalInstance.dismiss('cancel');
+            };
+        }])
+    .directive('simpleGrid', ['sgColumn', 'breadcrumbs', 'localizedMessages','crudWait', '$modal','simpleGridExport',
+        function (sgColumn, breadcrumbs, localizedMessages,crudWait,$modal,simpleGridExport) {
             return {
                 restrict:'E',
                 replace:true,
@@ -468,6 +624,9 @@ angular.module('pzutil.simplegrid', ['pzutil.services','pzutil.modal'])
                     };
                     $scope.sortGrid(true);
 
+                    $scope.export = function(){
+                        simpleGridExport.export($scope.columns, $scope.data, "export")
+                    };
                     if ($attrs.gridHeight)
                         $scope.scrollStyle = "height:" + $attrs.gridHeight +";overflow-y:auto";
                     else
@@ -938,6 +1097,21 @@ angular.module("template/modal/wait.html", []).run(["$templateCache", function($
     "</div>");
 }]);
 
+angular.module("template/simplegrid/export.html", []).run(["$templateCache", function($templateCache) {
+  $templateCache.put("template/simplegrid/export.html",
+    "<crud-modal>\n" +
+    "    <form name=\"form\"  class=\"form-horizontal\">\n" +
+    "        <div class=\"form-group\">\n" +
+    "            <z-input res=\"common.Export.format\" cols=\"2,4\" for=\"format\" type=\"select\" z-options=\"t.id as t.name for t in formats| orderBy:'name'\" required></z-input>\n" +
+    "        </div>\n" +
+    "        <div class=\"form-group\">\n" +
+    "            <z-input res=\"common.Export.groupby\" cols=\"2,10\" for=\"groupby\" type=\"select\" z-options=\"t.id as t.name for t in groupbys| orderBy:'name'\"></z-input>\n" +
+    "        </div>\n" +
+    "    </form>\n" +
+    "</crud-modal>\n" +
+    "");
+}]);
+
 angular.module("template/simplegrid/footer.html", []).run(["$templateCache", function($templateCache) {
   $templateCache.put("template/simplegrid/footer.html",
     "<div class=\"row\">\n" +
@@ -955,9 +1129,10 @@ angular.module("template/simplegrid/footer.html", []).run(["$templateCache", fun
 
 angular.module("template/simplegrid/header.html", []).run(["$templateCache", function($templateCache) {
   $templateCache.put("template/simplegrid/header.html",
-    "<div class=\"row well well-sm sg-gridSearch\"  ng-if=\"sgModalSearchTemplate\">\n" +
-    "    <button type=\"button\" class=\"btn btn-success\"  ng-click=\"modalSearch()\"><i class=\"fa fa-search\"></i> {{'common.searchAdv' | i18n}}</button>\n" +
-    "    <button type=\"button\" class=\"btn btn-default\"  ng-click=\"modalSearchReset()\"><i class=\"fa fa-undo\"></i> {{'common.Reset' | i18n}}</button>\n" +
+    "<div class=\"row well well-sm sg-gridSearch\" >\n" +
+    "    <button type=\"button\" class=\"btn btn-success\"  ng-click=\"modalSearch()\" ng-if=\"sgModalSearchTemplate\"><i class=\"fa fa-search\"></i> {{'common.searchAdv' | i18n}}</button>\n" +
+    "    <button type=\"button\" class=\"btn btn-default\"  ng-click=\"modalSearchReset()\" ng-if=\"sgModalSearchTemplate\"><i class=\"fa fa-undo\"></i> {{'common.Reset' | i18n}}</button>\n" +
+    "    <button type=\"button\" class=\"btn btn-default\"  ng-click=\"export()\"><i class=\"fa-file-excel-o\"></i> {{'common.Export' | i18n}}</button>\n" +
     "    <button type=\"button\" class=\"btn btn-default pull-right\"  ng-click=\"checkAll()\"><i class=\"fa fa-check\"></i> {{'common.checkAll' | i18n}}</button>\n" +
     "    <span class=\"pull-right\" style=\"margin-right: 10px\"><small>To select, press <kbd>CTRL</kbd> key to click</small></span>\n" +
     "</div>\n" +
