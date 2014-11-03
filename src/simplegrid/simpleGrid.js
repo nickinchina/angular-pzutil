@@ -84,7 +84,10 @@ angular.module('pzutil.simplegrid', ['pzutil.services','pzutil.modal'])
                         columns: function(){
                             var cols = [];
                             _(columns).forEach(function(i){
-                                cols.push({name: i.name, title: i.$getTitle()});
+                                cols.push({
+                                    name: i.name,
+                                    title: i.$getTitle()
+                                });
                             });
                             return cols;
                         },
@@ -116,6 +119,18 @@ angular.module('pzutil.simplegrid', ['pzutil.services','pzutil.modal'])
             $scope.item = {};
             $scope.columns = columns;
             $scope.data = data;
+            $scope.groupbys = [];
+            _(columns).forEach(function(i){
+                $scope.groupbys.push({
+                    id: i.name,
+                    name: i.title
+                })
+            })
+            $scope.formats = [
+                {id:"xlsx", name:"xlsx"},
+                {id:"pdf", name:"pdf"},
+                {id:"csv", name:"csv"}
+            ];
             $scope.heading = function() {
                 return localizedMessages.get('common.storeselect') + (docTitle || '');
             };
