@@ -126,7 +126,10 @@ angular.module('pzutil.simplegrid', ['pzutil.services','pzutil.modal'])
                     format: $scope.item.format,
                     title : docTitle
                 };
-                $modalInstance.close($scope.item);
+                downloadHelper.downloadFile("/pzclient/todocument", "post", p)
+                    .then(function(i){
+                        $modalInstance.close();
+                    });
             };
             $scope.cancel = function () {
                 $modalInstance.dismiss('cancel');
