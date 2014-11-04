@@ -133,7 +133,7 @@ angular.module('pzutil.simplegrid', ['pzutil.services','pzutil.modal'])
                 {id:"csv", name:"csv"}
             ];
             $scope.heading = function() {
-                return localizedMessages.get('common.storeselect') + (docTitle || '');
+                return docTitle || '';
             };
             $scope.ok = function () {
                 var p = {
@@ -142,7 +142,7 @@ angular.module('pzutil.simplegrid', ['pzutil.services','pzutil.modal'])
                     format: $scope.item.format,
                     title : docTitle
                 };
-                downloadHelper.downloadFile("http://object.s2konline.net/excel", "post", p)
+                downloadHelper.downloadFile("/excel", "post", p)
                     .then(function(i){
                         $modalInstance.close();
                     },function(e){
@@ -161,7 +161,7 @@ angular.module('pzutil.simplegrid', ['pzutil.services','pzutil.modal'])
                 replace:true,
                 scope: { data:"=sgData", listItems:"=",  sgAddObject:"&", sgSortOptions:"=", itemtemplate:"=sgTemplate",sgColumns:"@",sgDelObject:"&", sgAllowDel:"@",
                     sgNoPager:'=', sgOnClick:'&', sgLookup:"&", sgGlobalSearch:"@",sgPageSize:"@" ,sgOptions:"=", sgOnChange:"&", sgLookupTitle:"&",
-                    sgCheckColumn:"@", sgCustomSearch:"&", sgModalSearchTemplate:"=", sgModalSearchController:"=", sgModalSearchResolve:"=", sgModalSearch:"&"},
+                    sgCheckColumn:"@", sgCustomSearch:"&", sgModalSearchTemplate:"=", sgModalSearchController:"=", sgModalSearchResolve:"=", sgModalSearch:"&", sgExportTitle:"@"},
                 templateUrl: function($element, $attrs) {
                     var t = $attrs.sgTemplate;
                     if (t) {
@@ -239,7 +239,9 @@ angular.module('pzutil.simplegrid', ['pzutil.services','pzutil.modal'])
                     $scope.sortGrid(true);
 
                     $scope.export = function(){
-                        simpleGridExport.export($scope.columns, $scope.data, "export")
+                        var docTitle = localizedMessages('common.Export');
+                        if ($scope.sgExportTitle) docTitle += " " + localizedMessages($scope.sgExportTitle);
+                        simpleGridExport.export($scope.columns, $scope.listItems,$scope.sgExportTitle);
                     };
                     if ($attrs.gridHeight)
                         $scope.scrollStyle = "height:" + $attrs.gridHeight +";overflow-y:auto";
