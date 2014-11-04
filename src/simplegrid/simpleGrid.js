@@ -98,7 +98,9 @@ angular.module('pzutil.simplegrid', ['pzutil.services','pzutil.modal'])
                                 _(columns).forEach(function(c){
                                     o[c.name] = c.$getValue(i);
                                 });
+                                rows.push(o);
                             });
+                            return rows;
                         }
                     }
                 });
