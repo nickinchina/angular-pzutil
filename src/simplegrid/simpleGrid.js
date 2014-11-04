@@ -139,6 +139,7 @@ angular.module('pzutil.simplegrid', ['pzutil.services','pzutil.modal'])
                     columns : $scope.columns,
                     data : $scope.data,
                     format: $scope.item.format,
+                    groupby: $scope.item.groupby,
                     title : docTitle
                 };
                 downloadHelper.downloadFile("/pzobject/excel", "post", p)

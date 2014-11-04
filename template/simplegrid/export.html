@@ -4,7 +4,7 @@
             <z-input res="common.Export.format" cols="2,6" for="format" type="select" z-options="t.id as t.name for t in formats| orderBy:'name'" required></z-input>
         </div>
         <div class="form-group">
-            <z-input res="common.Export.groupby" cols="2,6" for="groupby" type="select" z-options="t.id as t.name for t in groupbys| orderBy:'name'"></z-input>
+            <z-input res="common.Export.groupby" cols="2,6" for="groupby" type="mselect" data="groupbys"></z-input>
         </div>
     </form>
 </crud-modal>
