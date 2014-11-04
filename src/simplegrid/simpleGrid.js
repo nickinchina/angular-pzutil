@@ -142,7 +142,7 @@ angular.module('pzutil.simplegrid', ['pzutil.services','pzutil.modal'])
                     format: $scope.item.format,
                     title : docTitle
                 };
-                downloadHelper.downloadFile("http://localhost:9000/excel", "post", p)
+                downloadHelper.downloadFile("http://object.s2konline.net/excel", "post", p)
                     .then(function(i){
                         $modalInstance.close();
                     },function(e){
