@@ -523,8 +523,8 @@ angular.module('pzutil.simplegrid', ['pzutil.services','pzutil.modal'])
         };
         return service;
     }])
-    .controller('simpleGridExportCtrl', [ '$scope', '$modalInstance','columns','data','docTitle','downloadHelper','localizedMessages',
-        function( $scope, $modalInstance,columns,data,docTitle,downloadHelper,localizedMessages) {
+    .controller('simpleGridExportCtrl', [ '$scope', '$modalInstance','columns','data','docTitle','downloadHelper','localizedMessages','browser',
+        function( $scope, $modalInstance,columns,data,docTitle,downloadHelper,localizedMessages,browser) {
             $scope.item = {};
             $scope.columns = columns;
             $scope.data = data;
@@ -540,22 +540,26 @@ angular.module('pzutil.simplegrid', ['pzutil.services','pzutil.modal'])
                 {id:"csv", name:"csv"}
             ];
             $scope.heading = function() {
-                return docTitle || '';
+                return localizedMessages.get('common.Export') + ' ' + (docTitle || '');
             };
             $scope.ok = function () {
                 var p = {
                     columns : $scope.columns,
                     data : $scope.data,
                     format: $scope.item.format,
+                    groupby: $scope.item.groupby,
                     title : docTitle
                 };
-                downloadHelper.downloadFile("/pzobject/excel", "post", p)
-                    .then(function(i){
-                        $modalInstance.close();
-                    },function(e){
-                        console.log(e);
-                        alert(e.message);
-                    });
+                if (browser.s2kagent)
+                    alert('__excel'+ JSON.stringify(p));
+                else
+                    downloadHelper.downloadFile("/pzobject/excel", "post", p)
+                        .then(function(i){
+                            $modalInstance.close();
+                        },function(e){
+                            console.log(e);
+                            alert(e.message);
+                        });
             };
             $scope.cancel = function () {
                 $modalInstance.dismiss('cancel');
@@ -646,8 +650,11 @@ angular.module('pzutil.simplegrid', ['pzutil.services','pzutil.modal'])
                     $scope.sortGrid(true);
 
                     $scope.export = function(){
-                        var docTitle = localizedMessages.get('common.Export');
-                        if ($scope.sgExportTitle) docTitle += " " + localizedMessages.get($scope.sgExportTitle);
+                        var docTitle;
+                        if ($scope.sgExportTitle)
+                            docTitle = localizedMessages.get($scope.sgExportTitle);
+                        else
+                            docTitle = "Table";
                         simpleGridExport.export($scope.columns, $scope.listItems,docTitle);
                     };
                     if ($attrs.gridHeight)
@@ -1128,7 +1135,7 @@ angular.module("template/simplegrid/export.html", []).run(["$templateCache", fun
     "            <z-input res=\"common.Export.format\" cols=\"2,6\" for=\"format\" type=\"select\" z-options=\"t.id as t.name for t in formats| orderBy:'name'\" required></z-input>\n" +
     "        </div>\n" +
     "        <div class=\"form-group\">\n" +
-    "            <z-input res=\"common.Export.groupby\" cols=\"2,6\" for=\"groupby\" type=\"select\" z-options=\"t.id as t.name for t in groupbys| orderBy:'name'\"></z-input>\n" +
+    "            <z-input res=\"common.Export.groupby\" cols=\"2,6\" for=\"groupby\" type=\"mselect\" data=\"groupbys\"></z-input>\n" +
     "        </div>\n" +
     "    </form>\n" +
     "</crud-modal>\n" +
