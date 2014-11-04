@@ -115,8 +115,8 @@ angular.module('pzutil.simplegrid', ['pzutil.services','pzutil.modal'])
         };
         return service;
     }])
-    .controller('simpleGridExportCtrl', [ '$scope', '$modalInstance','columns','data','docTitle','downloadHelper','localizedMessages',
-        function( $scope, $modalInstance,columns,data,docTitle,downloadHelper,localizedMessages) {
+    .controller('simpleGridExportCtrl', [ '$scope', '$modalInstance','columns','data','docTitle','downloadHelper','localizedMessages','browser',
+        function( $scope, $modalInstance,columns,data,docTitle,downloadHelper,localizedMessages,browser) {
             $scope.item = {};
             $scope.columns = columns;
             $scope.data = data;
@@ -142,13 +142,16 @@ angular.module('pzutil.simplegrid', ['pzutil.services','pzutil.modal'])
                     groupby: $scope.item.groupby,
                     title : docTitle
                 };
-                downloadHelper.downloadFile("/pzobject/excel", "post", p)
-                    .then(function(i){
-                        $modalInstance.close();
-                    },function(e){
-                        console.log(e);
-                        alert(e.message);
-                    });
+                if (browser.s2kagent)
+                    alert('__excel'+ JSON.stringify(p));
+                else
+                    downloadHelper.downloadFile("/pzobject/excel", "post", p)
+                        .then(function(i){
+                            $modalInstance.close();
+                        },function(e){
+                            console.log(e);
+                            alert(e.message);
+                        });
             };
             $scope.cancel = function () {
                 $modalInstance.dismiss('cancel');
