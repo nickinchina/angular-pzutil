@@ -239,8 +239,8 @@ angular.module('pzutil.simplegrid', ['pzutil.services','pzutil.modal'])
                     $scope.sortGrid(true);
 
                     $scope.export = function(){
-                        var docTitle = localizedMessages('common.Export');
-                        if ($scope.sgExportTitle) docTitle += " " + localizedMessages($scope.sgExportTitle);
+                        var docTitle = localizedMessages.get('common.Export');
+                        if ($scope.sgExportTitle) docTitle += " " + localizedMessages.get($scope.sgExportTitle);
                         simpleGridExport.export($scope.columns, $scope.listItems,$scope.sgExportTitle);
                     };
                     if ($attrs.gridHeight)
