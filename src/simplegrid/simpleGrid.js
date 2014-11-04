@@ -128,8 +128,7 @@ angular.module('pzutil.simplegrid', ['pzutil.services','pzutil.modal'])
                 })
             })
             $scope.formats = [
-                {id:"xlsx", name:"xlsx"},
-                {id:"pdf", name:"pdf"},
+                {id:"xlsx", name:"xlsx"}, //{id:"pdf", name:"pdf"},
                 {id:"csv", name:"csv"}
             ];
             $scope.heading = function() {
@@ -241,7 +240,7 @@ angular.module('pzutil.simplegrid', ['pzutil.services','pzutil.modal'])
                     $scope.export = function(){
                         var docTitle = localizedMessages.get('common.Export');
                         if ($scope.sgExportTitle) docTitle += " " + localizedMessages.get($scope.sgExportTitle);
-                        simpleGridExport.export($scope.columns, $scope.listItems,$scope.sgExportTitle);
+                        simpleGridExport.export($scope.columns, $scope.listItems,docTitle);
                     };
                     if ($attrs.gridHeight)
                         $scope.scrollStyle = "height:" + $attrs.gridHeight +";overflow-y:auto";
