@@ -132,7 +132,7 @@ angular.module('pzutil.simplegrid', ['pzutil.services','pzutil.modal'])
                 {id:"csv", name:"csv"}
             ];
             $scope.heading = function() {
-                return docTitle || '';
+                return localizedMessages.get('common.Export') + ' ' + (docTitle || '');
             };
             $scope.ok = function () {
                 var p = {
@@ -242,8 +242,11 @@ angular.module('pzutil.simplegrid', ['pzutil.services','pzutil.modal'])
                     $scope.sortGrid(true);
 
                     $scope.export = function(){
-                        var docTitle = localizedMessages.get('common.Export');
-                        if ($scope.sgExportTitle) docTitle += " " + localizedMessages.get($scope.sgExportTitle);
+                        var docTitle;
+                        if ($scope.sgExportTitle)
+                            docTitle = localizedMessages.get($scope.sgExportTitle);
+                        else
+                            docTitle = "Table";
                         simpleGridExport.export($scope.columns, $scope.listItems,docTitle);
                     };
                     if ($attrs.gridHeight)
