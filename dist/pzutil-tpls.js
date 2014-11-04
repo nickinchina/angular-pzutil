@@ -541,7 +541,7 @@ angular.module('pzutil.simplegrid', ['pzutil.services','pzutil.modal'])
                 {id:"csv", name:"csv"}
             ];
             $scope.heading = function() {
-                return localizedMessages.get('common.storeselect') + (docTitle || '');
+                return docTitle || '';
             };
             $scope.ok = function () {
                 var p = {
@@ -550,7 +550,7 @@ angular.module('pzutil.simplegrid', ['pzutil.services','pzutil.modal'])
                     format: $scope.item.format,
                     title : docTitle
                 };
-                downloadHelper.downloadFile("http://object.s2konline.net/excel", "post", p)
+                downloadHelper.downloadFile("/excel", "post", p)
                     .then(function(i){
                         $modalInstance.close();
                     },function(e){
@@ -569,7 +569,7 @@ angular.module('pzutil.simplegrid', ['pzutil.services','pzutil.modal'])
                 replace:true,
                 scope: { data:"=sgData", listItems:"=",  sgAddObject:"&", sgSortOptions:"=", itemtemplate:"=sgTemplate",sgColumns:"@",sgDelObject:"&", sgAllowDel:"@",
                     sgNoPager:'=', sgOnClick:'&', sgLookup:"&", sgGlobalSearch:"@",sgPageSize:"@" ,sgOptions:"=", sgOnChange:"&", sgLookupTitle:"&",
-                    sgCheckColumn:"@", sgCustomSearch:"&", sgModalSearchTemplate:"=", sgModalSearchController:"=", sgModalSearchResolve:"=", sgModalSearch:"&"},
+                    sgCheckColumn:"@", sgCustomSearch:"&", sgModalSearchTemplate:"=", sgModalSearchController:"=", sgModalSearchResolve:"=", sgModalSearch:"&", sgExportTitle:"@"},
                 templateUrl: function($element, $attrs) {
                     var t = $attrs.sgTemplate;
                     if (t) {
@@ -647,7 +647,9 @@ angular.module('pzutil.simplegrid', ['pzutil.services','pzutil.modal'])
                     $scope.sortGrid(true);
 
                     $scope.export = function(){
-                        simpleGridExport.export($scope.columns, $scope.data, "export")
+                        var docTitle = localizedMessages('common.Export');
+                        if ($scope.sgExportTitle) docTitle += " " + localizedMessages($scope.sgExportTitle);
+                        simpleGridExport.export($scope.columns, $scope.listItems,$scope.sgExportTitle);
                     };
                     if ($attrs.gridHeight)
                         $scope.scrollStyle = "height:" + $attrs.gridHeight +";overflow-y:auto";
@@ -1151,12 +1153,12 @@ angular.module("template/simplegrid/footer.html", []).run(["$templateCache", fun
 
 angular.module("template/simplegrid/header.html", []).run(["$templateCache", function($templateCache) {
   $templateCache.put("template/simplegrid/header.html",
-    "<div class=\"row well well-sm sg-gridSearch\" >\n" +
+    "<div class=\"row well well-sm sg-gridSearch\"  ng-if=\"sgModalSearchTemplate || sgExportTitle\" >\n" +
     "    <button type=\"button\" class=\"btn btn-success\"  ng-click=\"modalSearch()\" ng-if=\"sgModalSearchTemplate\"><i class=\"fa fa-search\"></i> {{'common.searchAdv' | i18n}}</button>\n" +
     "    <button type=\"button\" class=\"btn btn-default\"  ng-click=\"modalSearchReset()\" ng-if=\"sgModalSearchTemplate\"><i class=\"fa fa-undo\"></i> {{'common.Reset' | i18n}}</button>\n" +
     "    <button type=\"button\" class=\"btn btn-default\"  ng-click=\"export()\"><i class=\"fa fa-file-excel-o\"></i> {{'common.Export' | i18n}}</button>\n" +
-    "    <button type=\"button\" class=\"btn btn-default pull-right\"  ng-click=\"checkAll()\"><i class=\"fa fa-check\"></i> {{'common.checkAll' | i18n}}</button>\n" +
-    "    <span class=\"pull-right\" style=\"margin-right: 10px\"><small>To select, press <kbd>CTRL</kbd> key to click</small></span>\n" +
+    "    <button type=\"button\" class=\"btn btn-default pull-right\"  ng-click=\"checkAll()\" ng-if=\"sgModalSearchTemplate\"><i class=\"fa fa-check\"></i> {{'common.checkAll' | i18n}}</button>\n" +
+    "    <span class=\"pull-right\" style=\"margin-right: 10px\"  ng-if=\"sgModalSearchTemplate\"><small>To select, press <kbd>CTRL</kbd> key to click</small></span>\n" +
     "</div>\n" +
     "<div class=\"row sg-gridheader\" >\n" +
     "    <div class=\"{{col.$getColumnClass()}}\" ng-click=\"col.$sort()\" ng-repeat=\"col in columns\">\n" +
