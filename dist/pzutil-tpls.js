@@ -512,7 +512,6 @@ angular.module('pzutil.simplegrid', ['pzutil.services','pzutil.modal'])
                 });
                 //{selectAllStores:false,selectedStores:[],allStores:stores};
                 modalInstance.result.then(function (r) {
-                    r.selectedStores = service.calcStoreSelected(r.selectedStores,r.allStores);
                     deferred.resolve(r);
                 }, function () {
                     deferred.reject();
@@ -549,7 +548,7 @@ angular.module('pzutil.simplegrid', ['pzutil.services','pzutil.modal'])
                     format: $scope.item.format,
                     title : docTitle
                 };
-                downloadHelper.downloadFile("/pzclient/todocument", "post", p)
+                downloadHelper.downloadFile("http://localhost:9000/excel", "post", p)
                     .then(function(i){
                         $modalInstance.close();
                     },function(e){
