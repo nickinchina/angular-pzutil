@@ -186,7 +186,7 @@ angular.module('pzutil.simplegrid', ['pzutil.services','pzutil.modal'])
                            if (c.name != fieldName)
                                c.sortOrder = undefined;
                        });
-                       console.log('sortIt',$scope.columns);
+                       console.log('sortIt',fieldName, $scope.columns);
                        $scope.data.sort(function(a,b) {
                            var a1,b1;
                            if (!a.hasOwnProperty(sortField)){
