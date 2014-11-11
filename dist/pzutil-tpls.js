@@ -594,7 +594,6 @@ angular.module('pzutil.simplegrid', ['pzutil.services','pzutil.modal'])
                            if (c.name != fieldName)
                                c.sortOrder = undefined;
                        });
-                       console.log('sortIt',fieldName, $scope.columns);
                        $scope.data.sort(function(a,b) {
                            var a1,b1;
                            if (!a.hasOwnProperty(sortField)){
@@ -648,7 +647,7 @@ angular.module('pzutil.simplegrid', ['pzutil.services','pzutil.modal'])
                             }
                         }
                     };
-                    $scope.sortGrid(true);
+                    //$scope.sortGrid(true);
 
                     $scope.export = function(){
                         var docTitle;
@@ -815,7 +814,9 @@ angular.module('pzutil.simplegrid', ['pzutil.services','pzutil.modal'])
                         $scope.changed(pageSetting.currentPage);
                     });
 
-                    sortIt($scope.sgSortField || $scope.columns[0].name );
+                    var col = _.find($scope.columns, {name: $scope.sgSortField}) || $scope.columns[0];
+                    col.sortOrder = true;
+                    $scope.sorter(col);
                 }
             };
     }]);
