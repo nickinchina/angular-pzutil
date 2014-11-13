@@ -180,7 +180,7 @@ angular.module('pzutil.simplegrid', ['pzutil.services','pzutil.modal'])
                         return 'template/simplegrid/simpleGrid-normal.html';
                 },
                 link: function($scope, $element, $attrs, $controller) {
-                   var sortIt = function(fieldName, sortOrder, sortField) {
+                   var sortIt = function(fieldName, sortOrder, sortField, useLookup) {
                        var sortField = sortField || fieldName;
                        _($scope.columns).forEach(function(c){
                            if (c.name != fieldName)
@@ -188,9 +188,14 @@ angular.module('pzutil.simplegrid', ['pzutil.services','pzutil.modal'])
                        });
                        $scope.data.sort(function(a,b) {
                            var a1,b1;
-                           a1 = $scope.myLookup ?$scope.myLookup({col:sortField,item: a}): a[sortField];
-                           b1 = $scope.myLookup ?$scope.myLookup({col:sortField,item: b}):b[sortField];
-
+                           if (!a.hasOwnProperty(sortField) || col.useLookup){
+                               a1 = $scope.myLookup ?$scope.myLookup({col:sortField,item: a}):undefined;
+                               b1 = $scope.myLookup ?$scope.myLookup({col:sortField,item: b}):undefined;
+                           }
+                           else {
+                               a1 = a[sortField];
+                               b1 = b[sortField];
+                           };
                            var r;
                            if (a1==null)
                                r = -1;
@@ -207,7 +212,7 @@ angular.module('pzutil.simplegrid', ['pzutil.services','pzutil.modal'])
                        });
                    }
                    $scope.sorter = function(col) {
-                       sortIt(col.name, col.sortOrder, col.sortField);
+                       sortIt(col.name, col.sortOrder, col.sortField, col.useLookup);
                     };
                     $scope.AddObject = function(){
                         $scope.data.push(sgColumn.New($scope.sgAddObject()));
