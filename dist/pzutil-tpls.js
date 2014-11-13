@@ -2,7 +2,7 @@
  * pzutil
  * 
 
- * Version: 0.0.18 - 2014-11-11
+ * Version: 0.0.18 - 2014-11-13
  * License: MIT
  */
 angular.module("pzutil", ["pzutil.tpls", "pzutil.aditem","pzutil.adpublish","pzutil.download","pzutil.image","pzutil.modal","pzutil.rest","pzutil.retailhelper","pzutil.services","pzutil.simplegrid","pzutil.tree","pzutil.ztemplate"]);
@@ -596,14 +596,9 @@ angular.module('pzutil.simplegrid', ['pzutil.services','pzutil.modal'])
                        });
                        $scope.data.sort(function(a,b) {
                            var a1,b1;
-                           if (!a.hasOwnProperty(sortField)){
-                               a1 = $scope.myLookup ?$scope.myLookup({col:sortField,item: a}):undefined;
-                               b1 = $scope.myLookup ?$scope.myLookup({col:sortField,item: b}):undefined;
-                           }
-                           else {
-                               a1 = a[sortField];
-                               b1 = b[sortField];
-                           };
+                           a1 = $scope.myLookup ?$scope.myLookup({col:sortField,item: a}): a[sortField];
+                           b1 = $scope.myLookup ?$scope.myLookup({col:sortField,item: b}):b[sortField];
+
                            var r;
                            if (a1==null)
                                r = -1;
@@ -1160,7 +1155,7 @@ angular.module("template/simplegrid/footer.html", []).run(["$templateCache", fun
     "                    max-size=\"5\" class=\"pagination-sm\" boundary-links=\"true\"  on-select-page=\"changed(page, true)\" />\n" +
     "    </div>\n" +
     "    <div class=\"col-md-3 sg-footer\">\n" +
-    "        <strong><a href=\"#\" editable-number=\"pageSetting.pageSize\" e-min=\"20\" e-max=\"200\" onaftersave=\"changed(1)\">\n" +
+    "        <strong><a href=\"#\" editable-number=\"pageSetting.pageSize\" e-min=\"20\" e-max=\"400\" onaftersave=\"changed(1)\">\n" +
     "            {{footer}}</a> </strong>\n" +
     "    </div>\n" +
     "</div>");
