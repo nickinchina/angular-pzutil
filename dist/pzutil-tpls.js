@@ -1228,7 +1228,7 @@ angular.module("template/simplegrid/simpleGrid-simple.html", []).run(["$template
 
 angular.module("template/simplegrid/simpleGrid-virtual.html", []).run(["$templateCache", function($templateCache) {
   $templateCache.put("template/simplegrid/simpleGrid-virtual.html",
-    "<div class=\"sg-grid\">\n" +
+    "<div class=\"sg-grid\" style=\"overflow: hidden\">\n" +
     "    <ng-include src=\"'template/simplegrid/header.html'\"></ng-include>\n" +
     "    <div style=\"{{scrollStyle}}\">\n" +
     "        <div sf-virtual-repeat=\"item in items\" class=\"row sg-gridrow\" ng-click=\"clickRow(item,$event)\" ng-class=\"{true: 'sg-gridrow-active'}[item.$__selected]\" >\n" +

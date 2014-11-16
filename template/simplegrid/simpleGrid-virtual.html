@@ -1,4 +1,4 @@
-<div class="sg-grid">
+<div class="sg-grid" style="overflow: hidden">
     <ng-include src="'template/simplegrid/header.html'"></ng-include>
     <div style="{{scrollStyle}}">
         <div sf-virtual-repeat="item in items" class="row sg-gridrow" ng-click="clickRow(item,$event)" ng-class="{true: 'sg-gridrow-active'}[item.$__selected]" >
