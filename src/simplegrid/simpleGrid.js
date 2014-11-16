@@ -370,8 +370,8 @@ angular.module('pzutil.simplegrid', ['pzutil.services','pzutil.modal'])
                             $scope.listItems.length = 0;
                             $scope.listItems.push.apply($scope.listItems, data);
                         }
-                        console.log($scope.sgVirtual, data);
-                        var l = $scope.sgVirtual ? data : _.take(_.rest(data, (page - 1) * ps), ps);
+
+                        var l = $scope.sgVirtual ? angular.copy(data) : _.take(_.rest(data, (page - 1) * ps), ps);
                         var loader = function(){
                             if ($scope.items) {
                                 $scope.items.length = 0;
