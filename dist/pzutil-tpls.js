@@ -1230,8 +1230,8 @@ angular.module("template/simplegrid/simpleGrid-virtual.html", []).run(["$templat
   $templateCache.put("template/simplegrid/simpleGrid-virtual.html",
     "<div class=\"sg-grid\">\n" +
     "    <ng-include src=\"'template/simplegrid/header.html'\"></ng-include>\n" +
-    "    <div style=\"{{scrollStyle}}\" vs-repeat>\n" +
-    "        <div ng-repeat=\"item in items\" class=\"row sg-gridrow\" ng-click=\"clickRow(item,$event)\" ng-class=\"{true: 'sg-gridrow-active'}[item.$__selected]\" >\n" +
+    "    <div style=\"{{scrollStyle}}\">\n" +
+    "        <div sf-virtual-repeat=\"item in items\" class=\"row sg-gridrow\" ng-click=\"clickRow(item,$event)\" ng-class=\"{true: 'sg-gridrow-active'}[item.$__selected]\" >\n" +
     "            <div class=\"{{col.$getColumnClass()}}\" ng-repeat=\"col in columns\">\n" +
     "                <i ng-if=\"$first && item.$__selected\" class=\"fa fa-circle\"></i>\n" +
     "                <i ng-if=\"col.bool\" ng-class=\"{true: 'fa fa-check'}[col.$getValue(item)]\"></i>\n" +
