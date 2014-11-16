@@ -662,7 +662,7 @@ angular.module('pzutil.simplegrid', ['pzutil.services','pzutil.modal'])
                         simpleGridExport.export($scope.columns, $scope.listItems,docTitle);
                     };
                     if ($attrs.gridHeight)
-                        $scope.scrollStyle = "height:" + $attrs.gridHeight +";overflow-y:auto";
+                        $scope.scrollStyle = "max-height:" + $attrs.gridHeight +";overflow-y:auto";
                     else
                         $scope.scrollStyle = "";
 
@@ -778,6 +778,7 @@ angular.module('pzutil.simplegrid', ['pzutil.services','pzutil.modal'])
                             $scope.listItems.length = 0;
                             $scope.listItems.push.apply($scope.listItems, data);
                         }
+                        console.log($scope.sgVirtual, data);
                         var l = $scope.sgVirtual ? data : _.take(_.rest(data, (page - 1) * ps), ps);
                         var loader = function(){
                             if ($scope.items) {
