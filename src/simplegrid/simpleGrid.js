@@ -163,7 +163,7 @@ angular.module('pzutil.simplegrid', ['pzutil.services','pzutil.modal'])
                 restrict:'E',
                 replace:true,
                 scope: { data:"=sgData", listItems:"=",  sgAddObject:"&", sgSortOptions:"=", itemtemplate:"=sgTemplate",sgColumns:"@",sgDelObject:"&", sgAllowDel:"@",
-                    sgNoPager:'=', sgOnClick:'&', sgLookup:"&", sgGlobalSearch:"@",sgPageSize:"@" ,sgOptions:"=", sgOnChange:"&", sgLookupTitle:"&",sgSortField:"=",
+                    sgNoPager:'=', sgOnClick:'&', sgLookup:"&", sgGlobalSearch:"@",sgPageSize:"@" ,sgOptions:"=", sgOnChange:"&", sgLookupTitle:"&",sgSortField:"=",sgVirtual:"@",
                     sgCheckColumn:"@", sgCustomSearch:"&", sgModalSearchTemplate:"=", sgModalSearchController:"=", sgModalSearchResolve:"=", sgModalSearch:"&", sgExportTitle:"@"},
                 templateUrl: function($element, $attrs) {
                     var t = $attrs.sgTemplate;
@@ -176,8 +176,12 @@ angular.module('pzutil.simplegrid', ['pzutil.services','pzutil.modal'])
                             return 'template/simplegrid/simpleGrid.html';
                         }
                     }
-                    else
-                        return 'template/simplegrid/simpleGrid-normal.html';
+                    else {
+                        if ($attrs.sgVirtual)
+                            return 'template/simplegrid/simpleGrid-virtual.html';
+                        else
+                            return 'template/simplegrid/simpleGrid-normal.html';
+                    }
                 },
                 link: function($scope, $element, $attrs, $controller) {
                    var sortIt = function(fieldName, sortOrder, sortField, useLookup) {
@@ -366,7 +370,7 @@ angular.module('pzutil.simplegrid', ['pzutil.services','pzutil.modal'])
                             $scope.listItems.length = 0;
                             $scope.listItems.push.apply($scope.listItems, data);
                         }
-                        var l = _.take(_.rest(data, (page - 1) * ps), ps);
+                        var l = $scope.sgVirtual ? data : _.take(_.rest(data, (page - 1) * ps), ps);
                         var loader = function(){
                             if ($scope.items) {
                                 $scope.items.length = 0;
