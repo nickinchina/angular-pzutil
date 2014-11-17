@@ -2,7 +2,7 @@
  * pzutil
  * 
 
- * Version: 0.0.18 - 2014-11-16
+ * Version: 0.0.18 - 2014-11-17
  * License: MIT
  */
 angular.module("pzutil", ["pzutil.tpls", "pzutil.aditem","pzutil.adpublish","pzutil.download","pzutil.image","pzutil.modal","pzutil.rest","pzutil.retailhelper","pzutil.services","pzutil.simplegrid","pzutil.tree","pzutil.ztemplate"]);
@@ -903,21 +903,36 @@ angular.module('pzutil.tree', [])
         };
         var service = {
             updateTreeValue : function(o, propName, treeValue, replace){
-                if (replace)
-                    o[propName] =  treeValue;
-                else {
-                    var v = o[propName];
-                    if (v){
-                        var vArray = v.split(',');
-                        _(treeValue.split(',')).forEach(function(i){
-                            if (vArray.indexOf(i)<0){
-                                vArray.push(i);
-                            }
-                        });
-                        o[propName] =  vArray.join(',');
-                    }
-                    else
+                switch (replace){
+                    case "2":
+                        var v = o[propName];
+                        if (v){
+                            var vArray = v.split(',');
+                            _(treeValue.split(',')).forEach(function(i){
+                                var idx = vArray.indexOf(i);
+                                if (idx>=0){
+                                    vArray.splice(idx, 1);
+                                }
+                            });
+                            o[propName] =  vArray.join(',');
+                        }
+                    case "1":
                         o[propName] =  treeValue;
+                        break;
+                    default:
+                        var v = o[propName];
+                        if (v){
+                            var vArray = v.split(',');
+                            _(treeValue.split(',')).forEach(function(i){
+                                if (vArray.indexOf(i)<0){
+                                    vArray.push(i);
+                                }
+                            });
+                            o[propName] =  vArray.join(',');
+                        }
+                        else
+                            o[propName] =  treeValue;
+                        break;
                 }
             },
             buildTree : function(primary, foreign, foreignKey, recursive, pos)
