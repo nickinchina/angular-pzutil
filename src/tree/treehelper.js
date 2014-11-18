@@ -73,6 +73,7 @@ angular.module('pzutil.tree', [])
                     case "2":
                         var v = o[propName];
                         if (v){
+                            console.log(v, treeValue);
                             var vArray = v.split(',');
                             _(treeValue.split(',')).forEach(function(i){
                                 var idx = vArray.indexOf(i);

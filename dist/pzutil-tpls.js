@@ -2,7 +2,7 @@
  * pzutil
  * 
 
- * Version: 0.0.18 - 2014-11-17
+ * Version: 0.0.18 - 2014-11-18
  * License: MIT
  */
 angular.module("pzutil", ["pzutil.tpls", "pzutil.aditem","pzutil.adpublish","pzutil.download","pzutil.image","pzutil.modal","pzutil.rest","pzutil.retailhelper","pzutil.services","pzutil.simplegrid","pzutil.tree","pzutil.ztemplate"]);
@@ -907,6 +907,7 @@ angular.module('pzutil.tree', [])
                     case "2":
                         var v = o[propName];
                         if (v){
+                            console.log(v, treeValue);
                             var vArray = v.split(',');
                             _(treeValue.split(',')).forEach(function(i){
                                 var idx = vArray.indexOf(i);
