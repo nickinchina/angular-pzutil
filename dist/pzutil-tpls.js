@@ -2,7 +2,7 @@
  * pzutil
  * 
 
- * Version: 0.0.18 - 2014-11-18
+ * Version: 0.0.18 - 2014-11-23
  * License: MIT
  */
 angular.module("pzutil", ["pzutil.tpls", "pzutil.aditem","pzutil.adpublish","pzutil.download","pzutil.image","pzutil.modal","pzutil.rest","pzutil.retailhelper","pzutil.services","pzutil.simplegrid","pzutil.tree","pzutil.ztemplate"]);
@@ -214,6 +214,7 @@ angular.module('pzutil.download', []).
                     })
                     .error(function(data, status) {
                         console.log("Request failed with status: " + status);
+                        console.log("Request failed with error: " + data);
                         deferred.reject( "Request failed with status: " + status);
                     });
                 return deferred.promise;
