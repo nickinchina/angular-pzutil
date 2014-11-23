@@ -87,7 +87,7 @@ angular.module('pzutil.download', []).
                     })
                     .error(function(data, status) {
                         console.log("Request failed with status: " + status);
-                        console.log("Request failed with data: " + params.data);
+                        console.log("Request failed with data: " , params.data);
                         deferred.reject( "Request failed with status: " + status);
                     });
                 return deferred.promise;
