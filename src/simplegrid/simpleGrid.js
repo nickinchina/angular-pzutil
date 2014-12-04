@@ -251,7 +251,8 @@ angular.module('pzutil.simplegrid', ['pzutil.services','pzutil.modal'])
                             docTitle = localizedMessages.get($scope.sgExportTitle);
                         else
                             docTitle = "Table";
-                        simpleGridExport.export($scope.columns, $scope.listItems,docTitle);
+                        var d = $scope.listItems.length == 0? $scope.data:$scope.listItems;
+                        simpleGridExport.export($scope.columns, d,docTitle);
                     };
                     if ($attrs.gridHeight)
                         $scope.scrollStyle = "max-height:" + $attrs.gridHeight +";overflow-y:auto";
