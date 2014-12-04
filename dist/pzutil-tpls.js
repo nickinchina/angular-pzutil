@@ -660,7 +660,7 @@ angular.module('pzutil.simplegrid', ['pzutil.services','pzutil.modal'])
                             docTitle = localizedMessages.get($scope.sgExportTitle);
                         else
                             docTitle = "Table";
-                        var d = $scope.listItems.length == 0? $scope.data:$scope.listItems;
+                        var d = (!$scope.listItems || $scope.listItems.length == 0) ? $scope.data:$scope.listItems;
                         simpleGridExport.export($scope.columns, d,docTitle);
                     };
                     if ($attrs.gridHeight)
