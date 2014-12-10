@@ -2,7 +2,7 @@
  * pzutil
  * 
 
- * Version: 0.0.18 - 2014-12-04
+ * Version: 0.0.18 - 2014-12-10
  * License: MIT
  */
 angular.module("pzutil", ["pzutil.tpls", "pzutil.aditem","pzutil.adpublish","pzutil.download","pzutil.image","pzutil.modal","pzutil.rest","pzutil.retailhelper","pzutil.services","pzutil.simplegrid","pzutil.tree","pzutil.ztemplate"]);
@@ -447,9 +447,11 @@ angular.module('pzutil.simplegrid', ['pzutil.services','pzutil.modal'])
                 }
             };
 
-            mixin.prototype.$getColumnClass = function(){
+            mixin.prototype.$getColumnClass = function(item){
                 var w = this.width  ? this.width : 2;
                 var checkbox = this.checkbox ? "checkbox checkbox-cell " :"";
+                var inactive = (item && item.inactive);
+                if (inactive) checkbox += " sg-deleted";
                 if (this.align)
                     return checkbox + 'sg-gridrow-cell col-md-' + w + ' text-' + this.align;
                 else
@@ -1222,9 +1224,9 @@ angular.module("template/simplegrid/simpleGrid-normal.html", []).run(["$template
     "    <ng-include src=\"'template/simplegrid/header.html'\"></ng-include>\n" +
     "    <div style=\"{{scrollStyle}}\">\n" +
     "        <div ng-repeat=\"item in items\" class=\"row sg-gridrow\" ng-click=\"clickRow(item,$event)\" ng-class=\"{true: 'sg-gridrow-active'}[item.$__selected]\" >\n" +
-    "            <div class=\"{{col.$getColumnClass()}}\" ng-repeat=\"col in columns\">\n" +
+    "            <div class=\"{{col.$getColumnClass(item)}}\" ng-repeat=\"col in columns\">\n" +
     "                <i ng-if=\"$first && item.$__selected\" class=\"fa fa-circle\"></i>\n" +
-    "                <i ng-if=\"col.bool\" ng-class=\"{true: 'fa fa-check'}[col.$getValue(item)]\"></i>\n" +
+    "                <i ng-if=\"col.bool\" nggrun-class=\"{true: 'fa fa-check'}[col.$getValue(item)]\"></i>\n" +
     "                <a href ng-if=\"$first && sgAllowDel\" ng-click=\"DelObject(item)\"><i class= 'glyphicon glyphicon-remove'></i></a>\n" +
     "                <ng-include  ng-if=\"col.template && (!item.$core || !item.$core())\" src=\"col.template\"></ng-include>\n" +
     "                <span ng-if=\"!col.template || (item.$core && item.$core())\">{{col.$getText(item)}}</span>\n" +
