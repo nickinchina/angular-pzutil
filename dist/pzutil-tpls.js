@@ -1226,7 +1226,7 @@ angular.module("template/simplegrid/simpleGrid-normal.html", []).run(["$template
     "        <div ng-repeat=\"item in items\" class=\"row sg-gridrow\" ng-click=\"clickRow(item,$event)\" ng-class=\"{true: 'sg-gridrow-active'}[item.$__selected]\" >\n" +
     "            <div class=\"{{col.$getColumnClass(item)}}\" ng-repeat=\"col in columns\">\n" +
     "                <i ng-if=\"$first && item.$__selected\" class=\"fa fa-circle\"></i>\n" +
-    "                <i ng-if=\"col.bool\" nggrun-class=\"{true: 'fa fa-check'}[col.$getValue(item)]\"></i>\n" +
+    "                <i ng-if=\"col.bool\" ng-class=\"{true: 'fa fa-check'}[col.$getValue(item)]\"></i>\n" +
     "                <a href ng-if=\"$first && sgAllowDel\" ng-click=\"DelObject(item)\"><i class= 'glyphicon glyphicon-remove'></i></a>\n" +
     "                <ng-include  ng-if=\"col.template && (col.template.substr(0,9)=='readonly_' || !item.$core || !item.$core())\" src=\"col.template\"></ng-include>\n" +
     "                <span ng-if=\"!col.template || (item.$core && item.$core() && col.template.substr(0,9)!='readonly_')\">{{col.$getText(item)}}</span>\n" +
