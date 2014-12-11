@@ -2,7 +2,7 @@
  * pzutil
  * 
 
- * Version: 0.0.18 - 2014-12-10
+ * Version: 0.0.18 - 2014-12-11
  * License: MIT
  */
 angular.module("pzutil", ["pzutil.tpls", "pzutil.aditem","pzutil.adpublish","pzutil.download","pzutil.image","pzutil.modal","pzutil.rest","pzutil.retailhelper","pzutil.services","pzutil.simplegrid","pzutil.tree","pzutil.ztemplate"]);
@@ -1228,8 +1228,8 @@ angular.module("template/simplegrid/simpleGrid-normal.html", []).run(["$template
     "                <i ng-if=\"$first && item.$__selected\" class=\"fa fa-circle\"></i>\n" +
     "                <i ng-if=\"col.bool\" nggrun-class=\"{true: 'fa fa-check'}[col.$getValue(item)]\"></i>\n" +
     "                <a href ng-if=\"$first && sgAllowDel\" ng-click=\"DelObject(item)\"><i class= 'glyphicon glyphicon-remove'></i></a>\n" +
-    "                <ng-include  ng-if=\"col.template && (!item.$core || !item.$core())\" src=\"col.template\"></ng-include>\n" +
-    "                <span ng-if=\"!col.template || (item.$core && item.$core())\">{{col.$getText(item)}}</span>\n" +
+    "                <ng-include  ng-if=\"col.template && (col.template.substr(0,9)=='readonly_' || !item.$core || !item.$core())\" src=\"col.template\"></ng-include>\n" +
+    "                <span ng-if=\"!col.template || (item.$core && item.$core() && col.template.substr(0,9)!='readonly_')\">{{col.$getText(item)}}</span>\n" +
     "                <i ng-if=\"$last && item.$core && item.$core()\" class=\"fa fa-lock pull-right sg_gridIcon\"></i>\n" +
     "            </div>\n" +
     "        </div>\n" +
