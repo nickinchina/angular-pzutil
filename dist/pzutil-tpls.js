@@ -2,7 +2,7 @@
  * pzutil
  * 
 
- * Version: 0.0.18 - 2014-12-11
+ * Version: 0.0.18 - 2014-12-24
  * License: MIT
  */
 angular.module("pzutil", ["pzutil.tpls", "pzutil.aditem","pzutil.adpublish","pzutil.download","pzutil.image","pzutil.modal","pzutil.rest","pzutil.retailhelper","pzutil.services","pzutil.simplegrid","pzutil.tree","pzutil.ztemplate"]);
@@ -830,9 +830,11 @@ angular.module('pzutil.simplegrid', ['pzutil.services','pzutil.modal'])
                         initSortOrder = false;
                         initSort = initSort.substr(1);
                     }
-                    var col = _.find($scope.columns, {name: initSort}) || $scope.columns[0];
-                    col.sortOrder = initSortOrder;
-                    $scope.sorter(col);
+                    if ($scope.columns && $scope.columns.length>0) {
+                        var col = _.find($scope.columns, {name: initSort}) || $scope.columns[0];
+                        col.sortOrder = initSortOrder;
+                        $scope.sorter(col);
+                    }
                 }
             };
     }]);

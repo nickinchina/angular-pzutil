@@ -421,9 +421,11 @@ angular.module('pzutil.simplegrid', ['pzutil.services','pzutil.modal'])
                         initSortOrder = false;
                         initSort = initSort.substr(1);
                     }
-                    var col = _.find($scope.columns, {name: initSort}) || $scope.columns[0];
-                    col.sortOrder = initSortOrder;
-                    $scope.sorter(col);
+                    if ($scope.columns && $scope.columns.length>0) {
+                        var col = _.find($scope.columns, {name: initSort}) || $scope.columns[0];
+                        col.sortOrder = initSortOrder;
+                        $scope.sorter(col);
+                    }
                 }
             };
     }]);
