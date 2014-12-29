@@ -10,7 +10,6 @@ angular.module('pzutil.simplegrid', ['pzutil.services','pzutil.modal'])
                 lookup = $scope.myLookup,
                 lookupTitle = $scope.myLookupTitle;
             var mixin = function (data) {
-                console.info(data.name,$scope.sgCheckColumn);
                 data.checkbox = ($scope.sgCheckColumn == data.name);
                 angular.extend(this, data);
             };
