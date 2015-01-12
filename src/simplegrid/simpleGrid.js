@@ -446,8 +446,12 @@ angular.module('pzutil.simplegrid', ['pzutil.services','pzutil.modal'])
                     $scope.$watchCollection(function() {
                         return $scope.data ;
                     }, function() {
+                        var scopeData = $scope.data;
+                        if ($scope.modalSearchCriteria){
+                            scopeData = $scope.sgModalSearch({list:scopeData,c:$scope.modalSearchCriteria,lk:$scope.myLookup});
+                        }
                         simpleGridSearchWorker.search({
-                            scopeData : $scope.data,
+                            scopeData : scopeData,
                             listingSearch : breadcrumbs.listingSearch,
                             scope : $scope
                         }).then(function(r){
