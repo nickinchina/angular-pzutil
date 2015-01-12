@@ -438,7 +438,17 @@ angular.module('pzutil.simplegrid', ['pzutil.services','pzutil.modal'])
                         $scope.$watch(function() {
                             return breadcrumbs.listingSearch ;
                         }, function() {
-                            $scope.changed(pageSetting.currentPage);
+                            var scopeData = $scope.data;
+                            if ($scope.modalSearchCriteria){
+                                scopeData = $scope.sgModalSearch({list:scopeData,c:$scope.modalSearchCriteria,lk:$scope.myLookup});
+                            }
+                            simpleGridSearchWorker.search({
+                                scopeData : scopeData,
+                                listingSearch : breadcrumbs.listingSearch,
+                                scope : $scope
+                            }).then(function(r){
+                                loadSearch(r);
+                            })
                         });
                         breadcrumbs.setlistingSearchModel($scope.sgGlobalSearch);
                     }
@@ -446,17 +456,7 @@ angular.module('pzutil.simplegrid', ['pzutil.services','pzutil.modal'])
                     $scope.$watchCollection(function() {
                         return $scope.data ;
                     }, function() {
-                        var scopeData = $scope.data;
-                        if ($scope.modalSearchCriteria){
-                            scopeData = $scope.sgModalSearch({list:scopeData,c:$scope.modalSearchCriteria,lk:$scope.myLookup});
-                        }
-                        simpleGridSearchWorker.search({
-                            scopeData : scopeData,
-                            listingSearch : breadcrumbs.listingSearch,
-                            scope : $scope
-                        }).then(function(r){
-                            loadSearch(r);
-                        })
+                        $scope.changed(pageSetting.currentPage);
                     });
 
                     var initSort = $scope.sgSortField;
