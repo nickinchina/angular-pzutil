@@ -158,8 +158,27 @@ angular.module('pzutil.simplegrid', ['pzutil.services','pzutil.modal'])
                 $modalInstance.dismiss('cancel');
             };
         }])
-    .directive('simpleGrid', ['sgColumn', 'breadcrumbs', 'localizedMessages','crudWait', '$modal','simpleGridExport',
-        function (sgColumn, breadcrumbs, localizedMessages,crudWait,$modal,simpleGridExport) {
+    .factory("simpleGridSearchWorker",['$q',function($q){
+        var worker;
+        return {
+            search : function(crit, fun){
+                var defer = $q.defer();
+                var blob = new Blob(["onmessage = " + fun.toString()]);
+                var blobURL = window.URL.createObjectURL(blob);
+                if (worker) worker.terminate();
+                worker = new Worker(blobURL);
+                worker.addEventListener('message', function(e) {
+                    console.log('Worker said: ', e.data);
+                    defer.resolve(e.data);
+                }, false);
+                worker.postMessage(crit); // Send data to our worker.
+                return defer.promise;
+            }
+        };
+
+    }])
+    .directive('simpleGrid', ['sgColumn', 'breadcrumbs', 'localizedMessages','crudWait', '$modal','simpleGridExport', 'simpleGridSearchWorker',
+        function (sgColumn, breadcrumbs, localizedMessages,crudWait,$modal,simpleGridExport,simpleGridSearchWorker) {
             return {
                 restrict:'E',
                 replace:true,
@@ -328,46 +347,34 @@ angular.module('pzutil.simplegrid', ['pzutil.services','pzutil.modal'])
                     $scope.getIndex = function(item){
                         return  $scope.items.indexOf(item)+1;
                     };
-                    $scope.changed = function(page, reset) {
-                        var ps = pageSetting.pageSize;
-                        pageSetting.currentPage = page;
-                        if (reset){
-                            $scope.resetChecks();
-                        }
-                        var scopeData = $scope.data;
-                        if ($scope.modalSearchCriteria){
-                            scopeData = $scope.sgModalSearch({list:scopeData,c:$scope.modalSearchCriteria,lk:$scope.myLookup});
-                        }
+                    function globalSearch(crit){
                         var data = null;
-                        if ($scope.sgGlobalSearch && breadcrumbs.listingSearch && breadcrumbs.listingSearch!="")
+                        if (crit.listingSearch && crit.listingSearch!="")
                         {
-                            var searchString = breadcrumbs.listingSearch.toLowerCase();
-                            data = _.filter(scopeData, function(i){
-                                for (var c = 0; c< $scope.columns.length; c++){
-                                    var col =  $scope.columns[c].name;
+                            var searchString = crit.listingSearch.toLowerCase();
+                            var sc = crit.scope;
+                            data = _.filter(crit.scopeData, function(i){
+                                for (var c = 0; c< sc.columns.length; c++){
+                                    var col =  sc.columns[c].name;
                                     var value = i[col];
-                                    if ($scope.myLookup)
-                                        value = $scope.myLookup({col: col, value:value, item:i});
+                                    if (sc.myLookup)
+                                        value = sc.myLookup({col: col, value:value, item:i});
                                     if (value) {
                                         if (value.toString().toLowerCase().indexOf(searchString)>-1)
                                             return true;
                                     }
                                 }
-                                if ($scope.sgCustomSearch){
-                                    return $scope.sgCustomSearch({item: i, search: searchString});
+                                if (sc.sgCustomSearch){
+                                    return sc.sgCustomSearch({item: i, search: searchString});
                                 }
                                 return false;
                             });
-                            pageSetting.totalItems = data.length;
-                            var maxPages = Math.ceil(pageSetting.totalItems / ps);
-                            if (page>maxPages){
-                                page = 1;
-                                pageSetting.currentPage = page;
-                            }
                         }
                         else
-                            data =  scopeData;
-
+                            data = crit.scopeData;
+                        return data;
+                    };
+                    function loadSearch(data){
                         if ($scope.listItems && angular.isArray($scope.listItems)){
                             $scope.listItems.length = 0;
                             $scope.listItems.push.apply($scope.listItems, data);
@@ -399,6 +406,34 @@ angular.module('pzutil.simplegrid', ['pzutil.services','pzutil.modal'])
                             loader();
                         }
                     };
+                    $scope.changed = function(page, reset) {
+                        var ps = pageSetting.pageSize;
+                        pageSetting.currentPage = page;
+                        if (reset){
+                            $scope.resetChecks();
+                        }
+                        var scopeData = $scope.data;
+                        if ($scope.modalSearchCriteria){
+                            scopeData = $scope.sgModalSearch({list:scopeData,c:$scope.modalSearchCriteria,lk:$scope.myLookup});
+                        }
+                        var data = globalSearch({
+                            scopeData : scopeData,
+                            listingSearch : listingSearch,
+                            scope : $scope
+                        });
+                        if (data != scopeData)
+                        {
+                            pageSetting.totalItems = data.length;
+                            var maxPages = Math.ceil(pageSetting.totalItems / ps);
+                            if (page>maxPages){
+                                page = 1;
+                                pageSetting.currentPage = page;
+                            }
+                        }
+                        loadSearch(data);
+
+                    };
+
                     if ($scope.sgGlobalSearch) {
                         $scope.$watch(function() {
                             return breadcrumbs.listingSearch ;
@@ -411,7 +446,13 @@ angular.module('pzutil.simplegrid', ['pzutil.services','pzutil.modal'])
                     $scope.$watchCollection(function() {
                         return $scope.data ;
                     }, function() {
-                        $scope.changed(pageSetting.currentPage);
+                        simpleGridSearchWorker.search({
+                            scopeData : $scope.data,
+                            listingSearch : breadcrumbs.listingSearch,
+                            scope : $scope
+                        }).then(function(r){
+                            loadSearch(r);
+                        })
                     });
 
                     var initSort = $scope.sgSortField;
