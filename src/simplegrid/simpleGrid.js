@@ -375,6 +375,7 @@ angular.module('pzutil.simplegrid', ['pzutil.services','pzutil.modal'])
                         return data;
                     };
                     function loadSearch(page, data){
+                        var ps = pageSetting.pageSize;
                         if ($scope.listItems && angular.isArray($scope.listItems)){
                             $scope.listItems.length = 0;
                             $scope.listItems.push.apply($scope.listItems, data);
