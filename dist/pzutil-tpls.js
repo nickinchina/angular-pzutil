@@ -2,7 +2,7 @@
  * pzutil
  * 
 
- * Version: 0.0.18 - 2015-01-12
+ * Version: 0.0.18 - 2015-01-13
  * License: MIT
  */
 angular.module("pzutil", ["pzutil.tpls", "pzutil.aditem","pzutil.adpublish","pzutil.download","pzutil.image","pzutil.modal","pzutil.rest","pzutil.retailhelper","pzutil.services","pzutil.simplegrid","pzutil.tree","pzutil.ztemplate"]);
@@ -827,7 +827,7 @@ angular.module('pzutil.simplegrid', ['pzutil.services','pzutil.modal'])
                         }
                         var data = globalSearch({
                             scopeData : scopeData,
-                            listingSearch : listingSearch,
+                            listingSearch : breadcrumbs.listingSearch,
                             scope : $scope
                         });
                         if (data != scopeData)

@@ -418,7 +418,7 @@ angular.module('pzutil.simplegrid', ['pzutil.services','pzutil.modal'])
                         }
                         var data = globalSearch({
                             scopeData : scopeData,
-                            listingSearch : listingSearch,
+                            listingSearch : breadcrumbs.listingSearch,
                             scope : $scope
                         });
                         if (data != scopeData)
