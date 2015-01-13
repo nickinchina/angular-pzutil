@@ -158,27 +158,8 @@ angular.module('pzutil.simplegrid', ['pzutil.services','pzutil.modal'])
                 $modalInstance.dismiss('cancel');
             };
         }])
-    .factory("simpleGridSearchWorker",['$q',function($q){
-        var worker;
-        return {
-            search : function(crit, fun){
-                var defer = $q.defer();
-                var blob = new Blob(["onmessage = " + fun.toString()]);
-                var blobURL = window.URL.createObjectURL(blob);
-                if (worker) worker.terminate();
-                worker = new Worker(blobURL);
-                worker.addEventListener('message', function(e) {
-                    console.log('Worker said: ', e.data);
-                    defer.resolve(e.data);
-                }, false);
-                worker.postMessage(crit); // Send data to our worker.
-                return defer.promise;
-            }
-        };
-
-    }])
-    .directive('simpleGrid', ['sgColumn', 'breadcrumbs', 'localizedMessages','crudWait', '$modal','simpleGridExport', 'simpleGridSearchWorker',
-        function (sgColumn, breadcrumbs, localizedMessages,crudWait,$modal,simpleGridExport,simpleGridSearchWorker) {
+    .directive('simpleGrid', ['sgColumn', 'breadcrumbs', 'localizedMessages','crudWait', '$modal','simpleGridExport',
+        function (sgColumn, breadcrumbs, localizedMessages,crudWait,$modal,simpleGridExport) {
             return {
                 restrict:'E',
                 replace:true,
@@ -204,39 +185,39 @@ angular.module('pzutil.simplegrid', ['pzutil.services','pzutil.modal'])
                     }
                 },
                 link: function($scope, $element, $attrs, $controller) {
-                   var sortIt = function(fieldName, sortOrder, sortField, useLookup) {
-                       var sortField = sortField || fieldName;
-                       _($scope.columns).forEach(function(c){
-                           if (c.name != fieldName)
-                               c.sortOrder = undefined;
-                       });
-                       $scope.data.sort(function(a,b) {
-                           var a1,b1;
-                           if (!a.hasOwnProperty(sortField) || col.useLookup){
-                               a1 = $scope.myLookup ?$scope.myLookup({col:sortField,item: a}):undefined;
-                               b1 = $scope.myLookup ?$scope.myLookup({col:sortField,item: b}):undefined;
-                           }
-                           else {
-                               a1 = a[sortField];
-                               b1 = b[sortField];
-                           };
-                           var r;
-                           if (a1==null)
-                               r = -1;
-                           else if (b1==null)
-                               r = 1;
-                           else {
-                               if (angular.isString(a1))
+                    var sortIt = function(fieldName, sortOrder, sortField, useLookup) {
+                        var sortField = sortField || fieldName;
+                        _($scope.columns).forEach(function(c){
+                            if (c.name != fieldName)
+                                c.sortOrder = undefined;
+                        });
+                        $scope.data.sort(function(a,b) {
+                            var a1,b1;
+                            if (!a.hasOwnProperty(sortField) || col.useLookup){
+                                a1 = $scope.myLookup ?$scope.myLookup({col:sortField,item: a}):undefined;
+                                b1 = $scope.myLookup ?$scope.myLookup({col:sortField,item: b}):undefined;
+                            }
+                            else {
+                                a1 = a[sortField];
+                                b1 = b[sortField];
+                            };
+                            var r;
+                            if (a1==null)
+                                r = -1;
+                            else if (b1==null)
+                                r = 1;
+                            else {
+                                if (angular.isString(a1))
                                     r = a1.localeCompare(b1);
-                               else
+                                else
                                     r = (a1 < b1 ? -1:1);
-                           }
+                            }
 
-                           return r*(sortOrder? 1:-1);
-                       });
-                   }
-                   $scope.sorter = function(col) {
-                       sortIt(col.name, col.sortOrder, col.sortField, col.useLookup);
+                            return r*(sortOrder? 1:-1);
+                        });
+                    }
+                    $scope.sorter = function(col) {
+                        sortIt(col.name, col.sortOrder, col.sortField, col.useLookup);
                     };
                     $scope.AddObject = function(){
                         $scope.data.push(sgColumn.New($scope.sgAddObject()));
@@ -347,35 +328,46 @@ angular.module('pzutil.simplegrid', ['pzutil.services','pzutil.modal'])
                     $scope.getIndex = function(item){
                         return  $scope.items.indexOf(item)+1;
                     };
-                    function globalSearch(crit){
+                    $scope.changed = function(page, reset) {
+                        var ps = pageSetting.pageSize;
+                        pageSetting.currentPage = page;
+                        if (reset){
+                            $scope.resetChecks();
+                        }
+                        var scopeData = $scope.data;
+                        if ($scope.modalSearchCriteria){
+                            scopeData = $scope.sgModalSearch({list:scopeData,c:$scope.modalSearchCriteria,lk:$scope.myLookup});
+                        }
                         var data = null;
-                        if (crit.listingSearch && crit.listingSearch!="")
+                        if ($scope.sgGlobalSearch && breadcrumbs.listingSearch && breadcrumbs.listingSearch!="")
                         {
-                            var searchString = crit.listingSearch.toLowerCase();
-                            var sc = crit.scope;
-                            data = _.filter(crit.scopeData, function(i){
-                                for (var c = 0; c< sc.columns.length; c++){
-                                    var col =  sc.columns[c].name;
+                            var searchString = breadcrumbs.listingSearch.toLowerCase();
+                            data = _.filter(scopeData, function(i){
+                                for (var c = 0; c< $scope.columns.length; c++){
+                                    var col =  $scope.columns[c].name;
                                     var value = i[col];
-                                    if (sc.myLookup)
-                                        value = sc.myLookup({col: col, value:value, item:i});
+                                    if ($scope.myLookup)
+                                        value = $scope.myLookup({col: col, value:value, item:i});
                                     if (value) {
                                         if (value.toString().toLowerCase().indexOf(searchString)>-1)
                                             return true;
                                     }
                                 }
-                                if (sc.sgCustomSearch){
-                                    return sc.sgCustomSearch({item: i, search: searchString});
+                                if ($scope.sgCustomSearch){
+                                    return $scope.sgCustomSearch({item: i, search: searchString});
                                 }
                                 return false;
                             });
+                            pageSetting.totalItems = data.length;
+                            var maxPages = Math.ceil(pageSetting.totalItems / ps);
+                            if (page>maxPages){
+                                page = 1;
+                                pageSetting.currentPage = page;
+                            }
                         }
                         else
-                            data = crit.scopeData;
-                        return data;
-                    };
-                    function loadSearch(page, data){
-                        var ps = pageSetting.pageSize;
+                            data =  scopeData;
+
                         if ($scope.listItems && angular.isArray($scope.listItems)){
                             $scope.listItems.length = 0;
                             $scope.listItems.push.apply($scope.listItems, data);
@@ -407,49 +399,11 @@ angular.module('pzutil.simplegrid', ['pzutil.services','pzutil.modal'])
                             loader();
                         }
                     };
-                    $scope.changed = function(page, reset) {
-                        var ps = pageSetting.pageSize;
-                        pageSetting.currentPage = page;
-                        if (reset){
-                            $scope.resetChecks();
-                        }
-                        var scopeData = $scope.data;
-                        if ($scope.modalSearchCriteria){
-                            scopeData = $scope.sgModalSearch({list:scopeData,c:$scope.modalSearchCriteria,lk:$scope.myLookup});
-                        }
-                        var data = globalSearch({
-                            scopeData : scopeData,
-                            listingSearch : breadcrumbs.listingSearch,
-                            scope : $scope
-                        });
-                        if (data != scopeData)
-                        {
-                            pageSetting.totalItems = data.length;
-                            var maxPages = Math.ceil(pageSetting.totalItems / ps);
-                            if (page>maxPages){
-                                page = 1;
-                                pageSetting.currentPage = page;
-                            }
-                        }
-                        loadSearch(page, data);
-
-                    };
-
                     if ($scope.sgGlobalSearch) {
                         $scope.$watch(function() {
                             return breadcrumbs.listingSearch ;
                         }, function() {
-                            var scopeData = $scope.data;
-                            if ($scope.modalSearchCriteria){
-                                scopeData = $scope.sgModalSearch({list:scopeData,c:$scope.modalSearchCriteria,lk:$scope.myLookup});
-                            }
-                            simpleGridSearchWorker.search({
-                                scopeData : scopeData,
-                                listingSearch : breadcrumbs.listingSearch,
-                                scope : $scope
-                            }, globalSearch).then(function(r){
-                                loadSearch(pageSetting.currentPage, r);
-                            })
+                            $scope.changed(pageSetting.currentPage);
                         });
                         breadcrumbs.setlistingSearchModel($scope.sgGlobalSearch);
                     }
@@ -473,4 +427,4 @@ angular.module('pzutil.simplegrid', ['pzutil.services','pzutil.modal'])
                     }
                 }
             };
-    }]);
+        }]);
