@@ -342,6 +342,7 @@ angular.module('pzutil.simplegrid', ['pzutil.services','pzutil.modal'])
                         if ($scope.sgGlobalSearch && breadcrumbs.listingSearch && breadcrumbs.listingSearch!="")
                         {
                             var searchString = breadcrumbs.listingSearch.toLowerCase();
+                            console.log('search y:',searchString);
                             data = _.filter(scopeData, function(i){
                                 for (var c = 0; c< $scope.columns.length; c++){
                                     var col =  $scope.columns[c].name;
@@ -400,14 +401,12 @@ angular.module('pzutil.simplegrid', ['pzutil.services','pzutil.modal'])
                         }
                     };
                     if ($scope.sgGlobalSearch) {
-                        $scope.listingSearch = undefined;
                         $scope.$watch(function() {
                             return breadcrumbs.listingSearch ;
                         }, function() {
                             (function(x){
                                 setTimeout(function(){
-                                    if (x==breadcrumbs.listingSearch && x!=$scope.listingSearch) {
-                                        $scope.listingSearch = x;
+                                    if (x==breadcrumbs.listingSearch) {
                                         $scope.changed(pageSetting.currentPage);
                                         console.log('search x:',x);
                                     }
