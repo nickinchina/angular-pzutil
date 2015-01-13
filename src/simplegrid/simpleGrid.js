@@ -403,7 +403,14 @@ angular.module('pzutil.simplegrid', ['pzutil.services','pzutil.modal'])
                         $scope.$watch(function() {
                             return breadcrumbs.listingSearch ;
                         }, function() {
-                            $scope.changed(pageSetting.currentPage);
+                            (function(x){
+                                setTimeout(function(){
+                                    if (x==breadcrumbs.listingSearch) {
+                                        $scope.changed(pageSetting.currentPage);
+                                        console.log('search x:',x);
+                                    }
+                                }, 500);
+                            })(breadcrumbs.listingSearch);
                         });
                         breadcrumbs.setlistingSearchModel($scope.sgGlobalSearch);
                     }

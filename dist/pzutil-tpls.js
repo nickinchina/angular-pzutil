@@ -6,7 +6,7 @@
  * License: MIT
  */
 angular.module("pzutil", ["pzutil.tpls", "pzutil.aditem","pzutil.adpublish","pzutil.download","pzutil.image","pzutil.modal","pzutil.rest","pzutil.retailhelper","pzutil.services","pzutil.simplegrid","pzutil.tree","pzutil.ztemplate"]);
-angular.module("pzutil.tpls", ["template/aditem/aditem.tpl.html","template/adpublish/adpublish_grid.tpl.html","template/adpublish/adpublish_list.tpl.html","template/adpublish/adpublish_slide.tpl.html","template/modal/modal-form.html","template/modal/modal.html","template/modal/wait.html","template/simplegrid/export.html","template/simplegrid/footer-virtual.html","template/simplegrid/footer.html","template/simplegrid/header.html","template/simplegrid/simpleGrid-normal.html","template/simplegrid/simpleGrid-simple.html","template/simplegrid/simpleGrid-virtual.html","template/simplegrid/simpleGrid.html"]);
+angular.module("pzutil.tpls", ["template/aditem/aditem.tpl.html","template/adpublish/adpublish_grid.tpl.html","template/adpublish/adpublish_list.tpl.html","template/adpublish/adpublish_slide.tpl.html","template/modal/modal-form.html","template/modal/modal.html","template/modal/wait.html","template/simplegrid/export.html","template/simplegrid/footer-virtual.html","template/simplegrid/footer.html","template/simplegrid/header.html","template/simplegrid/simpleGrid-dx.html","template/simplegrid/simpleGrid-normal.html","template/simplegrid/simpleGrid-simple.html","template/simplegrid/simpleGrid-virtual.html","template/simplegrid/simpleGrid.html"]);
 /**
  * Created by gordon on 2014/5/26.
  */
@@ -812,7 +812,14 @@ angular.module('pzutil.simplegrid', ['pzutil.services','pzutil.modal'])
                         $scope.$watch(function() {
                             return breadcrumbs.listingSearch ;
                         }, function() {
-                            $scope.changed(pageSetting.currentPage);
+                            (function(x){
+                                setTimeout(function(){
+                                    if (x==breadcrumbs.listingSearch) {
+                                        $scope.changed(pageSetting.currentPage);
+                                        console.log('search x:',x);
+                                    }
+                                }, 500);
+                            })(breadcrumbs.listingSearch);
                         });
                         breadcrumbs.setlistingSearchModel($scope.sgGlobalSearch);
                     }
@@ -1216,6 +1223,26 @@ angular.module("template/simplegrid/header.html", []).run(["$templateCache", fun
     "        <i class=\"fa fa-long-arrow-down pull-right sg_gridIcon\" ng-show=\"!col.sortOrder && col.sortOrder!=undefined\" style=\"top:50%;\"></i>\n" +
     "        <i class=\"fa fa-long-arrow-up pull-right sg_gridIcon\" ng-show=\"col.sortOrder\" style=\"top:50%;\"></i>\n" +
     "    </div>\n" +
+    "</div>");
+}]);
+
+angular.module("template/simplegrid/simpleGrid-dx.html", []).run(["$templateCache", function($templateCache) {
+  $templateCache.put("template/simplegrid/simpleGrid-dx.html",
+    "<div class=\"sg-grid\">\n" +
+    "    <ng-include src=\"'template/simplegrid/header.html'\"></ng-include>\n" +
+    "    <div style=\"{{scrollStyle}}\">\n" +
+    "        <div ng-repeat=\"item in items\" class=\"row sg-gridrow\" ng-click=\"clickRow(item,$event)\" ng-class=\"{true: 'sg-gridrow-active'}[item.$__selected]\" >\n" +
+    "            <div class=\"{{col.$getColumnClass(item)}}\" ng-repeat=\"col in columns\">\n" +
+    "                <i ng-if=\"$first && item.$__selected\" class=\"fa fa-circle\"></i>\n" +
+    "                <i ng-if=\"col.bool\" ng-class=\"{true: 'fa fa-check'}[col.$getValue(item)]\"></i>\n" +
+    "                <a href ng-if=\"$first && sgAllowDel\" ng-click=\"DelObject(item)\"><i class= 'glyphicon glyphicon-remove'></i></a>\n" +
+    "                <ng-include  ng-if=\"col.template && (col.template.substr(0,9)=='readonly_' || !item.$core || !item.$core())\" src=\"col.template\"></ng-include>\n" +
+    "                <span ng-if=\"!col.template || (item.$core && item.$core() && col.template.substr(0,9)!='readonly_')\">{{col.$getText(item)}}</span>\n" +
+    "                <i ng-if=\"$last && item.$core && item.$core()\" class=\"fa fa-lock pull-right sg_gridIcon\"></i>\n" +
+    "            </div>\n" +
+    "        </div>\n" +
+    "    </div>\n" +
+    "    <ng-include src=\"'template/simplegrid/footer.html'\"></ng-include>\n" +
     "</div>");
 }]);
 
