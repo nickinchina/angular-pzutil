@@ -818,7 +818,7 @@ angular.module('pzutil.simplegrid', ['pzutil.services','pzutil.modal'])
                                         $scope.changed(pageSetting.currentPage);
                                         console.log('search x:',x);
                                     }
-                                }, 500);
+                                }, 1000);
                             })(breadcrumbs.listingSearch);
                         });
                         breadcrumbs.setlistingSearchModel($scope.sgGlobalSearch);
