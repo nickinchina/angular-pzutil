@@ -1306,5 +1306,6 @@ angular.module("template/simplegrid/simpleGrid.html", []).run(["$templateCache",
     "            <ng-include src=\"itemtemplate\"></ng-include>\n" +
     "        </div>\n" +
     "    </div>\n" +
+    "    <ng-include src=\"'template/simplegrid/footer.html'\"></ng-include>\n" +
     "</div>");
 }]);
