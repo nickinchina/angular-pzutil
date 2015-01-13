@@ -400,14 +400,16 @@ angular.module('pzutil.simplegrid', ['pzutil.services','pzutil.modal'])
                         }
                     };
                     if ($scope.sgGlobalSearch) {
+                        $scope.listingSearch = undefined;
                         $scope.$watch(function() {
                             return breadcrumbs.listingSearch ;
                         }, function() {
                             (function(x){
                                 setTimeout(function(){
-                                    if (x==breadcrumbs.listingSearch) {
+                                    if (x==breadcrumbs.listingSearch && x!=$scope.listingSearch) {
                                         $scope.changed(pageSetting.currentPage);
                                         console.log('search x:',x);
+                                        $scope.listingSearch = x;
                                     }
                                 }, 500);
                             })(breadcrumbs.listingSearch);
