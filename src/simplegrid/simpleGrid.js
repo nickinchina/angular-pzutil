@@ -407,9 +407,9 @@ angular.module('pzutil.simplegrid', ['pzutil.services','pzutil.modal'])
                             (function(x){
                                 setTimeout(function(){
                                     if (x==breadcrumbs.listingSearch && x!=$scope.listingSearch) {
+                                        $scope.listingSearch = x;
                                         $scope.changed(pageSetting.currentPage);
                                         console.log('search x:',x);
-                                        $scope.listingSearch = x;
                                     }
                                 }, 500);
                             })(breadcrumbs.listingSearch);
