@@ -815,11 +815,6 @@ angular.module('pzutil.simplegrid', ['pzutil.services','pzutil.modal'])
                         });
                         breadcrumbs.setlistingSearchModel($scope.sgGlobalSearch);
                     }
-                    $scope.$watch(function() {
-                        return pageSetting.modalSearchCriteria ;
-                    }, function() {
-                        $scope.changed(pageSetting.currentPage);
-                    });
 
                     if (!breadcrumbs.listingPageSetting) breadcrumbs.listingPageSetting = {};
                     var pageSetting = $scope.pageSetting = breadcrumbs.listingPageSetting;
@@ -833,7 +828,12 @@ angular.module('pzutil.simplegrid', ['pzutil.services','pzutil.modal'])
                         pageSetting.currentPage = 1;
                     }
                     pageSetting.totalItems = $scope.data.length;
-                    
+
+                    $scope.$watch(function() {
+                        return pageSetting.modalSearchCriteria ;
+                    }, function() {
+                        $scope.changed(pageSetting.currentPage);
+                    });
                     $scope.$watchCollection(function() {
                         return $scope.data ;
                     }, function() {
