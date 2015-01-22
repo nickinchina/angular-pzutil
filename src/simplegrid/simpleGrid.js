@@ -262,19 +262,6 @@ angular.module('pzutil.simplegrid', ['pzutil.services','pzutil.modal'])
                     else
                         $scope.scrollStyle = "";
 
-                    if (!breadcrumbs.listingPageSetting) breadcrumbs.listingPageSetting = {};
-                    var pageSetting = $scope.pageSetting = breadcrumbs.listingPageSetting;
-                    if (!pageSetting.hasOwnProperty('pageSize')) {
-                        if ($scope.sgNoPager)
-                            pageSetting.pageSize = 100;
-                        else if ($scope.sgPageSize)
-                            pageSetting.pageSize = parseInt($scope.sgPageSize);
-                        else
-                            pageSetting.pageSize = 20;
-                        pageSetting.currentPage = 1;
-                    }
-                    pageSetting.totalItems = $scope.data.length;
-
                     $scope.modalSearchReset = function(){
                         if ($scope.modalSearchCriteria) {
                             $scope.modalSearchCriteria = undefined;
@@ -419,6 +406,19 @@ angular.module('pzutil.simplegrid', ['pzutil.services','pzutil.modal'])
                         });
                         breadcrumbs.setlistingSearchModel($scope.sgGlobalSearch);
                     }
+
+                    if (!breadcrumbs.listingPageSetting) breadcrumbs.listingPageSetting = {};
+                    var pageSetting = $scope.pageSetting = breadcrumbs.listingPageSetting;
+                    if (!pageSetting.hasOwnProperty('pageSize')) {
+                        if ($scope.sgNoPager)
+                            pageSetting.pageSize = 100;
+                        else if ($scope.sgPageSize)
+                            pageSetting.pageSize = parseInt($scope.sgPageSize);
+                        else
+                            pageSetting.pageSize = 20;
+                        pageSetting.currentPage = 1;
+                    }
+                    pageSetting.totalItems = $scope.data.length;
 
                     $scope.$watchCollection(function() {
                         return $scope.data ;
