@@ -165,7 +165,8 @@ angular.module('pzutil.simplegrid', ['pzutil.services','pzutil.modal'])
                 replace:true,
                 scope: { data:"=sgData", listItems:"=",  sgAddObject:"&", sgSortOptions:"=", itemtemplate:"=sgTemplate",sgColumns:"@",sgDelObject:"&", sgAllowDel:"@",
                     sgNoPager:'=', sgOnClick:'&', sgLookup:"&", sgGlobalSearch:"@",sgPageSize:"@" ,sgOptions:"=", sgOnChange:"&", sgLookupTitle:"&",sgSortField:"=",sgVirtual:"@",
-                    sgCheckColumn:"@", sgCustomSearch:"&", sgModalSearchTemplate:"=", sgModalSearchController:"=", sgModalSearchResolve:"=", sgModalSearch:"&", sgExportTitle:"@"},
+                    sgCheckColumn:"@", sgCustomSearch:"&", sgModalSearchTemplate:"=", sgModalSearchController:"=", sgModalSearchResolve:"=", sgModalSearch:"&", sgExportTitle:"@",
+                    sgPublic:"="},
                 templateUrl: function($element, $attrs) {
                     var t = $attrs.sgTemplate;
                     if (t) {
@@ -265,7 +266,7 @@ angular.module('pzutil.simplegrid', ['pzutil.services','pzutil.modal'])
                     $scope.modalSearchReset = function(){
                         if (pageSetting.modalSearchCriteria) {
                             pageSetting.modalSearchCriteria = undefined;
-                            //$scope.changed(pageSetting.currentPage);
+                            $scope.changed(pageSetting.currentPage);
                         }
                     }
                     $scope.modalSearch = function() {
@@ -281,7 +282,7 @@ angular.module('pzutil.simplegrid', ['pzutil.services','pzutil.modal'])
 
                         modalInstance.result.then(function (r) {
                             pageSetting.modalSearchCriteria = r;
-                            //$scope.changed(pageSetting.currentPage);
+                            $scope.changed(pageSetting.currentPage);
                         }, function () {
                         });
 
@@ -320,9 +321,10 @@ angular.module('pzutil.simplegrid', ['pzutil.services','pzutil.modal'])
                     $scope.getIndex = function(item){
                         return  $scope.items.indexOf(item)+1;
                     };
-                    $scope.changed = function(page, reset) {
+                    $scope.public = $scope.sgPublic || {};
+                    $scope.public.refresh = $scope.changed = function(page, reset) {
                         var ps = pageSetting.pageSize;
-                        pageSetting.currentPage = page;
+                        if (page) pageSetting.currentPage = page;
                         if (reset){
                             $scope.resetChecks();
                         }
@@ -423,13 +425,6 @@ angular.module('pzutil.simplegrid', ['pzutil.services','pzutil.modal'])
                     }
                     pageSetting.totalItems = $scope.data.length;
 
-                    if ($scope.sgModalSearchTemplate) {
-                        $scope.$watch(function() {
-                            return pageSetting.modalSearchCriteria ;
-                        }, function() {
-                            $scope.changed(pageSetting.currentPage);
-                        });
-                    }
                     $scope.$watchCollection(function() {
                         return $scope.data ;
                     }, function() {
