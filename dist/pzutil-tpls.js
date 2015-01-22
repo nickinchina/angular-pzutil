@@ -829,11 +829,13 @@ angular.module('pzutil.simplegrid', ['pzutil.services','pzutil.modal'])
                     }
                     pageSetting.totalItems = $scope.data.length;
 
-                    $scope.$watch(function() {
-                        return pageSetting.modalSearchCriteria ;
-                    }, function() {
-                        $scope.changed(pageSetting.currentPage);
-                    });
+                    if ($scope.sgModalSearchTemplate) {
+                        $scope.$watch(function() {
+                            return pageSetting.modalSearchCriteria ;
+                        }, function() {
+                            $scope.changed(pageSetting.currentPage);
+                        });
+                    }
                     $scope.$watchCollection(function() {
                         return $scope.data ;
                     }, function() {
