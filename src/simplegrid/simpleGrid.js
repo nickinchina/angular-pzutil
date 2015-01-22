@@ -324,7 +324,8 @@ angular.module('pzutil.simplegrid', ['pzutil.services','pzutil.modal'])
                     $scope.public = $scope.sgPublic || {};
                     $scope.public.refresh = $scope.changed = function(page, reset) {
                         var ps = pageSetting.pageSize;
-                        if (page) pageSetting.currentPage = page;
+                        page = page || pageSetting.currentPage;
+                        pageSetting.currentPage = page;
                         if (reset){
                             $scope.resetChecks();
                         }
