@@ -399,16 +399,19 @@ angular.module('pzutil.simplegrid', ['pzutil.services','pzutil.modal'])
                                 $timeout(function(){
                                     if (x==breadcrumbs.listingSearch) {
                                         $scope.changed(pageSetting.currentPage);
-                                        console.log('search x:',x);
                                     }
                                 }, 1000);
                             })(breadcrumbs.listingSearch);
                         });
                         breadcrumbs.setlistingSearchModel($scope.sgGlobalSearch);
+                        if (!breadcrumbs.listingPageSetting) breadcrumbs.listingPageSetting = {};
+                        $scope.pageSetting = breadcrumbs.listingPageSetting;
                     }
+                    else
+                        $scope.pageSetting = {};
 
-                    if (!breadcrumbs.listingPageSetting) breadcrumbs.listingPageSetting = {};
-                    var pageSetting = $scope.pageSetting = breadcrumbs.listingPageSetting;
+
+                    var pageSetting = $scope.pageSetting;
                     if (!pageSetting.hasOwnProperty('pageSize')) {
                         if ($scope.sgNoPager)
                             pageSetting.pageSize = 100;
