@@ -2,7 +2,7 @@
  * pzutil
  * 
 
- * Version: 0.0.18 - 2015-01-13
+ * Version: 0.0.18 - 2015-01-22
  * License: MIT
  */
 angular.module("pzutil", ["pzutil.tpls", "pzutil.aditem","pzutil.adpublish","pzutil.download","pzutil.image","pzutil.modal","pzutil.rest","pzutil.retailhelper","pzutil.services","pzutil.simplegrid","pzutil.tree","pzutil.ztemplate"]);
@@ -626,6 +626,8 @@ angular.module('pzutil.simplegrid', ['pzutil.services','pzutil.modal'])
                         });
                     }
                     $scope.sorter = function(col) {
+                        pageSetting.initSort = col.name;
+                        pageSetting.initSortOrder = col.sortOrder;
                         sortIt(col.name, col.sortOrder, col.sortField, col.useLookup);
                     };
                     $scope.AddObject = function(){
@@ -669,14 +671,17 @@ angular.module('pzutil.simplegrid', ['pzutil.services','pzutil.modal'])
                     else
                         $scope.scrollStyle = "";
 
-                    var pageSetting = $scope.pageSetting = {};
-                    if ($scope.sgNoPager)
-                        pageSetting.pageSize = 100;
-                    else if ($scope.sgPageSize)
-                        pageSetting.pageSize = parseInt($scope.sgPageSize);
-                    else
-                        pageSetting.pageSize = 20;
-                    pageSetting.currentPage = 1;
+                    if (!breadcrumbs.listingPageSetting) breadcrumbs.listingPageSetting = {};
+                    var pageSetting = $scope.pageSetting = breadcrumbs.listingPageSetting;
+                    if (!pageSetting.hasOwnProperty('pageSize')) {
+                        if ($scope.sgNoPager)
+                            pageSetting.pageSize = 100;
+                        else if ($scope.sgPageSize)
+                            pageSetting.pageSize = parseInt($scope.sgPageSize);
+                        else
+                            pageSetting.pageSize = 20;
+                        pageSetting.currentPage = 1;
+                    }
                     pageSetting.totalItems = $scope.data.length;
 
                     $scope.modalSearchReset = function(){
@@ -830,11 +835,13 @@ angular.module('pzutil.simplegrid', ['pzutil.services','pzutil.modal'])
                         $scope.changed(pageSetting.currentPage);
                     });
 
-                    var initSort = $scope.sgSortField;
-                    var initSortOrder = true;
-                    if (initSort && initSort.substr(0,1)=="!"){
-                        initSortOrder = false;
-                        initSort = initSort.substr(1);
+                    if (!pageSetting.initSort) {
+                        pageSetting.initSort = $scope.sgSortField;
+                        pageSetting.initSortOrder = true;
+                        if (pageSetting.initSort && pageSetting.initSort.substr(0,1)=="!"){
+                            pageSetting.initSortOrder = false;
+                            pageSetting.initSort = pageSetting.initSort.substr(1);
+                        }
                     }
                     if ($scope.columns && $scope.columns.length>0) {
                         var col = _.find($scope.columns, {name: initSort}) || $scope.columns[0];
