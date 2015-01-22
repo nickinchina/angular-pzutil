@@ -804,7 +804,7 @@ angular.module('pzutil.simplegrid', ['pzutil.services','pzutil.modal'])
                     };
                     if ($scope.sgGlobalSearch) {
                         $scope.$watch(function() {
-                            return breadcrumbs.listingSearch ;
+                            return $scope.searchService.listingSearch ;
                         }, function() {
                             (function(x){
                                 $timeout(function(){
@@ -814,13 +814,15 @@ angular.module('pzutil.simplegrid', ['pzutil.services','pzutil.modal'])
                                 }, 1000);
                             })(breadcrumbs.listingSearch);
                         });
-                        breadcrumbs.setlistingSearchModel($scope.sgGlobalSearch);
-                        if (!breadcrumbs.listingPageSetting) breadcrumbs.listingPageSetting = {};
-                        $scope.pageSetting = breadcrumbs.listingPageSetting;
+                        var rm = breadcrumbs.setlistingSearchModel($scope.sgGlobalSearch);
+                        if (!rm.listingPageSetting) rm.listingPageSetting = {};
+                        $scope.pageSetting = rm.listingPageSetting;
+                        $scope.searchService = rm;
                     }
-                    else
+                    else {
                         $scope.pageSetting = {};
-
+                        $scope.searchService = breadcrumbs;
+                    }
 
                     var pageSetting = $scope.pageSetting;
                     if (!pageSetting.hasOwnProperty('pageSize')) {
