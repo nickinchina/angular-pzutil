@@ -327,7 +327,7 @@ angular.module('pzutil.simplegrid', ['pzutil.services','pzutil.modal'])
                             $scope.resetChecks();
                         }
                         var scopeData = $scope.data;
-                        if (pageSetting.modalSearchCriteria){
+                        if (pageSetting.modalSearchCriteria && $scope.sgModalSearchTemplate){
                             scopeData = $scope.sgModalSearch({list:scopeData,c:pageSetting.modalSearchCriteria,lk:$scope.myLookup});
                         }
                         var data = null;
