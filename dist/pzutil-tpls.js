@@ -2,7 +2,7 @@
  * pzutil
  * 
 
- * Version: 0.0.18 - 2015-01-23
+ * Version: 0.0.18 - 2015-01-28
  * License: MIT
  */
 angular.module("pzutil", ["pzutil.tpls", "pzutil.aditem","pzutil.adpublish","pzutil.download","pzutil.image","pzutil.modal","pzutil.rest","pzutil.retailhelper","pzutil.services","pzutil.simplegrid","pzutil.tree","pzutil.ztemplate"]);
@@ -451,10 +451,11 @@ angular.module('pzutil.simplegrid', ['pzutil.services','pzutil.modal'])
                 var checkbox = this.checkbox ? "checkbox checkbox-cell " :"";
                 var inactive = (item && item.inactive);
                 if (inactive) checkbox += " sg-deleted";
+                w = w * 2;
                 if (this.align)
-                    return checkbox + 'sg-gridrow-cell col-md-' + w + ' text-' + this.align;
+                    return checkbox + 'sg-gridrow-cell col-sg-' + w + ' text-' + this.align;
                 else
-                    return checkbox + 'sg-gridrow-cell col-md-' + w;
+                    return checkbox + 'sg-gridrow-cell col-sg-' + w;
             };
             mixin.prototype.$sort = function(){
                 this.sortOrder = !this.sortOrder;
