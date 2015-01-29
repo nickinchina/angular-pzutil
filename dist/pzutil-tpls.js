@@ -732,6 +732,9 @@ angular.module('pzutil.simplegrid', ['pzutil.services','pzutil.modal'])
                         return  $scope.items.indexOf(item)+1;
                     };
                     $scope.public = $scope.sgPublic || {};
+                    $scope.public.resetSearch = function(){
+                        breadcrumbs.listingSearchModel = $scope.sgGlobalSearch;
+                    };
                     $scope.public.refresh = $scope.changed = function(page, reset) {
                         var ps = pageSetting.pageSize;
                         page = page || pageSetting.currentPage;
