@@ -2,7 +2,7 @@
  * pzutil
  * 
 
- * Version: 0.0.18 - 2015-01-28
+ * Version: 0.0.18 - 2015-01-29
  * License: MIT
  */
 angular.module("pzutil", ["pzutil.tpls", "pzutil.aditem","pzutil.adpublish","pzutil.download","pzutil.image","pzutil.modal","pzutil.rest","pzutil.retailhelper","pzutil.services","pzutil.simplegrid","pzutil.tree","pzutil.ztemplate"]);
@@ -574,7 +574,7 @@ angular.module('pzutil.simplegrid', ['pzutil.services','pzutil.modal'])
                 restrict:'E',
                 replace:true,
                 scope: { data:"=sgData", listItems:"=",  sgAddObject:"&", sgSortOptions:"=", itemtemplate:"=sgTemplate",sgColumns:"@",sgDelObject:"&", sgAllowDel:"@",
-                    sgNoPager:'=', sgOnClick:'&', sgLookup:"&", sgGlobalSearch:"@",sgPageSize:"@" ,sgOptions:"=", sgOnChange:"&", sgLookupTitle:"&",sgSortField:"=",sgVirtual:"@",
+                    sgNoPager:'=', sgOnClick:'&', sgLookup:"&", sgGlobalSearch:"@", sgLocalSearch:"@",sgPageSize:"@" ,sgOptions:"=", sgOnChange:"&", sgLookupTitle:"&",sgSortField:"=",sgVirtual:"@",
                     sgCheckColumn:"@", sgCustomSearch:"&", sgModalSearchTemplate:"=", sgModalSearchController:"=", sgModalSearchResolve:"=", sgModalSearch:"&", sgExportTitle:"@",
                     sgPublic:"="},
                 templateUrl: function($element, $attrs) {
@@ -744,9 +744,9 @@ angular.module('pzutil.simplegrid', ['pzutil.services','pzutil.modal'])
                             scopeData = $scope.sgModalSearch({list:scopeData,c:pageSetting.modalSearchCriteria,lk:$scope.myLookup});
                         }
                         var data = null;
-                        if ($scope.sgGlobalSearch && breadcrumbs.listingSearch && breadcrumbs.listingSearch!="")
+                        if (($scope.sgGlobalSearch || $scope.sgLocalSearch) && $scope.searchService.listingSearch && $scope.searchService.listingSearch!="")
                         {
-                            var searchString = breadcrumbs.listingSearch.toLowerCase();
+                            var searchString = $scope.searchService.listingSearch.toLowerCase();
                             data = _.filter(scopeData, function(i){
                                 for (var c = 0; c< $scope.columns.length; c++){
                                     var col =  $scope.columns[c].name;
@@ -810,11 +810,11 @@ angular.module('pzutil.simplegrid', ['pzutil.services','pzutil.modal'])
                         }, function() {
                             (function(x){
                                 $timeout(function(){
-                                    if (x==breadcrumbs.listingSearch) {
+                                    if (x==$scope.searchService.listingSearch) {
                                         $scope.changed(pageSetting.currentPage);
                                     }
                                 }, 1000);
-                            })(breadcrumbs.listingSearch);
+                            })($scope.searchService.listingSearch);
                         });
                         var rm = breadcrumbs.setlistingSearchModel($scope.sgGlobalSearch);
                         if (!rm.listingPageSetting) rm.listingPageSetting = {};
@@ -823,7 +823,7 @@ angular.module('pzutil.simplegrid', ['pzutil.services','pzutil.modal'])
                     }
                     else {
                         $scope.pageSetting = {};
-                        $scope.searchService = breadcrumbs;
+                        $scope.searchService = {};
                     }
 
                     var pageSetting = $scope.pageSetting;
@@ -1232,6 +1232,7 @@ angular.module("template/simplegrid/header.html", []).run(["$templateCache", fun
     "    <button type=\"button\" class=\"btn btn-default\"  ng-click=\"export()\"><i class=\"fa fa-file-excel-o\"></i> {{'common.Export' | i18n}}</button>\n" +
     "    <button type=\"button\" class=\"btn btn-default pull-right\"  ng-click=\"checkAll()\" ng-if=\"sgModalSearchTemplate\"><i class=\"fa fa-check\"></i> {{'common.checkAll' | i18n}}</button>\n" +
     "    <span class=\"pull-right\" style=\"margin-right: 10px\"  ng-if=\"sgModalSearchTemplate\"><small>To select, press <kbd>CTRL</kbd> key to click</small></span>\n" +
+    "    <input type=\"text\" placeholder=\"Search\" class=\"form-control\" ng-model=\"searchService.listingSearch\" ng-if=\"sgLocalSearch\">\n" +
     "</div>\n" +
     "<div class=\"row sg-gridheader\" >\n" +
     "    <div class=\"{{col.$getColumnClass()}}\" ng-click=\"col.$sort()\" ng-repeat=\"col in columns\">\n" +
