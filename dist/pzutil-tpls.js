@@ -804,7 +804,7 @@ angular.module('pzutil.simplegrid', ['pzutil.services','pzutil.modal'])
                             loader();
                         }
                     };
-                    if ($scope.sgGlobalSearch) {
+                    if ($scope.sgGlobalSearch || $scope.sgLocalSearch) {
                         $scope.$watch(function() {
                             return $scope.searchService.listingSearch ;
                         }, function() {
@@ -816,10 +816,16 @@ angular.module('pzutil.simplegrid', ['pzutil.services','pzutil.modal'])
                                 }, 1000);
                             })($scope.searchService.listingSearch);
                         });
-                        var rm = breadcrumbs.setlistingSearchModel($scope.sgGlobalSearch);
-                        if (!rm.listingPageSetting) rm.listingPageSetting = {};
-                        $scope.pageSetting = rm.listingPageSetting;
-                        $scope.searchService = rm;
+                        if ($scope.sgGlobalSearch) {
+                            var rm = breadcrumbs.setlistingSearchModel($scope.sgGlobalSearch);
+                            if (!rm.listingPageSetting) rm.listingPageSetting = {};
+                            $scope.pageSetting = rm.listingPageSetting;
+                            $scope.searchService = rm;
+                        }
+                        else {
+                            $scope.pageSetting = {};
+                            $scope.searchService = {};
+                        }
                     }
                     else {
                         $scope.pageSetting = {};
@@ -1232,7 +1238,7 @@ angular.module("template/simplegrid/header.html", []).run(["$templateCache", fun
     "    <button type=\"button\" class=\"btn btn-default\"  ng-click=\"export()\"><i class=\"fa fa-file-excel-o\"></i> {{'common.Export' | i18n}}</button>\n" +
     "    <button type=\"button\" class=\"btn btn-default pull-right\"  ng-click=\"checkAll()\" ng-if=\"sgModalSearchTemplate\"><i class=\"fa fa-check\"></i> {{'common.checkAll' | i18n}}</button>\n" +
     "    <span class=\"pull-right\" style=\"margin-right: 10px\"  ng-if=\"sgModalSearchTemplate\"><small>To select, press <kbd>CTRL</kbd> key to click</small></span>\n" +
-    "    <input type=\"text\" placeholder=\"Search\" class=\"form-control\" ng-model=\"searchService.listingSearch\" ng-if=\"sgLocalSearch\">\n" +
+    "    <input type=\"text\" placeholder=\"Search\" class=\"pull-right form-control\" ng-model=\"searchService.listingSearch\" ng-if=\"sgLocalSearch\" style=\"width: auto\">\n" +
     "</div>\n" +
     "<div class=\"row sg-gridheader\" >\n" +
     "    <div class=\"{{col.$getColumnClass()}}\" ng-click=\"col.$sort()\" ng-repeat=\"col in columns\">\n" +
