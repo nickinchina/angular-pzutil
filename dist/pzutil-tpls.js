@@ -823,7 +823,7 @@ angular.module('pzutil.simplegrid', ['pzutil.services','pzutil.modal'])
                             var rm = breadcrumbs.setlistingSearchModel($scope.sgGlobalSearch);
                             if (!rm.listingPageSetting) rm.listingPageSetting = {};
                             $scope.pageSetting = rm.listingPageSetting;
-                            $scope.searchService = rm;
+                            $scope.searchService = breadcrumbs;
                         }
                         else {
                             $scope.pageSetting = {};
