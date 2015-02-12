@@ -2,11 +2,11 @@
  * pzutil
  * 
 
- * Version: 0.0.18 - 2015-01-12
+ * Version: 0.0.18 - 2015-01-29
  * License: MIT
  */
 angular.module("pzutil", ["pzutil.tpls", "pzutil.aditem","pzutil.adpublish","pzutil.download","pzutil.image","pzutil.modal","pzutil.rest","pzutil.retailhelper","pzutil.services","pzutil.simplegrid","pzutil.tree","pzutil.ztemplate"]);
-angular.module("pzutil.tpls", ["template/aditem/aditem.tpl.html","template/adpublish/adpublish_grid.tpl.html","template/adpublish/adpublish_list.tpl.html","template/adpublish/adpublish_slide.tpl.html","template/modal/modal-form.html","template/modal/modal.html","template/modal/wait.html","template/simplegrid/export.html","template/simplegrid/footer-virtual.html","template/simplegrid/footer.html","template/simplegrid/header.html","template/simplegrid/simpleGrid-normal.html","template/simplegrid/simpleGrid-simple.html","template/simplegrid/simpleGrid-virtual.html","template/simplegrid/simpleGrid.html"]);
+angular.module("pzutil.tpls", ["template/aditem/aditem.tpl.html","template/adpublish/adpublish_grid.tpl.html","template/adpublish/adpublish_list.tpl.html","template/adpublish/adpublish_slide.tpl.html","template/modal/modal-form.html","template/modal/modal.html","template/modal/wait.html","template/simplegrid/export.html","template/simplegrid/footer-virtual.html","template/simplegrid/footer.html","template/simplegrid/header.html","template/simplegrid/simpleGrid-dx.html","template/simplegrid/simpleGrid-normal.html","template/simplegrid/simpleGrid-simple.html","template/simplegrid/simpleGrid-virtual.html","template/simplegrid/simpleGrid.html"]);
 /**
  * Created by gordon on 2014/5/26.
  */
@@ -451,10 +451,11 @@ angular.module('pzutil.simplegrid', ['pzutil.services','pzutil.modal'])
                 var checkbox = this.checkbox ? "checkbox checkbox-cell " :"";
                 var inactive = (item && item.inactive);
                 if (inactive) checkbox += " sg-deleted";
+                w = w * 2;
                 if (this.align)
-                    return checkbox + 'sg-gridrow-cell col-md-' + w + ' text-' + this.align;
+                    return checkbox + 'sg-gridrow-cell col-sg-' + w + ' text-' + this.align;
                 else
-                    return checkbox + 'sg-gridrow-cell col-md-' + w;
+                    return checkbox + 'sg-gridrow-cell col-sg-' + w;
             };
             mixin.prototype.$sort = function(){
                 this.sortOrder = !this.sortOrder;
@@ -567,33 +568,15 @@ angular.module('pzutil.simplegrid', ['pzutil.services','pzutil.modal'])
                 $modalInstance.dismiss('cancel');
             };
         }])
-    .factory("simpleGridSearchWorker",['$q',function($q){
-        var worker;
-        return {
-            search : function(crit, fun){
-                var defer = $q.defer();
-                var blob = new Blob(["onmessage = " + fun.toString()]);
-                var blobURL = window.URL.createObjectURL(blob);
-                if (worker) worker.terminate();
-                worker = new Worker(blobURL);
-                worker.addEventListener('message', function(e) {
-                    console.log('Worker said: ', e.data);
-                    defer.resolve(e.data);
-                }, false);
-                worker.postMessage(crit); // Send data to our worker.
-                return defer.promise;
-            }
-        };
-
-    }])
-    .directive('simpleGrid', ['sgColumn', 'breadcrumbs', 'localizedMessages','crudWait', '$modal','simpleGridExport', 'simpleGridSearchWorker',
-        function (sgColumn, breadcrumbs, localizedMessages,crudWait,$modal,simpleGridExport,simpleGridSearchWorker) {
+    .directive('simpleGrid', ['sgColumn', 'breadcrumbs', 'localizedMessages','crudWait', '$modal','simpleGridExport','$timeout',
+        function (sgColumn, breadcrumbs, localizedMessages,crudWait,$modal,simpleGridExport,$timeout) {
             return {
                 restrict:'E',
                 replace:true,
                 scope: { data:"=sgData", listItems:"=",  sgAddObject:"&", sgSortOptions:"=", itemtemplate:"=sgTemplate",sgColumns:"@",sgDelObject:"&", sgAllowDel:"@",
-                    sgNoPager:'=', sgOnClick:'&', sgLookup:"&", sgGlobalSearch:"@",sgPageSize:"@" ,sgOptions:"=", sgOnChange:"&", sgLookupTitle:"&",sgSortField:"=",sgVirtual:"@",
-                    sgCheckColumn:"@", sgCustomSearch:"&", sgModalSearchTemplate:"=", sgModalSearchController:"=", sgModalSearchResolve:"=", sgModalSearch:"&", sgExportTitle:"@"},
+                    sgNoPager:'=', sgOnClick:'&', sgLookup:"&", sgGlobalSearch:"@", sgLocalSearch:"@",sgPageSize:"@" ,sgOptions:"=", sgOnChange:"&", sgLookupTitle:"&",sgSortField:"=",sgVirtual:"@",
+                    sgCheckColumn:"@", sgCustomSearch:"&", sgModalSearchTemplate:"=", sgModalSearchController:"=", sgModalSearchResolve:"=", sgModalSearch:"&", sgExportTitle:"@",
+                    sgPublic:"="},
                 templateUrl: function($element, $attrs) {
                     var t = $attrs.sgTemplate;
                     if (t) {
@@ -613,39 +596,41 @@ angular.module('pzutil.simplegrid', ['pzutil.services','pzutil.modal'])
                     }
                 },
                 link: function($scope, $element, $attrs, $controller) {
-                   var sortIt = function(fieldName, sortOrder, sortField, useLookup) {
-                       var sortField = sortField || fieldName;
-                       _($scope.columns).forEach(function(c){
-                           if (c.name != fieldName)
-                               c.sortOrder = undefined;
-                       });
-                       $scope.data.sort(function(a,b) {
-                           var a1,b1;
-                           if (!a.hasOwnProperty(sortField) || col.useLookup){
-                               a1 = $scope.myLookup ?$scope.myLookup({col:sortField,item: a}):undefined;
-                               b1 = $scope.myLookup ?$scope.myLookup({col:sortField,item: b}):undefined;
-                           }
-                           else {
-                               a1 = a[sortField];
-                               b1 = b[sortField];
-                           };
-                           var r;
-                           if (a1==null)
-                               r = -1;
-                           else if (b1==null)
-                               r = 1;
-                           else {
-                               if (angular.isString(a1))
+                    var sortIt = function(fieldName, sortOrder, sortField, useLookup) {
+                        var sortField = sortField || fieldName;
+                        _($scope.columns).forEach(function(c){
+                            if (c.name != fieldName)
+                                c.sortOrder = undefined;
+                        });
+                        $scope.data.sort(function(a,b) {
+                            var a1,b1;
+                            if (!a.hasOwnProperty(sortField) || col.useLookup){
+                                a1 = $scope.myLookup ?$scope.myLookup({col:sortField,item: a}):undefined;
+                                b1 = $scope.myLookup ?$scope.myLookup({col:sortField,item: b}):undefined;
+                            }
+                            else {
+                                a1 = a[sortField];
+                                b1 = b[sortField];
+                            };
+                            var r;
+                            if (a1==null)
+                                r = -1;
+                            else if (b1==null)
+                                r = 1;
+                            else {
+                                if (angular.isString(a1))
                                     r = a1.localeCompare(b1);
-                               else
+                                else
                                     r = (a1 < b1 ? -1:1);
-                           }
+                            }
 
-                           return r*(sortOrder? 1:-1);
-                       });
-                   }
-                   $scope.sorter = function(col) {
-                       sortIt(col.name, col.sortOrder, col.sortField, col.useLookup);
+                            return r*(sortOrder? 1:-1);
+                        });
+                    }
+                    $scope.sorter = function(col) {
+                        pageSetting.initSort = col.name;
+                        pageSetting.initSortOrder = col.sortOrder;
+                        sortIt(col.name, col.sortOrder, col.sortField, col.useLookup);
                     };
                     $scope.AddObject = function(){
                         $scope.data.push(sgColumn.New($scope.sgAddObject()));
@@ -688,26 +673,16 @@ angular.module('pzutil.simplegrid', ['pzutil.services','pzutil.modal'])
                     else
                         $scope.scrollStyle = "";
 
-                    var pageSetting = $scope.pageSetting = {};
-                    if ($scope.sgNoPager)
-                        pageSetting.pageSize = 100;
-                    else if ($scope.sgPageSize)
-                        pageSetting.pageSize = parseInt($scope.sgPageSize);
-                    else
-                        pageSetting.pageSize = 20;
-                    pageSetting.currentPage = 1;
-                    pageSetting.totalItems = $scope.data.length;
-
                     $scope.modalSearchReset = function(){
-                        if ($scope.modalSearchCriteria) {
-                            $scope.modalSearchCriteria = undefined;
+                        if (pageSetting.modalSearchCriteria) {
+                            pageSetting.modalSearchCriteria = undefined;
                             $scope.changed(pageSetting.currentPage);
                         }
                     }
                     $scope.modalSearch = function() {
                         var s = $scope.sgModalSearchResolve;
                         s.item = function () {
-                            return   $scope.modalSearchCriteria || {};
+                            return   pageSetting.modalSearchCriteria || {};
                         };
                         var  modalInstance = $modal.open({
                             templateUrl: $scope.sgModalSearchTemplate,
@@ -716,7 +691,7 @@ angular.module('pzutil.simplegrid', ['pzutil.services','pzutil.modal'])
                         });
 
                         modalInstance.result.then(function (r) {
-                            $scope.modalSearchCriteria = r;
+                            pageSetting.modalSearchCriteria = r;
                             $scope.changed(pageSetting.currentPage);
                         }, function () {
                         });
@@ -756,34 +731,51 @@ angular.module('pzutil.simplegrid', ['pzutil.services','pzutil.modal'])
                     $scope.getIndex = function(item){
                         return  $scope.items.indexOf(item)+1;
                     };
-                    function globalSearch(crit){
+                    $scope.public = $scope.sgPublic || {};
+                    $scope.public.resetSearch = function(){
+                        breadcrumbs.listingSearchModel = $scope.sgGlobalSearch;
+                    };
+                    $scope.public.refresh = $scope.changed = function(page, reset) {
+                        var ps = pageSetting.pageSize;
+                        page = page || pageSetting.currentPage;
+                        pageSetting.currentPage = page;
+                        if (reset){
+                            $scope.resetChecks();
+                        }
+                        var scopeData = $scope.data;
+                        if (pageSetting.modalSearchCriteria && $scope.sgModalSearchTemplate){
+                            scopeData = $scope.sgModalSearch({list:scopeData,c:pageSetting.modalSearchCriteria,lk:$scope.myLookup});
+                        }
                         var data = null;
-                        if (crit.listingSearch && crit.listingSearch!="")
+                        if (($scope.sgGlobalSearch || $scope.sgLocalSearch) && $scope.searchService.listingSearch && $scope.searchService.listingSearch!="")
                         {
-                            var searchString = crit.listingSearch.toLowerCase();
-                            var sc = crit.scope;
-                            data = _.filter(crit.scopeData, function(i){
-                                for (var c = 0; c< sc.columns.length; c++){
-                                    var col =  sc.columns[c].name;
+                            var searchString = $scope.searchService.listingSearch.toLowerCase();
+                            data = _.filter(scopeData, function(i){
+                                for (var c = 0; c< $scope.columns.length; c++){
+                                    var col =  $scope.columns[c].name;
                                     var value = i[col];
-                                    if (sc.myLookup)
-                                        value = sc.myLookup({col: col, value:value, item:i});
+                                    if ($scope.myLookup)
+                                        value = $scope.myLookup({col: col, value:value, item:i});
                                     if (value) {
                                         if (value.toString().toLowerCase().indexOf(searchString)>-1)
                                             return true;
                                     }
                                 }
-                                if (sc.sgCustomSearch){
-                                    return sc.sgCustomSearch({item: i, search: searchString});
+                                if ($scope.sgCustomSearch){
+                                    return $scope.sgCustomSearch({item: i, search: searchString});
                                 }
                                 return false;
                             });
+                            pageSetting.totalItems = data.length;
+                            var maxPages = Math.ceil(pageSetting.totalItems / ps);
+                            if (page>maxPages){
+                                page = 1;
+                                pageSetting.currentPage = page;
+                            }
                         }
                         else
-                            data = crit.scopeData;
-                        return data;
-                    };
-                    function loadSearch(data){
+                            data =  scopeData;
+
                         if ($scope.listItems && angular.isArray($scope.listItems)){
                             $scope.listItems.length = 0;
                             $scope.listItems.push.apply($scope.listItems, data);
@@ -815,52 +807,45 @@ angular.module('pzutil.simplegrid', ['pzutil.services','pzutil.modal'])
                             loader();
                         }
                     };
-                    $scope.changed = function(page, reset) {
-                        var ps = pageSetting.pageSize;
-                        pageSetting.currentPage = page;
-                        if (reset){
-                            $scope.resetChecks();
-                        }
-                        var scopeData = $scope.data;
-                        if ($scope.modalSearchCriteria){
-                            scopeData = $scope.sgModalSearch({list:scopeData,c:$scope.modalSearchCriteria,lk:$scope.myLookup});
-                        }
-                        var data = globalSearch({
-                            scopeData : scopeData,
-                            listingSearch : listingSearch,
-                            scope : $scope
-                        });
-                        if (data != scopeData)
-                        {
-                            pageSetting.totalItems = data.length;
-                            var maxPages = Math.ceil(pageSetting.totalItems / ps);
-                            if (page>maxPages){
-                                page = 1;
-                                pageSetting.currentPage = page;
-                            }
-                        }
-                        loadSearch(data);
-
-                    };
-
-                    if ($scope.sgGlobalSearch) {
+                    if ($scope.sgGlobalSearch || $scope.sgLocalSearch) {
                         $scope.$watch(function() {
-                            return breadcrumbs.listingSearch ;
+                            return $scope.searchService.listingSearch ;
                         }, function() {
-                            var scopeData = $scope.data;
-                            if ($scope.modalSearchCriteria){
-                                scopeData = $scope.sgModalSearch({list:scopeData,c:$scope.modalSearchCriteria,lk:$scope.myLookup});
-                            }
-                            simpleGridSearchWorker.search({
-                                scopeData : scopeData,
-                                listingSearch : breadcrumbs.listingSearch,
-                                scope : $scope
-                            }).then(function(r){
-                                loadSearch(r);
-                            })
+                            (function(x){
+                                $timeout(function(){
+                                    if (x==$scope.searchService.listingSearch) {
+                                        $scope.changed(pageSetting.currentPage);
+                                    }
+                                }, 1000);
+                            })($scope.searchService.listingSearch);
                         });
-                        breadcrumbs.setlistingSearchModel($scope.sgGlobalSearch);
+                        if ($scope.sgGlobalSearch) {
+                            var rm = breadcrumbs.setlistingSearchModel($scope.sgGlobalSearch);
+                            if (!rm.listingPageSetting) rm.listingPageSetting = {};
+                            $scope.pageSetting = rm.listingPageSetting;
+                            $scope.searchService = breadcrumbs;
+                        }
+                        else {
+                            $scope.pageSetting = {};
+                            $scope.searchService = {};
+                        }
                     }
+                    else {
+                        $scope.pageSetting = {};
+                        $scope.searchService = {};
+                    }
+
+                    var pageSetting = $scope.pageSetting;
+                    if (!pageSetting.hasOwnProperty('pageSize')) {
+                        if ($scope.sgNoPager)
+                            pageSetting.pageSize = 100;
+                        else if ($scope.sgPageSize)
+                            pageSetting.pageSize = parseInt($scope.sgPageSize);
+                        else
+                            pageSetting.pageSize = 20;
+                        pageSetting.currentPage = 1;
+                    }
+                    pageSetting.totalItems = $scope.data.length;
 
                     $scope.$watchCollection(function() {
                         return $scope.data ;
@@ -868,20 +853,22 @@ angular.module('pzutil.simplegrid', ['pzutil.services','pzutil.modal'])
                         $scope.changed(pageSetting.currentPage);
                     });
 
-                    var initSort = $scope.sgSortField;
-                    var initSortOrder = true;
-                    if (initSort && initSort.substr(0,1)=="!"){
-                        initSortOrder = false;
-                        initSort = initSort.substr(1);
+                    if (!pageSetting.initSort) {
+                        pageSetting.initSort = $scope.sgSortField;
+                        pageSetting.initSortOrder = true;
+                        if (pageSetting.initSort && pageSetting.initSort.substr(0,1)=="!"){
+                            pageSetting.initSortOrder = false;
+                            pageSetting.initSort = pageSetting.initSort.substr(1);
+                        }
                     }
                     if ($scope.columns && $scope.columns.length>0) {
-                        var col = _.find($scope.columns, {name: initSort}) || $scope.columns[0];
-                        col.sortOrder = initSortOrder;
+                        var col = _.find($scope.columns, {name: pageSetting.initSort}) || $scope.columns[0];
+                        col.sortOrder = pageSetting.initSortOrder;
                         $scope.sorter(col);
                     }
                 }
             };
-    }]);
+        }]);
 /**
  * Created by gordon on 2014/4/16.
  */
@@ -1254,6 +1241,7 @@ angular.module("template/simplegrid/header.html", []).run(["$templateCache", fun
     "    <button type=\"button\" class=\"btn btn-default\"  ng-click=\"export()\"><i class=\"fa fa-file-excel-o\"></i> {{'common.Export' | i18n}}</button>\n" +
     "    <button type=\"button\" class=\"btn btn-default pull-right\"  ng-click=\"checkAll()\" ng-if=\"sgModalSearchTemplate\"><i class=\"fa fa-check\"></i> {{'common.checkAll' | i18n}}</button>\n" +
     "    <span class=\"pull-right\" style=\"margin-right: 10px\"  ng-if=\"sgModalSearchTemplate\"><small>To select, press <kbd>CTRL</kbd> key to click</small></span>\n" +
+    "    <input type=\"text\" placeholder=\"Search\" class=\"pull-right form-control\" ng-model=\"searchService.listingSearch\" ng-if=\"sgLocalSearch\" style=\"width: auto\">\n" +
     "</div>\n" +
     "<div class=\"row sg-gridheader\" >\n" +
     "    <div class=\"{{col.$getColumnClass()}}\" ng-click=\"col.$sort()\" ng-repeat=\"col in columns\">\n" +
@@ -1264,8 +1252,8 @@ angular.module("template/simplegrid/header.html", []).run(["$templateCache", fun
     "</div>");
 }]);
 
-angular.module("template/simplegrid/simpleGrid-normal.html", []).run(["$templateCache", function($templateCache) {
-  $templateCache.put("template/simplegrid/simpleGrid-normal.html",
+angular.module("template/simplegrid/simpleGrid-dx.html", []).run(["$templateCache", function($templateCache) {
+  $templateCache.put("template/simplegrid/simpleGrid-dx.html",
     "<div class=\"sg-grid\">\n" +
     "    <ng-include src=\"'template/simplegrid/header.html'\"></ng-include>\n" +
     "    <div style=\"{{scrollStyle}}\">\n" +
@@ -1274,6 +1262,26 @@ angular.module("template/simplegrid/simpleGrid-normal.html", []).run(["$template
     "                <i ng-if=\"$first && item.$__selected\" class=\"fa fa-circle\"></i>\n" +
     "                <i ng-if=\"col.bool\" ng-class=\"{true: 'fa fa-check'}[col.$getValue(item)]\"></i>\n" +
     "                <a href ng-if=\"$first && sgAllowDel\" ng-click=\"DelObject(item)\"><i class= 'glyphicon glyphicon-remove'></i></a>\n" +
+    "                <ng-include  ng-if=\"col.template && (col.template.substr(0,9)=='readonly_' || !item.$core || !item.$core())\" src=\"col.template\"></ng-include>\n" +
+    "                <span ng-if=\"!col.template || (item.$core && item.$core() && col.template.substr(0,9)!='readonly_')\">{{col.$getText(item)}}</span>\n" +
+    "                <i ng-if=\"$last && item.$core && item.$core()\" class=\"fa fa-lock pull-right sg_gridIcon\"></i>\n" +
+    "            </div>\n" +
+    "        </div>\n" +
+    "    </div>\n" +
+    "    <ng-include src=\"'template/simplegrid/footer.html'\"></ng-include>\n" +
+    "</div>");
+}]);
+
+angular.module("template/simplegrid/simpleGrid-normal.html", []).run(["$templateCache", function($templateCache) {
+  $templateCache.put("template/simplegrid/simpleGrid-normal.html",
+    "<div class=\"sg-grid\">\n" +
+    "    <ng-include src=\"'template/simplegrid/header.html'\"></ng-include>\n" +
+    "    <div style=\"{{scrollStyle}}\">\n" +
+    "        <div ng-repeat=\"item in items\" class=\"row sg-gridrow\" ng-click=\"clickRow(item,$event)\" ng-class=\"{true: 'sg-gridrow-active'}[item.$__selected]\" >\n" +
+    "            <div class=\"{{col.$getColumnClass(item)}}\" ng-repeat=\"col in columns\" title=\"{{col.$getText(item)}}\">\n" +
+    "                <i ng-if=\"$first && item.$__selected\" class=\"fa fa-circle\"></i>\n" +
+    "                <i ng-if=\"col.bool\" ng-class=\"{true: 'fa fa-check'}[col.$getValue(item)]\"></i>\n" +
+    "                <a href ng-if=\"$first && sgAllowDel\" ng-click=\"DelObject(item)\"><i class= 'fa fa-minus-circle fa-lg sg_gridIcon text-danger'></i></a>\n" +
     "                <ng-include  ng-if=\"col.template && (col.template.substr(0,9)=='readonly_' || !item.$core || !item.$core())\" src=\"col.template\"></ng-include>\n" +
     "                <span ng-if=\"!col.template || (item.$core && item.$core() && col.template.substr(0,9)!='readonly_')\">{{col.$getText(item)}}</span>\n" +
     "                <i ng-if=\"$last && item.$core && item.$core()\" class=\"fa fa-lock pull-right sg_gridIcon\"></i>\n" +

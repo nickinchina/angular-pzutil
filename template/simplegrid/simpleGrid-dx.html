@@ -2,10 +2,10 @@
     <ng-include src="'template/simplegrid/header.html'"></ng-include>
     <div style="{{scrollStyle}}">
         <div ng-repeat="item in items" class="row sg-gridrow" ng-click="clickRow(item,$event)" ng-class="{true: 'sg-gridrow-active'}[item.$__selected]" >
-            <div class="{{col.$getColumnClass(item)}}" ng-repeat="col in columns" title="{{col.$getText(item)}}">
+            <div class="{{col.$getColumnClass(item)}}" ng-repeat="col in columns">
                 <i ng-if="$first && item.$__selected" class="fa fa-circle"></i>
                 <i ng-if="col.bool" ng-class="{true: 'fa fa-check'}[col.$getValue(item)]"></i>
-                <a href ng-if="$first && sgAllowDel" ng-click="DelObject(item)"><i class= 'fa fa-minus-circle fa-lg sg_gridIcon text-danger'></i></a>
+                <a href ng-if="$first && sgAllowDel" ng-click="DelObject(item)"><i class= 'glyphicon glyphicon-remove'></i></a>
                 <ng-include  ng-if="col.template && (col.template.substr(0,9)=='readonly_' || !item.$core || !item.$core())" src="col.template"></ng-include>
                 <span ng-if="!col.template || (item.$core && item.$core() && col.template.substr(0,9)!='readonly_')">{{col.$getText(item)}}</span>
                 <i ng-if="$last && item.$core && item.$core()" class="fa fa-lock pull-right sg_gridIcon"></i>
