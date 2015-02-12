@@ -9,6 +9,7 @@ angular.module('pzutil.simplegrid', ['pzutil.services','pzutil.modal'])
             var sorter = $scope.sorter,
                 lookup = $scope.myLookup,
                 lookupTitle = $scope.myLookupTitle;
+                agg = $scope.sgAggregate;
             var mixin = function (data) {
                 data.checkbox = ($scope.sgCheckColumn == data.name);
                 angular.extend(this, data);
@@ -66,6 +67,9 @@ angular.module('pzutil.simplegrid', ['pzutil.services','pzutil.modal'])
                 if (lookup)
                     v = lookup({col: this.name, value:v, item: item});
                 return v;
+            };
+            mixin.prototype.$aggregate = function(item){
+                return agg({col:this.name});
             };
             return mixin;
         }
@@ -184,7 +188,7 @@ angular.module('pzutil.simplegrid', ['pzutil.services','pzutil.modal'])
                 replace:true,
                 scope: { data:"=sgData", listItems:"=",  sgAddObject:"&", sgSortOptions:"=", itemtemplate:"=sgTemplate",sgColumns:"@",sgDelObject:"&", sgAllowDel:"@",
                     sgNoPager:'=', sgOnClick:'&', sgLookup:"&", sgGlobalSearch:"@",sgPageSize:"@" ,sgOptions:"=", sgOnChange:"&", sgLookupTitle:"&",sgSortField:"=",sgVirtual:"@",
-                    sgCheckColumn:"@", sgCustomSearch:"&", sgModalSearchTemplate:"=", sgModalSearchController:"=", sgModalSearchResolve:"=", sgModalSearch:"&", sgExportTitle:"@"},
+                    sgCheckColumn:"@", sgCustomSearch:"&", sgModalSearchTemplate:"=", sgModalSearchController:"=", sgModalSearchResolve:"=", sgModalSearch:"&", sgExportTitle:"@", sgAggregate:"&"},
                 templateUrl: function($element, $attrs) {
                     var t = $attrs.sgTemplate;
                     if (t) {

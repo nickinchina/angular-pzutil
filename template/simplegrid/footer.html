@@ -1,3 +1,8 @@
+<div class="row sg-gridrow">
+    <div class="{{col.$getColumnClass(item)}}" ng-repeat="col in columns">
+        <span>{{col.$aggregate()}}</span>
+    </div>
+</div>
 <div class="row">
     <div class="col-md-9">
         <pagination ng-if="!sgNoPager && pageSetting.totalItems>pageSetting.pageSize"
