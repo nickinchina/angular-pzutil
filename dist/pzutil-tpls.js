@@ -2,7 +2,7 @@
  * pzutil
  * 
 
- * Version: 0.0.18 - 2015-01-29
+ * Version: 0.0.18 - 2015-02-12
  * License: MIT
  */
 angular.module("pzutil", ["pzutil.tpls", "pzutil.aditem","pzutil.adpublish","pzutil.download","pzutil.image","pzutil.modal","pzutil.rest","pzutil.retailhelper","pzutil.services","pzutil.simplegrid","pzutil.tree","pzutil.ztemplate"]);
@@ -417,7 +417,9 @@ angular.module('pzutil.simplegrid', ['pzutil.services','pzutil.modal'])
 
             var sorter = $scope.sorter,
                 lookup = $scope.myLookup,
-                lookupTitle = $scope.myLookupTitle;
+                lookupTitle = $scope.myLookupTitle,
+                agg = $scope.sgAgg;
+
             var mixin = function (data) {
                 data.checkbox = ($scope.sgCheckColumn == data.name);
                 angular.extend(this, data);
@@ -476,6 +478,9 @@ angular.module('pzutil.simplegrid', ['pzutil.services','pzutil.modal'])
                 if (lookup)
                     v = lookup({col: this.name, value:v, item: item});
                 return v;
+            };
+            mixin.prototype.$aggregate = function(item){
+                return agg({col:this.name});
             };
             return mixin;
         }
@@ -576,7 +581,7 @@ angular.module('pzutil.simplegrid', ['pzutil.services','pzutil.modal'])
                 scope: { data:"=sgData", listItems:"=",  sgAddObject:"&", sgSortOptions:"=", itemtemplate:"=sgTemplate",sgColumns:"@",sgDelObject:"&", sgAllowDel:"@",
                     sgNoPager:'=', sgOnClick:'&', sgLookup:"&", sgGlobalSearch:"@", sgLocalSearch:"@",sgPageSize:"@" ,sgOptions:"=", sgOnChange:"&", sgLookupTitle:"&",sgSortField:"=",sgVirtual:"@",
                     sgCheckColumn:"@", sgCustomSearch:"&", sgModalSearchTemplate:"=", sgModalSearchController:"=", sgModalSearchResolve:"=", sgModalSearch:"&", sgExportTitle:"@",
-                    sgPublic:"="},
+                    sgPublic:"=", sgAgg:"&"},
                 templateUrl: function($element, $attrs) {
                     var t = $attrs.sgTemplate;
                     if (t) {
@@ -1220,6 +1225,11 @@ angular.module("template/simplegrid/footer-virtual.html", []).run(["$templateCac
 
 angular.module("template/simplegrid/footer.html", []).run(["$templateCache", function($templateCache) {
   $templateCache.put("template/simplegrid/footer.html",
+    "<div class=\"row sg-gridrow\">\n" +
+    "    <div class=\"{{col.$getColumnClass(item)}}\" ng-repeat=\"col in columns\">\n" +
+    "        <span>{{col.$aggregate()}}</span>\n" +
+    "    </div>\n" +
+    "</div>\n" +
     "<div class=\"row\">\n" +
     "    <div class=\"col-md-9\">\n" +
     "        <pagination ng-if=\"!sgNoPager && pageSetting.totalItems>pageSetting.pageSize\"\n" +
