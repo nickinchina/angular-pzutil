@@ -1,6 +1,6 @@
 <div class="row sg-gridrow">
     <div class="{{col.$getColumnClass(item)}}" ng-repeat="col in columns">
-        <span>{{col.$aggregate()}}</span>
+        <span>{{col.$aggregate()|picker:col.format}}</span>
     </div>
 </div>
 <div class="row">
