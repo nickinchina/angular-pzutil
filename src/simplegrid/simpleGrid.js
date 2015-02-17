@@ -175,15 +175,14 @@ angular.module('pzutil.simplegrid', ['pzutil.services','pzutil.modal'])
             restrict:'E',
             replace: true,
             scope: {
-                scChartType:"=",scCategory:"=",scSeries:"=", scData:"=",scSeriesClick:"&",scKeylookup:"&"
+                scChartType:"=",scCategory:"=",scSeries:"=", scData:"=",scSeriesClick:"&",scKeylookup:"&",scChartInstance:"="
             },
             templateUrl: 'template/simplegrid/chart.html',
             link: function(scope, iElement, iAttrs ) {
                 scope.items_chart = [];
                 scope.items = new kendo.data.DataSource({data: []});
-                scope.$watchCollection(function() {
-                    return scope.scData ;
-                }, function() {
+                scope.scChartInstance = scope.scChartInstance ||{};
+                var chartIt = scope.scChartInstance.refresh = function(){
                     scope.items_chart.length = 0;
                     if (scope.scData.length>0){
                         var g;
@@ -212,7 +211,10 @@ angular.module('pzutil.simplegrid', ['pzutil.services','pzutil.modal'])
 
                     }
                     scope.items.data(scope.items_chart);
-                });
+                }
+                scope.$watchCollection(function() {
+                    return scope.scData ;
+                }, chartIt);
             }
         };
     } ])
@@ -275,6 +277,7 @@ angular.module('pzutil.simplegrid', ['pzutil.services','pzutil.modal'])
                             return r*(sortOrder? 1:-1);
                         });
                     }
+                    $scope.chartInstance = {};
                     $scope.chartSeries = [];
                     $scope.charter = function(col) {
                         var f = _.find($scope.chartSeries, {field:col.name});
@@ -291,8 +294,10 @@ angular.module('pzutil.simplegrid', ['pzutil.services','pzutil.modal'])
                             $scope.chartCategory = undefined;
                         else {
                             var c = _.find($scope.columns, {chartCategory:true});
-                            if (c)
+                            if (c) {
                                 $scope.chartCategory = c.name;
+                                $scope.chartInstance.refresh();
+                            }
                         }
                     };
                     $scope.sorter = function(col) {
