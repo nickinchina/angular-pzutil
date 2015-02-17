@@ -284,7 +284,6 @@ angular.module('pzutil.simplegrid', ['pzutil.services','pzutil.modal'])
                     $scope.chartSeries = [];
                     $scope.charter = function(col) {
                         var s = $scope.chartSeries;
-                        s.push.apply(s, $scope.chartSeries);
                         var f = _.find(s, {field:col.name});
                         if (f) {
                             var index = s.indexOf(f);
