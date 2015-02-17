@@ -621,6 +621,7 @@ angular.module('pzutil.simplegrid', ['pzutil.services','pzutil.modal'])
 
                     }
                     scope.items.data(scope.items_chart);
+                    console.log(scope.kendoInstance);
                 }
                 scope.scInstance = scope.scInstance ||{};
                 scope.scInstance.refresh = chartIt;
@@ -1297,7 +1298,8 @@ angular.module("template/simplegrid/chart.html", []).run(["$templateCache", func
     "     k-series=\"scSeries\"\n" +
     "     k-data-source=\"items\"\n" +
     "     k-theme=\"'silver'\"\n" +
-    "     k-series-hover=\"scSeriesClick\"></div>");
+    "     k-series-hover=\"scSeriesClick\"\n" +
+    "     kendo-chart=\"kendoInstance\"></div>");
 }]);
 
 angular.module("template/simplegrid/export.html", []).run(["$templateCache", function($templateCache) {

@@ -212,6 +212,7 @@ angular.module('pzutil.simplegrid', ['pzutil.services','pzutil.modal'])
 
                     }
                     scope.items.data(scope.items_chart);
+                    console.log(scope.kendoInstance);
                 }
                 scope.scInstance = scope.scInstance ||{};
                 scope.scInstance.refresh = chartIt;
