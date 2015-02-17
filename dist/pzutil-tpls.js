@@ -584,15 +584,16 @@ angular.module('pzutil.simplegrid', ['pzutil.services','pzutil.modal'])
             restrict:'E',
             replace: true,
             scope: {
-                scChartType:"=",scCategory:"=",scSeries:"=", scData:"=",scSeriesClick:"&",scKeylookup:"&",scChartInstance:"="
+                scChartType:"=",scCategory:"=",scSeries:"=", scData:"=",scSeriesClick:"&",scKeylookup:"&"
             },
             templateUrl: 'template/simplegrid/chart.html',
             link: function(scope, iElement, iAttrs ) {
                 scope.items_chart = [];
                 scope.items = new kendo.data.DataSource({data: []});
                 scope.scChartInstance = scope.scChartInstance ||{};
-                var chartIt = scope.scChartInstance.refresh = function(){
+                var chartIt = function(){
                     scope.items_chart.length = 0;
+                    console.log('scope.scSeries',scope.scSeries);
                     if (scope.scData.length>0){
                         var g;
                         if (scope.scData[0].hasOwnProperty(scope.scCategory))
@@ -686,7 +687,6 @@ angular.module('pzutil.simplegrid', ['pzutil.services','pzutil.modal'])
                             return r*(sortOrder? 1:-1);
                         });
                     }
-                    $scope.chartInstance = {};
                     $scope.chartSeries = [];
                     $scope.charter = function(col) {
                         var f = _.find($scope.chartSeries, {field:col.name});
@@ -705,7 +705,6 @@ angular.module('pzutil.simplegrid', ['pzutil.services','pzutil.modal'])
                             var c = _.find($scope.columns, {chartCategory:true});
                             if (c) {
                                 $scope.chartCategory = c.name;
-                                $scope.chartInstance.refresh();
                             }
                         }
                     };
@@ -1395,7 +1394,7 @@ angular.module("template/simplegrid/simpleGrid-normal.html", []).run(["$template
     "            </div>\n" +
     "        </div>\n" +
     "        <ng-include src=\"'template/simplegrid/footer.html'\"></ng-include>\n" +
-    "        <simple-grid-chart ng-if=\"!!chartCategory\"  sc-data=\"data\" sc-category=\"chartCategory\" sc-keylookup='chartLookup(col,value)' sc-series='chartSeries' sc-chart-type=\"'area'\" sc-chart-instance=\"chartInstance\" ></simple-grid-chart>\n" +
+    "        <simple-grid-chart ng-if=\"!!chartCategory\"  sc-data=\"data\" sc-category=\"chartCategory\" sc-keylookup='chartLookup(col,value)' sc-series='chartSeries' sc-chart-type=\"'area'\"></simple-grid-chart>\n" +
     "    </div>\n" +
     "</div>");
 }]);
