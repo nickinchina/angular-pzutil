@@ -1311,7 +1311,7 @@ angular.module("template/simplegrid/footer.html", []).run(["$templateCache", fun
   $templateCache.put("template/simplegrid/footer.html",
     "<div class=\"row sg-gridrow\">\n" +
     "    <div class=\"{{col.$getColumnClass(item)}}\" ng-repeat=\"col in columns\">\n" +
-    "        <span class=\"text-success\">{{col.$aggregate()|picker:col.format}}</span>\n" +
+    "        <span class=\"text-success\">{{col.$aggregate()|picker:col.format}} <i class=\"fa fa-bar-chart sg_gridIcon text-info\" ng-if=\"!!col.chartSeries\" ng-click=\"col.$chart()\" style=\"top:50%;\"></i></span>\n" +
     "    </div>\n" +
     "</div>\n" +
     "<div class=\"row\">\n" +
@@ -1340,7 +1340,6 @@ angular.module("template/simplegrid/header.html", []).run(["$templateCache", fun
     "<div class=\"row sg-gridheader\" >\n" +
     "    <div class=\"{{col.$getColumnClass()}}\" ng-click=\"col.$sort()\" ng-repeat=\"col in columns\">\n" +
     "        <span>{{col.$getTitle()}}</span>\n" +
-    "        <i class=\"fa fa-long-arrow-up sg_gridIcon\" ng-if=\"!!col.chartSeries\" ng-click=\"col.$chart()\" style=\"top:50%;\"></i>\n" +
     "        <i class=\"fa fa-long-arrow-down pull-right sg_gridIcon\" ng-show=\"!col.sortOrder && col.sortOrder!=undefined\" style=\"top:50%;\"></i>\n" +
     "        <i class=\"fa fa-long-arrow-up pull-right sg_gridIcon\" ng-show=\"col.sortOrder\" style=\"top:50%;\"></i>\n" +
     "    </div>\n" +
