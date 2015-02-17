@@ -1290,7 +1290,7 @@ angular.module("template/modal/wait.html", []).run(["$templateCache", function($
 
 angular.module("template/simplegrid/chart.html", []).run(["$templateCache", function($templateCache) {
   $templateCache.put("template/simplegrid/chart.html",
-    "<div kendo-chart\n" +
+    "<div kendo-chart=\"kendoInstance\"\n" +
     "     k-chart-area='{background: \"#ffffff\"}'\n" +
     "     k-category-axis='{field: \"category\"}'\n" +
     "     k-legend=\"{ position: 'bottom' }\"\n" +
@@ -1298,8 +1298,7 @@ angular.module("template/simplegrid/chart.html", []).run(["$templateCache", func
     "     k-series=\"scSeries\"\n" +
     "     k-data-source=\"items\"\n" +
     "     k-theme=\"'silver'\"\n" +
-    "     k-series-hover=\"scSeriesClick\"\n" +
-    "     kendo-chart=\"kendoInstance\"></div>");
+    "     k-series-hover=\"scSeriesClick\"></div>");
 }]);
 
 angular.module("template/simplegrid/export.html", []).run(["$templateCache", function($templateCache) {
