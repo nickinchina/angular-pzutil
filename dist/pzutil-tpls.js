@@ -584,7 +584,7 @@ angular.module('pzutil.simplegrid', ['pzutil.services','pzutil.modal'])
             restrict:'E',
             replace: true,
             scope: {
-                scChartType:"=",scCategory:"=",scSeries:"=", scData:"=",scSeriesClick:"&",scKeylookup:"&"
+                scChartType:"=",scCategory:"=",scSeries:"=", scData:"=",scSeriesClick:"&",scKeylookup:"&",scInstance:"="
             },
             templateUrl: 'template/simplegrid/chart.html',
             link: function(scope, iElement, iAttrs ) {
@@ -622,6 +622,8 @@ angular.module('pzutil.simplegrid', ['pzutil.services','pzutil.modal'])
                     }
                     scope.items.data(scope.items_chart);
                 }
+                scope.scInstance = scope.scInstance ||{};
+                scope.scInstance.refresh = chartIt;
                 scope.$watchCollection(function() {
                     return scope.scData ;
                 }, chartIt);
@@ -687,9 +689,10 @@ angular.module('pzutil.simplegrid', ['pzutil.services','pzutil.modal'])
                             return r*(sortOrder? 1:-1);
                         });
                     }
+                    $scope.scInstance = {};
                     $scope.chartSeries = [];
                     $scope.charter = function(col) {
-                        var s = [];
+                        var s = $scope.chartSeries;
                         s.push.apply(s, $scope.chartSeries);
                         var f = _.find(s, {field:col.name});
                         if (f) {
@@ -706,10 +709,12 @@ angular.module('pzutil.simplegrid', ['pzutil.services','pzutil.modal'])
                         else {
                             var c = _.find($scope.columns, {chartCategory:true});
                             if (c) {
-                                $scope.chartCategory = c.name;
+                                if ($scope.chartCategory == c.name)
+                                    $scope.scInstance.refresh();
+                                else
+                                    $scope.chartCategory = c.name;
                             }
-                        }
-                        $scope.chartSeries = s;
+                        };
                     };
                     $scope.sorter = function(col) {
                         pageSetting.initSort = col.name;
@@ -1397,7 +1402,7 @@ angular.module("template/simplegrid/simpleGrid-normal.html", []).run(["$template
     "            </div>\n" +
     "        </div>\n" +
     "        <ng-include src=\"'template/simplegrid/footer.html'\"></ng-include>\n" +
-    "        <simple-grid-chart ng-if=\"!!chartCategory\"  sc-data=\"data\" sc-category=\"chartCategory\" sc-keylookup='chartLookup(col,value)' sc-series='chartSeries' sc-chart-type=\"'area'\"></simple-grid-chart>\n" +
+    "        <simple-grid-chart ng-if=\"!!chartCategory\"  sc-data=\"data\" sc-category=\"chartCategory\" sc-keylookup='chartLookup(col,value)' sc-series='chartSeries' sc-chart-type=\"'area'\" sc-instance=\"scInstance\"></simple-grid-chart>\n" +
     "    </div>\n" +
     "</div>");
 }]);

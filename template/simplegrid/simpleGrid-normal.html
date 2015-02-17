@@ -14,6 +14,6 @@
             </div>
         </div>
         <ng-include src="'template/simplegrid/footer.html'"></ng-include>
-        <simple-grid-chart ng-if="!!chartCategory"  sc-data="data" sc-category="chartCategory" sc-keylookup='chartLookup(col,value)' sc-series='chartSeries' sc-chart-type="'area'"></simple-grid-chart>
+        <simple-grid-chart ng-if="!!chartCategory"  sc-data="data" sc-category="chartCategory" sc-keylookup='chartLookup(col,value)' sc-series='chartSeries' sc-chart-type="'area'" sc-instance="scInstance"></simple-grid-chart>
     </div>
 </div>
