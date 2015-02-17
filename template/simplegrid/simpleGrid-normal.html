@@ -1,6 +1,6 @@
 <div class="sg-grid">
     <ng-include src="'template/simplegrid/header.html'"></ng-include>
-    <div style="position: relative">
+    <div>
         <div style="{{scrollStyle}}">
             <div ng-repeat="item in items" class="row sg-gridrow" ng-click="clickRow(item,$event)" ng-class="{true: 'sg-gridrow-active'}[item.$__selected]" >
                 <div class="{{col.$getColumnClass(item)}}" ng-repeat="col in columns" title="{{col.$getText(item)}}">
@@ -14,6 +14,6 @@
             </div>
         </div>
         <ng-include src="'template/simplegrid/footer.html'"></ng-include>
-        <simple-grid-chart style="position: absolute" ng-if="!!chartCategory"  sc-data="data" sc-category="chartCategory" sc-keylookup='chartLookup(col,value)' sc-series='chartSeries' sc-chart-type="'area'" ></simple-grid-chart>
+        <simple-grid-chart ng-if="!!chartCategory"  sc-data="data" sc-category="chartCategory" sc-keylookup='chartLookup(col,value)' sc-series='chartSeries' sc-chart-type="'area'" ></simple-grid-chart>
     </div>
 </div>

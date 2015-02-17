@@ -1376,7 +1376,7 @@ angular.module("template/simplegrid/simpleGrid-normal.html", []).run(["$template
   $templateCache.put("template/simplegrid/simpleGrid-normal.html",
     "<div class=\"sg-grid\">\n" +
     "    <ng-include src=\"'template/simplegrid/header.html'\"></ng-include>\n" +
-    "    <div style=\"position: relative\">\n" +
+    "    <div>\n" +
     "        <div style=\"{{scrollStyle}}\">\n" +
     "            <div ng-repeat=\"item in items\" class=\"row sg-gridrow\" ng-click=\"clickRow(item,$event)\" ng-class=\"{true: 'sg-gridrow-active'}[item.$__selected]\" >\n" +
     "                <div class=\"{{col.$getColumnClass(item)}}\" ng-repeat=\"col in columns\" title=\"{{col.$getText(item)}}\">\n" +
@@ -1390,7 +1390,7 @@ angular.module("template/simplegrid/simpleGrid-normal.html", []).run(["$template
     "            </div>\n" +
     "        </div>\n" +
     "        <ng-include src=\"'template/simplegrid/footer.html'\"></ng-include>\n" +
-    "        <simple-grid-chart style=\"position: absolute\" ng-if=\"!!chartCategory\"  sc-data=\"data\" sc-category=\"chartCategory\" sc-keylookup='chartLookup(col,value)' sc-series='chartSeries' sc-chart-type=\"'area'\" ></simple-grid-chart>\n" +
+    "        <simple-grid-chart ng-if=\"!!chartCategory\"  sc-data=\"data\" sc-category=\"chartCategory\" sc-keylookup='chartLookup(col,value)' sc-series='chartSeries' sc-chart-type=\"'area'\" ></simple-grid-chart>\n" +
     "    </div>\n" +
     "</div>");
 }]);
