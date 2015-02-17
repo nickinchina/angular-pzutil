@@ -684,6 +684,7 @@ angular.module('pzutil.simplegrid', ['pzutil.services','pzutil.modal'])
                             return r*(sortOrder? 1:-1);
                         });
                     }
+                    $scope.chartSeries = [];
                     $scope.charter = function(col) {
                         var f = _.find($scope.chartSeries, {field:col.name});
                         if (f) {
