@@ -280,17 +280,19 @@ angular.module('pzutil.simplegrid', ['pzutil.services','pzutil.modal'])
                     }
                     $scope.chartSeries = [];
                     $scope.charter = function(col) {
-                        var f = _.find($scope.chartSeries, {field:col.name});
+                        var s = [];
+                        s.push.apply(s, $scope.chartSeries);
+                        var f = _.find(s, {field:col.name});
                         if (f) {
-                            var index = $scope.chartSeries.indexOf(f);
-                            $scope.chartSeries.splice(index, 1);
+                            var index = s.indexOf(f);
+                            s.splice(index, 1);
                         }
                         else {
-                            $scope.chartSeries.push({
+                            s.push({
                                 field : col.name,name: col.$getTitle()
                             });
                         }
-                        if ($scope.chartSeries.length==0)
+                        if (s.length==0)
                             $scope.chartCategory = undefined;
                         else {
                             var c = _.find($scope.columns, {chartCategory:true});
@@ -298,6 +300,7 @@ angular.module('pzutil.simplegrid', ['pzutil.services','pzutil.modal'])
                                 $scope.chartCategory = c.name;
                             }
                         }
+                        $scope.chartSeries = s;
                     };
                     $scope.sorter = function(col) {
                         pageSetting.initSort = col.name;

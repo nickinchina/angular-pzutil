@@ -689,17 +689,19 @@ angular.module('pzutil.simplegrid', ['pzutil.services','pzutil.modal'])
                     }
                     $scope.chartSeries = [];
                     $scope.charter = function(col) {
-                        var f = _.find($scope.chartSeries, {field:col.name});
+                        var s = [];
+                        s.push.apply(s, $scope.chartSeries);
+                        var f = _.find(s, {field:col.name});
                         if (f) {
-                            var index = $scope.chartSeries.indexOf(f);
-                            $scope.chartSeries.splice(index, 1);
+                            var index = s.indexOf(f);
+                            s.splice(index, 1);
                         }
                         else {
-                            $scope.chartSeries.push({
+                            s.push({
                                 field : col.name,name: col.$getTitle()
                             });
                         }
-                        if ($scope.chartSeries.length==0)
+                        if (s.length==0)
                             $scope.chartCategory = undefined;
                         else {
                             var c = _.find($scope.columns, {chartCategory:true});
@@ -707,6 +709,7 @@ angular.module('pzutil.simplegrid', ['pzutil.services','pzutil.modal'])
                                 $scope.chartCategory = c.name;
                             }
                         }
+                        $scope.chartSeries = s;
                     };
                     $scope.sorter = function(col) {
                         pageSetting.initSort = col.name;
@@ -1319,7 +1322,7 @@ angular.module("template/simplegrid/footer-virtual.html", []).run(["$templateCac
 
 angular.module("template/simplegrid/footer.html", []).run(["$templateCache", function($templateCache) {
   $templateCache.put("template/simplegrid/footer.html",
-    "<div class=\"row sg-gridrow\">\n" +
+    "<div class=\"row sg-gridrow\" ng-if=\"!!sgAgg\">\n" +
     "    <div class=\"{{col.$getColumnClass(item)}}\" ng-repeat=\"col in columns\">\n" +
     "        <span class=\"text-success\">{{col.$aggregate()|picker:col.format}} <i class=\"fa fa-bar-chart sg_gridIcon text-info\" ng-if=\"!!col.chartSeries\" ng-click=\"col.$chart()\" style=\"top:50%;\"></i></span>\n" +
     "    </div>\n" +
