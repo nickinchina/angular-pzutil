@@ -2,7 +2,7 @@
  * pzutil
  * 
 
- * Version: 0.0.18 - 2015-02-14
+ * Version: 0.0.18 - 2015-02-17
  * License: MIT
  */
 angular.module("pzutil", ["pzutil.tpls", "pzutil.aditem","pzutil.adpublish","pzutil.download","pzutil.image","pzutil.modal","pzutil.rest","pzutil.retailhelper","pzutil.services","pzutil.simplegrid","pzutil.tree","pzutil.ztemplate"]);
@@ -1227,7 +1227,7 @@ angular.module("template/simplegrid/footer.html", []).run(["$templateCache", fun
   $templateCache.put("template/simplegrid/footer.html",
     "<div class=\"row sg-gridrow\">\n" +
     "    <div class=\"{{col.$getColumnClass(item)}}\" ng-repeat=\"col in columns\">\n" +
-    "        <span>{{col.$aggregate()|picker:col.format}}</span>\n" +
+    "        <span class=\"text-success\">{{col.$aggregate()|picker:col.format}}</span>\n" +
     "    </div>\n" +
     "</div>\n" +
     "<div class=\"row\">\n" +
