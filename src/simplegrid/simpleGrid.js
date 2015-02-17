@@ -9,13 +9,15 @@ angular.module('pzutil.simplegrid', ['pzutil.services','pzutil.modal'])
             var sorter = $scope.sorter,
                 lookup = $scope.myLookup,
                 lookupTitle = $scope.myLookupTitle,
-                agg = $scope.sgAgg;
+                agg = $scope.sgAgg,
+                charter = $scope.charter;
 
             var mixin = function (data) {
                 data.checkbox = ($scope.sgCheckColumn == data.name);
                 angular.extend(this, data);
             };
             mixin.sorter = sorter;
+            mixin.charter = charter;
             mixin.New = function(o) { return new mixin(o);};
             mixin.Parse = function(attr) {
                 if (attr) {
@@ -53,6 +55,9 @@ angular.module('pzutil.simplegrid', ['pzutil.services','pzutil.modal'])
             mixin.prototype.$sort = function(){
                 this.sortOrder = !this.sortOrder;
                 mixin.sorter(this);
+            }
+            mixin.prototype.$chart = function(){
+                mixin.charter(this);
             }
             mixin.prototype.$getText = function(item){
                 var v = item[this.name];
@@ -164,6 +169,53 @@ angular.module('pzutil.simplegrid', ['pzutil.services','pzutil.modal'])
                 $modalInstance.dismiss('cancel');
             };
         }])
+
+    .directive('simpleGridChart', [ function() {
+        return {
+            restrict:'E',
+            replace: true,
+            scope: {
+                scChartType:"=",scCategory:"=",scSeries:"=", scData:"=",scSeriesClick:"&",scKeylookup:"&"
+            },
+            templateUrl: 'template/simplegrid/chart.html',
+            link: function(scope, iElement, iAttrs ) {
+                scope.items_chart = [];
+                scope.items = new kendo.data.DataSource({data: []});
+                scope.$watchCollection(function() {
+                    return scope.scData ;
+                }, function() {
+                    scope.items_chart.length = 0;
+                    if (scope.scData.length>0){
+                        var g;
+                        if (scope.scData[0].hasOwnProperty(scope.scCategory))
+                            g = _.groupBy(scope.scData, scope.scCategory);
+                        else {
+                            var lines = [];
+                            _(scope.scData).forEach(function(i){
+                                lines.push.apply(lines, i.lines);
+                            });
+                            g = _.groupBy(lines, scope.scCategory);
+                        }
+                        for (var key in g){
+                            var item = {category : scope.scKeylookup({col: scope.scCategory, value:key})};
+                            scope.items_chart.push(item);
+                            _(g[key]).forEach(function(i){
+                                _(scope.scSeries).forEach(function(j){
+                                    var s = j.field;
+                                    var o = item[s] || 0;
+                                    item[s] = o + (i[s] || 0);
+                                })
+                            })
+                        }
+                    }
+                    if (scope.items_chart.length){
+
+                    }
+                    scope.items.data(scope.items_chart);
+                });
+            }
+        };
+    } ])
     .directive('simpleGrid', ['sgColumn', 'breadcrumbs', 'localizedMessages','crudWait', '$modal','simpleGridExport','$timeout',
         function (sgColumn, breadcrumbs, localizedMessages,crudWait,$modal,simpleGridExport,$timeout) {
             return {
@@ -223,6 +275,25 @@ angular.module('pzutil.simplegrid', ['pzutil.services','pzutil.modal'])
                             return r*(sortOrder? 1:-1);
                         });
                     }
+                    $scope.charter = function(col) {
+                        var f = _.find($scope.chartSeries, {field:col.name});
+                        if (f) {
+                            var index = $scope.chartSeries.indexOf(f);
+                            $scope.chartSeries.splice(index, 1);
+                        }
+                        else {
+                            $scope.chartSeries.push({
+                                field : col.name,name: col.$getTitle()
+                            });
+                        }
+                        if ($scope.chartSeries.length==0)
+                            $scope.chartCategory = undefined;
+                        else {
+                            var c = _.find($scope.columns, {chartCategory:true});
+                            if (c)
+                                $scope.chartCategory = c.name;
+                        }
+                    };
                     $scope.sorter = function(col) {
                         pageSetting.initSort = col.name;
                         pageSetting.initSortOrder = col.sortOrder;

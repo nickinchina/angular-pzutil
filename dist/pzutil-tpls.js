@@ -6,7 +6,7 @@
  * License: MIT
  */
 angular.module("pzutil", ["pzutil.tpls", "pzutil.aditem","pzutil.adpublish","pzutil.download","pzutil.image","pzutil.modal","pzutil.rest","pzutil.retailhelper","pzutil.services","pzutil.simplegrid","pzutil.tree","pzutil.ztemplate"]);
-angular.module("pzutil.tpls", ["template/aditem/aditem.tpl.html","template/adpublish/adpublish_grid.tpl.html","template/adpublish/adpublish_list.tpl.html","template/adpublish/adpublish_slide.tpl.html","template/modal/modal-form.html","template/modal/modal.html","template/modal/wait.html","template/simplegrid/export.html","template/simplegrid/footer-virtual.html","template/simplegrid/footer.html","template/simplegrid/header.html","template/simplegrid/simpleGrid-dx.html","template/simplegrid/simpleGrid-normal.html","template/simplegrid/simpleGrid-simple.html","template/simplegrid/simpleGrid-virtual.html","template/simplegrid/simpleGrid.html"]);
+angular.module("pzutil.tpls", ["template/aditem/aditem.tpl.html","template/adpublish/adpublish_grid.tpl.html","template/adpublish/adpublish_list.tpl.html","template/adpublish/adpublish_slide.tpl.html","template/modal/modal-form.html","template/modal/modal.html","template/modal/wait.html","template/simplegrid/chart.html","template/simplegrid/export.html","template/simplegrid/footer-virtual.html","template/simplegrid/footer.html","template/simplegrid/header.html","template/simplegrid/simpleGrid-dx.html","template/simplegrid/simpleGrid-normal.html","template/simplegrid/simpleGrid-simple.html","template/simplegrid/simpleGrid-virtual.html","template/simplegrid/simpleGrid.html"]);
 /**
  * Created by gordon on 2014/5/26.
  */
@@ -418,13 +418,15 @@ angular.module('pzutil.simplegrid', ['pzutil.services','pzutil.modal'])
             var sorter = $scope.sorter,
                 lookup = $scope.myLookup,
                 lookupTitle = $scope.myLookupTitle,
-                agg = $scope.sgAgg;
+                agg = $scope.sgAgg,
+                charter = $scope.charter;
 
             var mixin = function (data) {
                 data.checkbox = ($scope.sgCheckColumn == data.name);
                 angular.extend(this, data);
             };
             mixin.sorter = sorter;
+            mixin.charter = charter;
             mixin.New = function(o) { return new mixin(o);};
             mixin.Parse = function(attr) {
                 if (attr) {
@@ -462,6 +464,9 @@ angular.module('pzutil.simplegrid', ['pzutil.services','pzutil.modal'])
             mixin.prototype.$sort = function(){
                 this.sortOrder = !this.sortOrder;
                 mixin.sorter(this);
+            }
+            mixin.prototype.$chart = function(){
+                mixin.charter(this);
             }
             mixin.prototype.$getText = function(item){
                 var v = item[this.name];
@@ -573,6 +578,53 @@ angular.module('pzutil.simplegrid', ['pzutil.services','pzutil.modal'])
                 $modalInstance.dismiss('cancel');
             };
         }])
+
+    .directive('simpleGridChart', [ function() {
+        return {
+            restrict:'E',
+            replace: true,
+            scope: {
+                scChartType:"=",scCategory:"=",scSeries:"=", scData:"=",scSeriesClick:"&",scKeylookup:"&"
+            },
+            templateUrl: 'template/simplegrid/chart.html',
+            link: function(scope, iElement, iAttrs ) {
+                scope.items_chart = [];
+                scope.items = new kendo.data.DataSource({data: []});
+                scope.$watchCollection(function() {
+                    return scope.scData ;
+                }, function() {
+                    scope.items_chart.length = 0;
+                    if (scope.scData.length>0){
+                        var g;
+                        if (scope.scData[0].hasOwnProperty(scope.scCategory))
+                            g = _.groupBy(scope.scData, scope.scCategory);
+                        else {
+                            var lines = [];
+                            _(scope.scData).forEach(function(i){
+                                lines.push.apply(lines, i.lines);
+                            });
+                            g = _.groupBy(lines, scope.scCategory);
+                        }
+                        for (var key in g){
+                            var item = {category : scope.scKeylookup({col: scope.scCategory, value:key})};
+                            scope.items_chart.push(item);
+                            _(g[key]).forEach(function(i){
+                                _(scope.scSeries).forEach(function(j){
+                                    var s = j.field;
+                                    var o = item[s] || 0;
+                                    item[s] = o + (i[s] || 0);
+                                })
+                            })
+                        }
+                    }
+                    if (scope.items_chart.length){
+
+                    }
+                    scope.items.data(scope.items_chart);
+                });
+            }
+        };
+    } ])
     .directive('simpleGrid', ['sgColumn', 'breadcrumbs', 'localizedMessages','crudWait', '$modal','simpleGridExport','$timeout',
         function (sgColumn, breadcrumbs, localizedMessages,crudWait,$modal,simpleGridExport,$timeout) {
             return {
@@ -632,6 +684,25 @@ angular.module('pzutil.simplegrid', ['pzutil.services','pzutil.modal'])
                             return r*(sortOrder? 1:-1);
                         });
                     }
+                    $scope.charter = function(col) {
+                        var f = _.find($scope.chartSeries, {field:col.name});
+                        if (f) {
+                            var index = $scope.chartSeries.indexOf(f);
+                            $scope.chartSeries.splice(index, 1);
+                        }
+                        else {
+                            $scope.chartSeries.push({
+                                field : col.name,name: col.$getTitle()
+                            });
+                        }
+                        if ($scope.chartSeries.length==0)
+                            $scope.chartCategory = undefined;
+                        else {
+                            var c = _.find($scope.columns, {chartCategory:true});
+                            if (c)
+                                $scope.chartCategory = c.name;
+                        }
+                    };
                     $scope.sorter = function(col) {
                         pageSetting.initSort = col.name;
                         pageSetting.initSortOrder = col.sortOrder;
@@ -1199,6 +1270,19 @@ angular.module("template/modal/wait.html", []).run(["$templateCache", function($
     "</div>");
 }]);
 
+angular.module("template/simplegrid/chart.html", []).run(["$templateCache", function($templateCache) {
+  $templateCache.put("template/simplegrid/chart.html",
+    "<div kendo-chart\n" +
+    "     k-chart-area='{background: \"#ffffff\"}'\n" +
+    "     k-category-axis='{field: \"category\"}'\n" +
+    "     k-legend=\"{ position: 'bottom' }\"\n" +
+    "     k-series-defaults=\"{ type: scChartType }\"\n" +
+    "     k-series=\"scSeries\"\n" +
+    "     k-data-source=\"items\"\n" +
+    "     k-theme=\"'silver'\"\n" +
+    "     k-series-hover=\"scSeriesClick\"></div>");
+}]);
+
 angular.module("template/simplegrid/export.html", []).run(["$templateCache", function($templateCache) {
   $templateCache.put("template/simplegrid/export.html",
     "<crud-modal>\n" +
@@ -1256,6 +1340,7 @@ angular.module("template/simplegrid/header.html", []).run(["$templateCache", fun
     "<div class=\"row sg-gridheader\" >\n" +
     "    <div class=\"{{col.$getColumnClass()}}\" ng-click=\"col.$sort()\" ng-repeat=\"col in columns\">\n" +
     "        <span>{{col.$getTitle()}}</span>\n" +
+    "        <i class=\"fa fa-long-arrow-up sg_gridIcon\" ng-if=\"!!col.chartSeries\" ng-click=\"col.$chart()\" style=\"top:50%;\"></i>\n" +
     "        <i class=\"fa fa-long-arrow-down pull-right sg_gridIcon\" ng-show=\"!col.sortOrder && col.sortOrder!=undefined\" style=\"top:50%;\"></i>\n" +
     "        <i class=\"fa fa-long-arrow-up pull-right sg_gridIcon\" ng-show=\"col.sortOrder\" style=\"top:50%;\"></i>\n" +
     "    </div>\n" +
@@ -1286,19 +1371,22 @@ angular.module("template/simplegrid/simpleGrid-normal.html", []).run(["$template
   $templateCache.put("template/simplegrid/simpleGrid-normal.html",
     "<div class=\"sg-grid\">\n" +
     "    <ng-include src=\"'template/simplegrid/header.html'\"></ng-include>\n" +
-    "    <div style=\"{{scrollStyle}}\">\n" +
-    "        <div ng-repeat=\"item in items\" class=\"row sg-gridrow\" ng-click=\"clickRow(item,$event)\" ng-class=\"{true: 'sg-gridrow-active'}[item.$__selected]\" >\n" +
-    "            <div class=\"{{col.$getColumnClass(item)}}\" ng-repeat=\"col in columns\" title=\"{{col.$getText(item)}}\">\n" +
-    "                <i ng-if=\"$first && item.$__selected\" class=\"fa fa-circle\"></i>\n" +
-    "                <i ng-if=\"col.bool\" ng-class=\"{true: 'fa fa-check'}[col.$getValue(item)]\"></i>\n" +
-    "                <a href ng-if=\"$first && sgAllowDel && !sgReadonly\" ng-click=\"DelObject(item)\"><i class= 'fa fa-minus-circle fa-lg sg_gridIcon text-danger'></i></a>\n" +
-    "                <ng-include  ng-if=\"!sgReadonly && col.template && (col.template.substr(0,9)=='readonly_' || !item.$core || !item.$core())\" src=\"col.template\"></ng-include>\n" +
-    "                <span ng-if=\"sgReadonly || !col.template || (item.$core && item.$core() && col.template.substr(0,9)!='readonly_')\">{{col.$getText(item)| picker:col.format}}</span>\n" +
-    "                <i ng-if=\"$last && item.$core && item.$core()\" class=\"fa fa-lock pull-right sg_gridIcon\"></i>\n" +
+    "    <div style=\"position: relative\">\n" +
+    "        <div style=\"{{scrollStyle}}\">\n" +
+    "            <div ng-repeat=\"item in items\" class=\"row sg-gridrow\" ng-click=\"clickRow(item,$event)\" ng-class=\"{true: 'sg-gridrow-active'}[item.$__selected]\" >\n" +
+    "                <div class=\"{{col.$getColumnClass(item)}}\" ng-repeat=\"col in columns\" title=\"{{col.$getText(item)}}\">\n" +
+    "                    <i ng-if=\"$first && item.$__selected\" class=\"fa fa-circle\"></i>\n" +
+    "                    <i ng-if=\"col.bool\" ng-class=\"{true: 'fa fa-check'}[col.$getValue(item)]\"></i>\n" +
+    "                    <a href ng-if=\"$first && sgAllowDel && !sgReadonly\" ng-click=\"DelObject(item)\"><i class= 'fa fa-minus-circle fa-lg sg_gridIcon text-danger'></i></a>\n" +
+    "                    <ng-include  ng-if=\"!sgReadonly && col.template && (col.template.substr(0,9)=='readonly_' || !item.$core || !item.$core())\" src=\"col.template\"></ng-include>\n" +
+    "                    <span ng-if=\"sgReadonly || !col.template || (item.$core && item.$core() && col.template.substr(0,9)!='readonly_')\">{{col.$getText(item)| picker:col.format}}</span>\n" +
+    "                    <i ng-if=\"$last && item.$core && item.$core()\" class=\"fa fa-lock pull-right sg_gridIcon\"></i>\n" +
+    "                </div>\n" +
     "            </div>\n" +
     "        </div>\n" +
+    "        <ng-include src=\"'template/simplegrid/footer.html'\"></ng-include>\n" +
+    "        <simple-grid-chart style=\"position: absolute\" ng-if=\"!!chartCategory\"  sc-data=\"data\" sc-category=\"chartCategory\" sc-keylookup='sgLookup(col,value)' sc-series='chartSeries' sc-chart-type=\"'area'\" ></simple-grid-chart>\n" +
     "    </div>\n" +
-    "    <ng-include src=\"'template/simplegrid/footer.html'\"></ng-include>\n" +
     "</div>");
 }]);
 
