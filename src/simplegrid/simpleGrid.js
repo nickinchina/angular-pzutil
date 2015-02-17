@@ -197,7 +197,7 @@ angular.module('pzutil.simplegrid', ['pzutil.services','pzutil.modal'])
                             g = _.groupBy(lines, scope.scCategory);
                         }
                         for (var key in g){
-                            var item = {category : scope.scKeylookup({col: scope.scCategory, value:key})};
+                            var item = {category : scope.scKeylookup({col: scope.scCategory, value:g[key][0][scope.scCategory]})};
                             scope.items_chart.push(item);
                             _(g[key]).forEach(function(i){
                                 _(scope.scSeries).forEach(function(j){
@@ -313,6 +313,11 @@ angular.module('pzutil.simplegrid', ['pzutil.services','pzutil.modal'])
                                 $scope.sgDelObject(item);
                             }
                         }
+                    };
+                    $scope.chartLookup=function(col,value){
+                        if ($scope.myLookup)
+                            return $scope.myLookup({col:col, value:value});
+                        return value;
                     };
                     $scope.myLookup = $attrs.sgLookup ? $scope.sgLookup : null;
                     $scope.myLookupTitle = $attrs.sgLookupTitle ? $scope.sgLookupTitle : null;
