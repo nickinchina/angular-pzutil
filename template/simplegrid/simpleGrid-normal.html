@@ -2,7 +2,7 @@
     <ng-include src="'template/simplegrid/header.html'"></ng-include>
     <div>
         <div style="{{scrollStyle}}">
-            <div ng-repeat="item in items" class="row sg-gridrow" ng-click="clickRow(item,$event)" ng-class="{true: 'sg-gridrow-active'}[item.$__selected]" >
+            <div ng-repeat="item in items" class="row sg-gridrow" ng-click="clickRow(item,$event)" ng-class="{true: 'sg-gridrow-active'}[item.$__selected]" context-menu="sgMenu" >
                 <div class="{{col.$getColumnClass(item)}}" ng-repeat="col in columns" title="{{col.$getText(item)}}">
                     <i ng-if="$first && item.$__selected" class="fa fa-circle"></i>
                     <i ng-if="col.bool" ng-class="{true: 'fa fa-check'}[col.$getValue(item)]"></i>
