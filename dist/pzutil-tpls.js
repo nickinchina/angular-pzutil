@@ -619,16 +619,17 @@ angular.module('pzutil.simplegrid', ['pzutil.services','pzutil.modal'])
                     if (scope.items_chart.length){
 
                     }
+                    scope.items.data(scope.items_chart);
                     if (scope.kendoInstance){
-                        console.log('scope.scSeries',scope.scSeries);
                         var chartOptions = scope.kendoInstance.options;
                         chartOptions.series.length = 0;
                         _(scope.scSeries).forEach(function(s){
-                            chartOptions.series.push(s);
+                            chartOptions.series.push(new Object());
+                            chartOptions.series[chartOptions.series.length-1].field = s.field;
+                            chartOptions.series[chartOptions.series.length-1].name = s.name;
                         });
-                        console.log('scope.kendoInstance.options',scope.kendoInstance.options.series);
+                        scope.kendoInstance.refresh();
                     }
-                    scope.items.data(scope.items_chart);
                 }
                 scope.scInstance = scope.scInstance ||{};
                 scope.scInstance.refresh = chartIt;
