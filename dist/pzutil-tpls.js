@@ -593,7 +593,6 @@ angular.module('pzutil.simplegrid', ['pzutil.services','pzutil.modal'])
                 scope.scChartInstance = scope.scChartInstance ||{};
                 var chartIt = function(){
                     scope.items_chart.length = 0;
-                    console.log('scope.scSeries',scope.scSeries);
                     if (scope.scData.length>0){
                         var g;
                         if (scope.scData[0].hasOwnProperty(scope.scCategory))
@@ -621,11 +620,13 @@ angular.module('pzutil.simplegrid', ['pzutil.services','pzutil.modal'])
 
                     }
                     if (scope.kendoInstance){
+                        console.log('scope.scSeries',scope.scSeries);
                         var chartOptions = scope.kendoInstance.options;
                         chartOptions.series.length = 0;
                         _(scope.scSeries).forEach(function(s){
                             chartOptions.series.push(s);
                         });
+                        console.log('scope.kendoInstance.options',scope.kendoInstance.options.series);
                     }
                     scope.items.data(scope.items_chart);
                 }
