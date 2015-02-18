@@ -2,7 +2,7 @@
  * pzutil
  * 
 
- * Version: 0.0.18 - 2015-02-17
+ * Version: 0.0.18 - 2015-02-18
  * License: MIT
  */
 angular.module("pzutil", ["pzutil.tpls", "pzutil.aditem","pzutil.adpublish","pzutil.download","pzutil.image","pzutil.modal","pzutil.rest","pzutil.retailhelper","pzutil.services","pzutil.simplegrid","pzutil.tree","pzutil.ztemplate"]);
@@ -620,8 +620,14 @@ angular.module('pzutil.simplegrid', ['pzutil.services','pzutil.modal'])
                     if (scope.items_chart.length){
 
                     }
+                    if (scope.kendoInstance){
+                        var chartOptions = scope.kendoInstance.options;
+                        chartOptions.series.length = 0;
+                        _(scope.scSeries).forEach(function(s){
+                            chartOptions.series.push(s);
+                        });
+                    }
                     scope.items.data(scope.items_chart);
-                    console.log(scope.kendoInstance);
                 }
                 scope.scInstance = scope.scInstance ||{};
                 scope.scInstance.refresh = chartIt;

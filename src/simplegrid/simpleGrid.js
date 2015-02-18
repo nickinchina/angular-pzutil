@@ -211,8 +211,14 @@ angular.module('pzutil.simplegrid', ['pzutil.services','pzutil.modal'])
                     if (scope.items_chart.length){
 
                     }
+                    if (scope.kendoInstance){
+                        var chartOptions = scope.kendoInstance.options;
+                        chartOptions.series.length = 0;
+                        _(scope.scSeries).forEach(function(s){
+                            chartOptions.series.push(s);
+                        });
+                    }
                     scope.items.data(scope.items_chart);
-                    console.log(scope.kendoInstance);
                 }
                 scope.scInstance = scope.scInstance ||{};
                 scope.scInstance.refresh = chartIt;
