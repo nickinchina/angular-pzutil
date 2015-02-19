@@ -279,8 +279,30 @@ angular.module('pzutil.simplegrid', ['pzutil.services','pzutil.modal'])
                             })
                         }
                     }
-                    if (scope.items_chart.length){
-
+                    if (scope.items_chart.length>0){
+                        var i = scope.items_chart[0][scope.scCategory];
+                        if (!angular.isString(i) || !moment(i).isValid()){
+                            var f = scope.scSeries[0].field;
+                            scope.items_chart.sort(function(a,b){
+                                return b[f]-a[f];
+                            });
+                            if (scope.items_chart.length>10){
+                                var other = {};
+                                other[scope.scCategory] = '(Other)';
+                                var toRemove = scope.items_chart.length-10;
+                                var count = 0;
+                                while (count<toRemove){
+                                    var pi = scope.items_chart.popup();
+                                    _(scope.scSeries).forEach(function(j){
+                                        var s = j.field;
+                                        var o = other[s] || 0;
+                                        other[s] = o + (pi[s] || 0);
+                                    })
+                                    count ++;
+                                }
+                                scope.items_chart.push(other);
+                            }
+                        }
                     }
                     scope.items.data(scope.items_chart);
                     if (scope.kendoInstance){
