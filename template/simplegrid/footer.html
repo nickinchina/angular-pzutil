@@ -3,7 +3,6 @@
         <span class="text-success">{{col.$aggregate()|picker:col.format}} <i class="fa fa-bar-chart sg_gridIcon text-info" ng-if="!!col.chartSeries" ng-click="col.$chart()" style="top:50%;"></i></span>
     </div>
 </div>
-        {{sgAgg}}
 <div class="row">
     <div class="col-md-9">
         <pagination ng-if="!sgNoPager && pageSetting.totalItems>pageSetting.pageSize"

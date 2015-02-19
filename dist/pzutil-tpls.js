@@ -761,6 +761,7 @@ angular.module('pzutil.simplegrid', ['pzutil.services','pzutil.modal'])
                     }
                 },
                 link: function($scope, $element, $attrs, $controller) {
+                    console.log('$scope.sgAgg',$scope.sgAgg);
                     var sortIt = function(fieldName, sortOrder, sortField, useLookup) {
                         var sortField = sortField || fieldName;
                         _($scope.columns).forEach(function(c){
@@ -1434,7 +1435,6 @@ angular.module("template/simplegrid/footer.html", []).run(["$templateCache", fun
     "        <span class=\"text-success\">{{col.$aggregate()|picker:col.format}} <i class=\"fa fa-bar-chart sg_gridIcon text-info\" ng-if=\"!!col.chartSeries\" ng-click=\"col.$chart()\" style=\"top:50%;\"></i></span>\n" +
     "    </div>\n" +
     "</div>\n" +
-    "        {{sgAgg}}\n" +
     "<div class=\"row\">\n" +
     "    <div class=\"col-md-9\">\n" +
     "        <pagination ng-if=\"!sgNoPager && pageSetting.totalItems>pageSetting.pageSize\"\n" +
