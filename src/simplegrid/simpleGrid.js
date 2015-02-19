@@ -352,7 +352,7 @@ angular.module('pzutil.simplegrid', ['pzutil.services','pzutil.modal'])
                     }
                 },
                 link: function($scope, $element, $attrs, $controller) {
-                    console.log('$scope.sgAgg',$scope.sgAgg);
+                    $scope.hasSummary = !!$attrs.sgAgg;
                     var sortIt = function(fieldName, sortOrder, sortField, useLookup) {
                         var sortField = sortField || fieldName;
                         _($scope.columns).forEach(function(c){
