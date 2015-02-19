@@ -701,7 +701,7 @@ angular.module('pzutil.simplegrid', ['pzutil.services','pzutil.modal'])
                                 var toRemove = scope.items_chart.length-10;
                                 var count = 0;
                                 while (count<toRemove){
-                                    var pi = scope.items_chart.popup();
+                                    var pi = scope.items_chart.pop();
                                     _(scope.scSeries).forEach(function(j){
                                         var s = j.field;
                                         var o = other[s] || 0;
