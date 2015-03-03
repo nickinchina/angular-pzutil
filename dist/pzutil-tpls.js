@@ -2,7 +2,7 @@
  * pzutil
  * 
 
- * Version: 0.0.18 - 2015-02-19
+ * Version: 0.0.18 - 2015-03-03
  * License: MIT
  */
 angular.module("pzutil", ["pzutil.tpls", "pzutil.aditem","pzutil.adpublish","pzutil.download","pzutil.image","pzutil.modal","pzutil.rest","pzutil.retailhelper","pzutil.services","pzutil.simplegrid","pzutil.tree","pzutil.ztemplate"]);
@@ -420,9 +420,12 @@ angular.module('pzutil.simplegrid', ['pzutil.services','pzutil.modal'])
                 lookupTitle = $scope.myLookupTitle,
                 agg = $scope.sgAgg,
                 charter = $scope.charter;
+                showDel = $scope.sgAllowDel && !$scope.sgReadonly;
 
-            var mixin = function (data) {
+            var mixin = function (data, idx) {
                 data.checkbox = ($scope.sgCheckColumn == data.name);
+                if (showDel && idx==0)
+                    data.width=data.width - 0.5;
                 angular.extend(this, data);
             };
             mixin.sorter = sorter;
@@ -1458,7 +1461,8 @@ angular.module("template/simplegrid/header.html", []).run(["$templateCache", fun
     "    <span class=\"pull-right\" style=\"margin-right: 10px\"  ng-if=\"sgModalSearchTemplate\"><small>To select, press <kbd>CTRL</kbd> key to click</small></span>\n" +
     "    <input type=\"text\" placeholder=\"Search\" class=\"pull-right form-control\" ng-model=\"searchService.listingSearch\" ng-if=\"sgLocalSearch\" style=\"width: auto\">\n" +
     "</div>\n" +
-    "<div class=\"row sg-gridheader\" >\n" +
+    "<div ng-if=\"sgAllowDel && !sgReadonly\" class=\"row sg-gridheader\" >\n" +
+    "    <div class=\"col-sg-1\"></div>\n" +
     "    <div class=\"{{col.$getColumnClass()}}\" ng-click=\"col.$sort()\" ng-repeat=\"col in columns\">\n" +
     "        <span>{{col.$getTitle()}}</span>\n" +
     "        <i class=\"fa fa-long-arrow-down pull-right sg_gridIcon\" ng-show=\"!col.sortOrder && col.sortOrder!=undefined\" style=\"top:50%;\"></i>\n" +
@@ -1494,10 +1498,10 @@ angular.module("template/simplegrid/simpleGrid-normal.html", []).run(["$template
     "    <div>\n" +
     "        <div style=\"{{scrollStyle}}\">\n" +
     "            <div ng-repeat=\"item in items\" class=\"row sg-gridrow\" ng-click=\"clickRow(item,$event)\" ng-class=\"{true: 'sg-gridrow-active'}[item.$__selected]\" context-menu=\"sgMenu\" >\n" +
+    "                <a href ng-if=\"sgAllowDel && !sgReadonly\" ng-click=\"DelObject(item)\" class=\"col-sg-1\"><i class= 'fa fa-minus-circle fa-lg sg_gridIcon text-danger'></i></a>\n" +
     "                <div class=\"{{col.$getColumnClass(item)}}\" ng-repeat=\"col in columns\" title=\"{{col.$getText(item)}}\">\n" +
     "                    <i ng-if=\"$first && item.$__selected\" class=\"fa fa-circle\"></i>\n" +
     "                    <i ng-if=\"col.bool\" ng-class=\"{true: 'fa fa-check'}[col.$getValue(item)]\"></i>\n" +
-    "                    <a href ng-if=\"$first && sgAllowDel && !sgReadonly\" ng-click=\"DelObject(item)\"><i class= 'fa fa-minus-circle fa-lg sg_gridIcon text-danger'></i></a>\n" +
     "                    <ng-include  ng-if=\"!sgReadonly && col.template && (col.template.substr(0,9)=='readonly_' || !item.$core || !item.$core())\" src=\"col.template\"></ng-include>\n" +
     "                    <span ng-if=\"sgReadonly || !col.template || (item.$core && item.$core() && col.template.substr(0,9)!='readonly_')\">{{col.$getText(item)| picker:col.format}}</span>\n" +
     "                    <i ng-if=\"$last && item.$core && item.$core()\" class=\"fa fa-lock pull-right sg_gridIcon\"></i>\n" +
