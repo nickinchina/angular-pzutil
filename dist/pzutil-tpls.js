@@ -467,7 +467,7 @@ angular.module('pzutil.simplegrid', ['pzutil.services','pzutil.modal'])
                     return checkbox + 'sg-gridrow-cell col-sg-' + w;
             };
             mixin.prototype.$modalEdit = function(item){
-                modalEdit({item:item,col:col.name });
+                modalEdit({item:item,col:this.name });
             };
 
             mixin.prototype.$sort = function(){
@@ -1511,7 +1511,7 @@ angular.module("template/simplegrid/simpleGrid-normal.html", []).run(["$template
     "                    <ng-include  ng-if=\"!sgReadonly && col.template && (col.template.substr(0,9)=='readonly_' || !item.$core || !item.$core())\" src=\"col.template\"></ng-include>\n" +
     "                    <span ng-if=\"sgReadonly || !col.template || (item.$core && item.$core() && col.template.substr(0,9)!='readonly_')\">{{col.$getText(item)| picker:col.format}}</span>\n" +
     "                    <i ng-if=\"$last && item.$core && item.$core()\" class=\"fa fa-lock pull-right sg_gridIcon\"></i>\n" +
-    "                    <a href ng-if=\"col.modalEdit\" ng-click=\"col.$modalEdit(item)\" class=\"col-sg-1\"><i class= 'fa fa-pencil fa-lg sg_gridIcon text-primary'></i></a>\n" +
+    "                    <a href ng-if=\"!sgReadonly && col.modalEdit\" ng-click=\"col.$modalEdit(item)\" class=\"col-sg-1\"><i class= 'fa fa-pencil fa-lg sg_gridIcon pull-right text-primary'></i></a>\n" +
     "                </div>\n" +
     "            </div>\n" +
     "        </div>\n" +
