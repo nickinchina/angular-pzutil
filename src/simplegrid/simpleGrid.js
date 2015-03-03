@@ -57,10 +57,17 @@ angular.module('pzutil.simplegrid', ['pzutil.services','pzutil.modal'])
                 else
                     return checkbox + 'sg-gridrow-cell col-sg-' + w;
             };
-            mixin.prototype.$modalEdit = function(item){
+            mixin.prototype.$modalEdit = function(item, e){
                 modalEdit({item:item,col:this.name });
             };
-
+            mixin.prototype.$getComboKey=function(type){
+                switch (type){
+                    case 1:
+                        return "comboActiveIdx_" + this.name;
+                    default:
+                        return 'comboList_' + this.name;
+                }
+            }
             mixin.prototype.$sort = function(){
                 this.sortOrder = !this.sortOrder;
                 mixin.sorter(this);
@@ -251,6 +258,38 @@ angular.module('pzutil.simplegrid', ['pzutil.services','pzutil.modal'])
             }
         };
     })
+    .directive('comboEditPopup', function () {
+        return {
+            restrict:'EA',
+            scope:{
+                items:'=',
+                active:'=',
+                isOpen:'=',
+                position:'=',
+                select:'&'
+            },
+            replace:true,
+            templateUrl:'template/simplegrid/combo-edit.html',
+            link:function (scope, element, attrs) {
+
+                scope.isOpen = function () {
+                    return scope.matches.length > 0;
+                };
+
+                scope.isActive = function (matchIdx) {
+                    return scope.active == matchIdx;
+                };
+
+                scope.selectActive = function (matchIdx) {
+                    scope.active = matchIdx;
+                };
+
+                scope.selectMatch = function (activeIdx) {
+                    scope.select({activeIdx:activeIdx});
+                };
+            }
+        };
+    })
     .directive('simpleGridChart', [ function() {
         return {
             restrict:'E',
@@ -362,6 +401,9 @@ angular.module('pzutil.simplegrid', ['pzutil.services','pzutil.modal'])
                 },
                 link: function($scope, $element, $attrs, $controller) {
                     $scope.hasSummary = !!$attrs.sgAgg;
+                    $scope.modalEdit = function(item, col, e){
+
+                    }
                     var sortIt = function(fieldName, sortOrder, sortField, useLookup) {
                         var sortField = sortField || fieldName;
                         _($scope.columns).forEach(function(c){
@@ -446,6 +488,47 @@ angular.module('pzutil.simplegrid', ['pzutil.services','pzutil.modal'])
                     $scope.myLookup = $attrs.sgLookup ? $scope.sgLookup : null;
                     $scope.myLookupTitle = $attrs.sgLookupTitle ? $scope.sgLookupTitle : null;
                     $scope.columns = sgColumn($scope).Parse($attrs.sgColumns);
+                    _($scope.columns).forEach(function(c){
+                        if (c.modalEdit){
+                            var keyActive = c.$getComboKey(1);
+                            var key = c.$getComboKey(0);
+                            $scope[key] = $scope.sgModalEdit({col: c.name});
+                            var popUpEl = angular.element('<div combo-edit-popup></div>');
+                            popUpEl.attr({
+                                items: key,
+                                active: keyActive,
+                                select: 'comboSelect("' + c.name + '",activeIdx)',
+                                position: 'comboPosition_' + c.name
+                            });
+                            var $popup = $compile(popUpEl)($scope);
+                            popUpEl.remove();
+                            $element.after($popup);
+                        }
+                    });
+                    Object.defineProperty($scope, 'activeRow', {
+                        get: function() {
+                            return $scope.__activeRow;
+                        },
+                        set : function(row){
+                            $scope.__activeRow = row;
+                            _($scope.columns).forEach(function(c){
+                                if (c.modalEdit){
+                                    var keyActive = c.$getComboKey(1);
+                                    var key = c.$getComboKey(0);
+                                    var id = row[c.name];
+                                    var list = $scope[key];
+                                    var s = _.find(list, {id:id});
+                                    $scope[keyActive] = list.indexOf(s);
+                                }
+                            });
+                        }
+                    });
+
+                    $scope.comboSelect = function(col, activeIdx) {
+                        var c = _.find($scope.columns, {name:col});
+                        $scope.activeRow[col] = $scope[c.$getComboKey(0)][activeIdx].id;
+                    };
+
                     $scope.sortGrid = function(sortOrder) {
                         if ($scope.sgSortOptions) {
                             var sortBy = _.find($scope.sgSortOptions, { 'selected': true });
