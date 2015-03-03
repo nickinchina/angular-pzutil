@@ -419,13 +419,15 @@ angular.module('pzutil.simplegrid', ['pzutil.services','pzutil.modal'])
                 lookup = $scope.myLookup,
                 lookupTitle = $scope.myLookupTitle,
                 agg = $scope.sgAgg,
-                charter = $scope.charter;
+                charter = $scope.charter,
                 showDel = $scope.sgAllowDel && !$scope.sgReadonly;
 
             var mixin = function (data, idx) {
                 data.checkbox = ($scope.sgCheckColumn == data.name);
-                if (showDel && idx==0)
+                if (showDel && idx==0) {
                     data.width=data.width - 0.5;
+                }
+                console.log(showDel, idx);
                 angular.extend(this, data);
             };
             mixin.sorter = sorter;
