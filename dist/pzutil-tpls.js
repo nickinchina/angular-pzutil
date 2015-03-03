@@ -436,7 +436,7 @@ angular.module('pzutil.simplegrid', ['pzutil.services','pzutil.modal'])
                     var data = angular.fromJson(attr);
                     var result = [];
                     for (var i = 0; i < data.length; i++) {
-                        result.push(new mixin(data[i]));
+                        result.push(new mixin(data[i], i));
                     }
                     return result;
                 }
