@@ -425,8 +425,7 @@ angular.module('pzutil.simplegrid', ['pzutil.services','pzutil.modal'])
             var mixin = function (data, idx) {
                 data.checkbox = ($scope.sgCheckColumn == data.name);
                 if (showDel && idx==0) {
-                    console.log(showDel, data.width);
-                    data.width=data.width - 0.5;
+                    data.width=(data.width||2) - 0.5;
                 }
                 angular.extend(this, data);
             };
