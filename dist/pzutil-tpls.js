@@ -420,7 +420,7 @@ angular.module('pzutil.simplegrid', ['pzutil.services','pzutil.modal'])
                 lookupTitle = $scope.myLookupTitle,
                 agg = $scope.sgAgg,
                 charter = $scope.charter,
-                modalEdit = $scope.sgModalEdit,
+                modalEdit = $scope.modalEdit,
                 showDel = $scope.sgAllowDel && !$scope.sgReadonly;
 
             var mixin = function (data, idx) {
@@ -686,11 +686,6 @@ angular.module('pzutil.simplegrid', ['pzutil.services','pzutil.modal'])
             replace:true,
             templateUrl:'template/simplegrid/combo-edit.html',
             link:function (scope, element, attrs) {
-
-                scope.isOpen = function () {
-                    return scope.matches.length > 0;
-                };
-
                 scope.isActive = function (matchIdx) {
                     return scope.active == matchIdx;
                 };
@@ -822,6 +817,7 @@ angular.module('pzutil.simplegrid', ['pzutil.services','pzutil.modal'])
                         $scope[keyPos].top = $scope[keyPos].top + e.prop('offsetHeight');
                         $scope.currentRow = item;
                         $scope[col.$getComboKey(2)]=true;
+                        console.log($scope[col.$getComboKey(0)],$scope[col.$getComboKey(1)],$scope[col.$getComboKey(2)],$scope[col.$getComboKey(3)],$scope[col.$getComboKey(4)]);
                     }
                     var sortIt = function(fieldName, sortOrder, sortField, useLookup) {
                         var sortField = sortField || fieldName;
