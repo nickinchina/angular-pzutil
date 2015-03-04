@@ -940,11 +940,12 @@ angular.module('pzutil.simplegrid', ['pzutil.services','pzutil.modal'])
                             var keyActive = c.$getComboKey(1);
                             var key = c.$getComboKey(0);
                             var keySelect = c.$getComboKey(3);
-                            comboScope[keySelect] = (function(col, listKey){
+                            comboScope[keySelect] = (function(col, listKey, openKey){
                                 return function(activeIdx){
                                     $scope.activeRow[col] = comboScope[listKey][activeIdx].id;
+                                    comboScope[openKey]=false;
                                 };
-                            })(c.name,c.$getComboKey(0));
+                            })(c.name,c.$getComboKey(0),col.$getComboKey(2));
                             comboScope[key] = $scope.sgModalEdit({col: c.name});
                             var popUpEl = angular.element('<div combo-edit-popup></div>');
                             popUpEl.attr({
@@ -1525,7 +1526,7 @@ angular.module("template/simplegrid/combo-edit.html", []).run(["$templateCache",
     "<ul class=\"dropdown-menu zscrollable-menu\" role=\"menu\" ng-style=\"{top: position.top+'px', left: position.left+'px', width: '200px'}\" style=\"display: block;position:absolute;z-index: 100000\" aria-hidden=\"{{!isopen}}\" ng-show=\"isopen\">\n" +
     "    <li ng-repeat=\"item in items track by $index\" role=\"presentation\">\n" +
     "        <a href ng-click=\"selectMatch($index);$event.stopPropagation();\" role=\"menuitem\">\n" +
-    "            <i ng-class=\"{true: 'fa fa-circle', false: 'fa fa-circle-o'}[selectActive($index)]\"></i>{{item.name}}\n" +
+    "            <i ng-class=\"{true: 'fa fa-circle', false: 'fa fa-circle-o'}[isActive($index)]\"></i>{{item.name}}\n" +
     "        </a>\n" +
     "    </li>\n" +
     "</ul>");

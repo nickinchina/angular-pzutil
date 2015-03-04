@@ -531,11 +531,12 @@ angular.module('pzutil.simplegrid', ['pzutil.services','pzutil.modal'])
                             var keyActive = c.$getComboKey(1);
                             var key = c.$getComboKey(0);
                             var keySelect = c.$getComboKey(3);
-                            comboScope[keySelect] = (function(col, listKey){
+                            comboScope[keySelect] = (function(col, listKey, openKey){
                                 return function(activeIdx){
                                     $scope.activeRow[col] = comboScope[listKey][activeIdx].id;
+                                    comboScope[openKey]=false;
                                 };
-                            })(c.name,c.$getComboKey(0));
+                            })(c.name,c.$getComboKey(0),col.$getComboKey(2));
                             comboScope[key] = $scope.sgModalEdit({col: c.name});
                             var popUpEl = angular.element('<div combo-edit-popup></div>');
                             popUpEl.attr({

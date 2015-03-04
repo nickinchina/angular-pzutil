@@ -1,7 +1,7 @@
 <ul class="dropdown-menu zscrollable-menu" role="menu" ng-style="{top: position.top+'px', left: position.left+'px', width: '200px'}" style="display: block;position:absolute;z-index: 100000" aria-hidden="{{!isopen}}" ng-show="isopen">
     <li ng-repeat="item in items track by $index" role="presentation">
         <a href ng-click="selectMatch($index);$event.stopPropagation();" role="menuitem">
-            <i ng-class="{true: 'fa fa-circle', false: 'fa fa-circle-o'}[selectActive($index)]"></i>{{item.name}}
+            <i ng-class="{true: 'fa fa-circle', false: 'fa fa-circle-o'}[isActive($index)]"></i>{{item.name}}
         </a>
     </li>
 </ul>
