@@ -1,4 +1,5 @@
 <div class="row sg-gridrow" ng-if="hasSummary">
+    <div class="col-sg-1" ng-if="sgAllowDel && !sgReadonly" ></div>
     <div class="{{col.$getColumnClass({})}}" ng-repeat="col in columns">
         <span class="text-success">{{col.$aggregate()|picker:col.format}} <i class="fa fa-bar-chart sg_gridIcon text-info" ng-if="!!col.chartSeries" ng-click="col.$chart()" style="top:50%;"></i></span>
     </div>
