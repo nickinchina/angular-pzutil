@@ -402,12 +402,19 @@ angular.module('pzutil.simplegrid', ['pzutil.services','pzutil.modal'])
                 },
                 link: function($scope, $element, $attrs, $controller) {
                     $scope.hasSummary = !!$attrs.sgAgg;
+                    var comboScope = $scope.$new();
+                    $scope.$on('$destroy', function(){
+                        console.log('$destroy',$popups.length);
+                        while ($popups.length>0)
+                            $popups.pop().remove();
+                        comboScope.$destroy();
+                    });
                     $scope.modalEdit = function(item, col, e){
                         var keyPos = col.$getComboKey(4);
-                        $scope[keyPos] = $position.offset(e);
-                        $scope[keyPos].top = $scope[keyPos].top + e.prop('offsetHeight');
+                        comboScope[keyPos] = $position.offset(e);
+                        comboScope[keyPos].top = comboScope[keyPos].top + e.prop('offsetHeight');
                         $scope.currentRow = item;
-                        $scope[col.$getComboKey(2)]=true;
+                        comboScope[col.$getComboKey(2)]=true;
                         e.attr('aria-expanded', true);
                     }
                     var sortIt = function(fieldName, sortOrder, sortField, useLookup) {
@@ -501,10 +508,10 @@ angular.module('pzutil.simplegrid', ['pzutil.services','pzutil.modal'])
                             var keyActive = c.$getComboKey(1);
                             var key = c.$getComboKey(0);
                             var keySelect = c.$getComboKey(3);
-                            $scope[keySelect] = function(id){
+                            comboScope[keySelect] = function(id){
                                 $scope.comboSelect(c.name, id);
                             }
-                            $scope[key] = $scope.sgModalEdit({col: c.name});
+                            comboScope[key] = $scope.sgModalEdit({col: c.name});
                             var popUpEl = angular.element('<div combo-edit-popup></div>');
                             popUpEl.attr({
                                 items: key,
@@ -513,7 +520,7 @@ angular.module('pzutil.simplegrid', ['pzutil.services','pzutil.modal'])
                                 position: c.$getComboKey(4),
                                 isopen : c.$getComboKey(2)
                             });
-                            var $popup = $compile(popUpEl)($scope);
+                            var $popup = $compile(popUpEl)(comboScope);
                             popUpEl.remove();
                             $document.find('body').append($popup);
                             $popups.push($popup);
@@ -536,11 +543,6 @@ angular.module('pzutil.simplegrid', ['pzutil.services','pzutil.modal'])
                                 }
                             });
                         }
-                    });
-                    $scope.$on('$destroy', function(){
-                        console.log('$destroy',$popups.length);
-                        while ($popups.length>0)
-                            $popups.pop().remove();
                     });
 
                     $scope.comboSelect = function(col, activeIdx) {
