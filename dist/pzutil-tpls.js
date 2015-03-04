@@ -1625,7 +1625,7 @@ angular.module("template/simplegrid/simpleGrid-normal.html", []).run(["$template
     "                    <i ng-if=\"$first && item.$__selected\" class=\"fa fa-circle\"></i>\n" +
     "                    <i ng-if=\"col.bool\" ng-class=\"{true: 'fa fa-check'}[col.$getValue(item)]\"></i>\n" +
     "                    <ng-include  ng-if=\"!sgReadonly && col.template && (col.template.substr(0,9)=='readonly_' || !item.$core || !item.$core())\" src=\"col.template\"></ng-include>\n" +
-    "                    <span ng-if=\"sgReadonly || !col.template || (item.$core && item.$core() && col.template.substr(0,9)!='readonly_')\">{{col.$getText(item)| picker:col.format}}</span>\n" +
+    "                    <span class=\"sg-gridrow-cell-span\" ng-if=\"sgReadonly || !col.template || (item.$core && item.$core() && col.template.substr(0,9)!='readonly_')\">{{col.$getText(item)| picker:col.format}}</span>\n" +
     "                    <i ng-if=\"$last && item.$core && item.$core()\" class=\"fa fa-lock pull-right sg_gridIcon\"></i>\n" +
     "                </div>\n" +
     "            </div>\n" +
