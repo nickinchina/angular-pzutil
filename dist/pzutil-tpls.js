@@ -473,6 +473,12 @@ angular.module('pzutil.simplegrid', ['pzutil.services','pzutil.modal'])
                 switch (type){
                     case 1:
                         return "comboActiveIdx_" + this.name;
+                    case 2:
+                        return "comboIsOpen_" + this.name;
+                    case 3:
+                        return "comboSelect_" + this.name;
+                    case 4:
+                        return "comboPosition_" + this.name;
                     default:
                         return 'comboList_' + this.name;
                 }
@@ -811,8 +817,9 @@ angular.module('pzutil.simplegrid', ['pzutil.services','pzutil.modal'])
                 link: function($scope, $element, $attrs, $controller) {
                     $scope.hasSummary = !!$attrs.sgAgg;
                     $scope.modalEdit = function(item, col, e){
-                        $scope.position = $position.position(e);
-                        $scope.position.top = $scope.position.top + e.prop('offsetHeight');
+                        var keyPos = col.$getComboKey(4);
+                        $scope[keyPos] = $position.position(e);
+                        $scope[keyPos].top = $scope[keyPos].top + e.prop('offsetHeight');
                         $scope.currentRow = item;
                         $scope[col.$getComboKey(2)]=true;
                     }
@@ -904,13 +911,17 @@ angular.module('pzutil.simplegrid', ['pzutil.services','pzutil.modal'])
                         if (c.modalEdit){
                             var keyActive = c.$getComboKey(1);
                             var key = c.$getComboKey(0);
+                            var keySelect = c.$getComboKey(3);
+                            $scope[keySelect] = function(id){
+                                $scope.comboSelect(c.name, id);
+                            }
                             $scope[key] = $scope.sgModalEdit({col: c.name});
                             var popUpEl = angular.element('<div combo-edit-popup></div>');
                             popUpEl.attr({
                                 items: key,
                                 active: keyActive,
-                                select: 'comboSelect("' + c.name + '",activeIdx)',
-                                position: 'comboPosition_' + c.name,
+                                select: keySelect +'(activeIdx)',
+                                position: c.$getComboKey(4),
                                 isOpen : c.$getComboKey(2)
                             });
                             var $popup = $compile(popUpEl)($scope);
