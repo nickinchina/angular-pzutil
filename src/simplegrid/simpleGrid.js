@@ -59,6 +59,7 @@ angular.module('pzutil.simplegrid', ['pzutil.services','pzutil.modal'])
                     return checkbox + 'sg-gridrow-cell col-sg-' + w;
             };
             mixin.prototype.$modalEdit = function(item, e){
+                console.log(e.target);
                 if (this.modalEdit)
                     modalEditor(item,this, $(e.target));
                 else
@@ -504,6 +505,21 @@ angular.module('pzutil.simplegrid', ['pzutil.services','pzutil.modal'])
                             return $scope.myLookup({col:col, value:value});
                         return value;
                     };
+                    $scope.clickRow = function(row,e){
+                        if (e.ctrlKey) {
+                            row.$__selected = !row.$__selected;
+                        }
+                        else {
+                            if (row.hasOwnProperty("id")){
+                                if (angular.isFunction(row.$core) && row.$core() && row.hasOwnProperty("accountid"))
+                                    $scope.sgOnClick({id: row});
+                                else
+                                    $scope.sgOnClick({id: row.id});
+                            }
+                            else
+                                $scope.sgOnClick({id: row});
+                        }
+                    }
                     $scope.myLookup = $attrs.sgLookup ? $scope.sgLookup : null;
                     $scope.myLookupTitle = $attrs.sgLookupTitle ? $scope.sgLookupTitle : null;
                     $scope.columns = sgColumn($scope).Parse($attrs.sgColumns);
@@ -600,23 +616,6 @@ angular.module('pzutil.simplegrid', ['pzutil.services','pzutil.modal'])
                         });
 
                     };
-
-                    $scope.clickRow = function(row,e){
-                        if (e.ctrlKey) {
-                            row.$__selected = !row.$__selected;
-                        }
-                        else {
-                            if (row.hasOwnProperty("id")){
-                                if (angular.isFunction(row.$core) && row.$core() && row.hasOwnProperty("accountid"))
-                                    $scope.sgOnClick({id: row});
-                                else
-                                    $scope.sgOnClick({id: row.id});
-                            }
-                            else
-                                $scope.sgOnClick({id: row});
-                        }
-
-                    }
                     $scope.checkAll = function(){
                         $scope.checkedAll = !$scope.checkedAll;
                         _($scope.items).forEach(function(i){
