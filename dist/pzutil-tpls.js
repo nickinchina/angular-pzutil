@@ -692,7 +692,6 @@ angular.module('pzutil.simplegrid', ['pzutil.services','pzutil.modal'])
             templateUrl:'template/simplegrid/combo-edit.html',
             link:function (scope, element, attrs) {
                 scope.isActive = function (matchIdx) {
-                    console.log(scope.active,matchIdx)
                     return scope.active == matchIdx;
                 };
 
@@ -974,6 +973,7 @@ angular.module('pzutil.simplegrid', ['pzutil.services','pzutil.modal'])
                                     var id = row[c.name];
                                     var list = comboScope[key];
                                     var s = _.find(list, {id:id});
+                                    console.log(list, id, s);
                                     comboScope[keyActive] = list.indexOf(s);
                                 }
                             });
