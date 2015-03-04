@@ -467,7 +467,10 @@ angular.module('pzutil.simplegrid', ['pzutil.services','pzutil.modal'])
                     return checkbox + 'sg-gridrow-cell col-sg-' + w;
             };
             mixin.prototype.$modalEdit = function(item, e){
-                modalEdit(item,this, $(e.target));
+                if (this.modalEdit)
+                    modalEdit(item,this, $(e.target));
+                else
+                    e.stopPropagation();
             };
             mixin.prototype.$getComboKey=function(type){
                 switch (type){
@@ -816,13 +819,11 @@ angular.module('pzutil.simplegrid', ['pzutil.services','pzutil.modal'])
                         $scope.$destroy();
                     });
                     $scope.$on('$destroy', function(){
-                        console.log('$destroy',$popups.length);
                         while ($popups.length>0)
                             $popups.pop().remove();
                         comboScope.$destroy();
                     });
                     $scope.modalEdit = function(item, col, e){
-                        e=e.parentNode;
                         var keyPos = col.$getComboKey(4);
                         comboScope[keyPos] = $position.offset(e);
                         comboScope[keyPos].top = comboScope[keyPos].top + e.prop('offsetHeight');
@@ -1620,13 +1621,12 @@ angular.module("template/simplegrid/simpleGrid-normal.html", []).run(["$template
     "        <div style=\"{{scrollStyle}}\">\n" +
     "            <div ng-repeat=\"item in items\" class=\"row sg-gridrow\" ng-click=\"clickRow(item,$event)\" ng-class=\"{true: 'sg-gridrow-active'}[item.$__selected]\" context-menu=\"sgMenu\" >\n" +
     "                <a href ng-if=\"sgAllowDel && !sgReadonly\" ng-click=\"DelObject(item)\" class=\"col-sg-1\"><i class= 'fa fa-minus-circle fa-lg sg_gridIcon text-danger'></i></a>\n" +
-    "                <div class=\"{{col.$getColumnClass(item)}}\" ng-repeat=\"col in columns\" title=\"{{col.$getText(item)}}\">\n" +
+    "                <div class=\"{{col.$getColumnClass(item)}}\" ng-repeat=\"col in columns\" title=\"{{col.$getText(item)}}\" ng-click=\"col.$modalEdit(item,$event)\">\n" +
     "                    <i ng-if=\"$first && item.$__selected\" class=\"fa fa-circle\"></i>\n" +
     "                    <i ng-if=\"col.bool\" ng-class=\"{true: 'fa fa-check'}[col.$getValue(item)]\"></i>\n" +
     "                    <ng-include  ng-if=\"!sgReadonly && col.template && (col.template.substr(0,9)=='readonly_' || !item.$core || !item.$core())\" src=\"col.template\"></ng-include>\n" +
     "                    <span ng-if=\"sgReadonly || !col.template || (item.$core && item.$core() && col.template.substr(0,9)!='readonly_')\">{{col.$getText(item)| picker:col.format}}</span>\n" +
     "                    <i ng-if=\"$last && item.$core && item.$core()\" class=\"fa fa-lock pull-right sg_gridIcon\"></i>\n" +
-    "                    <a href ng-if=\"!sgReadonly && col.modalEdit\" ng-click=\"col.$modalEdit(item,$event)\" class=\"pull-right\"><i class= 'fa fa-pencil fa-lg sg_gridIcon text-primary'></i></a>\n" +
     "                </div>\n" +
     "            </div>\n" +
     "        </div>\n" +

@@ -58,7 +58,10 @@ angular.module('pzutil.simplegrid', ['pzutil.services','pzutil.modal'])
                     return checkbox + 'sg-gridrow-cell col-sg-' + w;
             };
             mixin.prototype.$modalEdit = function(item, e){
-                modalEdit(item,this, $(e.target));
+                if (this.modalEdit)
+                    modalEdit(item,this, $(e.target));
+                else
+                    e.stopPropagation();
             };
             mixin.prototype.$getComboKey=function(type){
                 switch (type){
@@ -407,13 +410,11 @@ angular.module('pzutil.simplegrid', ['pzutil.services','pzutil.modal'])
                         $scope.$destroy();
                     });
                     $scope.$on('$destroy', function(){
-                        console.log('$destroy',$popups.length);
                         while ($popups.length>0)
                             $popups.pop().remove();
                         comboScope.$destroy();
                     });
                     $scope.modalEdit = function(item, col, e){
-                        e=e.parentNode;
                         var keyPos = col.$getComboKey(4);
                         comboScope[keyPos] = $position.offset(e);
                         comboScope[keyPos].top = comboScope[keyPos].top + e.prop('offsetHeight');
