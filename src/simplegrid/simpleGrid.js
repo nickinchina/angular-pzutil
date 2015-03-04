@@ -11,7 +11,7 @@ angular.module('pzutil.simplegrid', ['pzutil.services','pzutil.modal'])
                 lookupTitle = $scope.myLookupTitle,
                 agg = $scope.sgAgg,
                 charter = $scope.charter,
-                modalEdit = $scope.modalEdit,
+                modalEditor = $scope.modalEdit,
                 showDel = $scope.sgAllowDel && !$scope.sgReadonly;
 
             var mixin = function (data, idx) {
@@ -58,8 +58,9 @@ angular.module('pzutil.simplegrid', ['pzutil.services','pzutil.modal'])
                     return checkbox + 'sg-gridrow-cell col-sg-' + w;
             };
             mixin.prototype.$modalEdit = function(item, e){
+                console.log(e.target);
                 if (this.modalEdit)
-                    modalEdit(item,this, $(e.target));
+                    modalEditor(item,this, $(e.target));
                 else
                     e.stopPropagation();
             };
