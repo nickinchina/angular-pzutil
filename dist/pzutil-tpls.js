@@ -970,7 +970,7 @@ angular.module('pzutil.simplegrid', ['pzutil.services','pzutil.modal'])
                                     var keyActive = c.$getComboKey(1);
                                     var key = c.$getComboKey(0);
                                     var id = row[c.name];
-                                    var list = $scope[key];
+                                    var list = comboScope[key];
                                     var s = _.find(list, {id:id});
                                     comboScope[keyActive] = list.indexOf(s);
                                 }
