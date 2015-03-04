@@ -822,7 +822,7 @@ angular.module('pzutil.simplegrid', ['pzutil.services','pzutil.modal'])
                         comboScope.$destroy();
                     });
                     $scope.modalEdit = function(item, col, e){
-                        console.log(e);
+                        e=e.parentNode;
                         var keyPos = col.$getComboKey(4);
                         comboScope[keyPos] = $position.offset(e);
                         comboScope[keyPos].top = comboScope[keyPos].top + e.prop('offsetHeight');
@@ -921,8 +921,9 @@ angular.module('pzutil.simplegrid', ['pzutil.services','pzutil.modal'])
                             var keyActive = c.$getComboKey(1);
                             var key = c.$getComboKey(0);
                             var keySelect = c.$getComboKey(3);
-                            comboScope[keySelect] = function(id){
-                                $scope.comboSelect(c.name, id);
+                            comboScope[keySelect] = function(activeIdx){
+                                var c = _.find($scope.columns, {name:c.name});
+                                $scope.activeRow[col] = comboScope[c.$getComboKey(0)][activeIdx].id;
                             }
                             comboScope[key] = $scope.sgModalEdit({col: c.name});
                             var popUpEl = angular.element('<div combo-edit-popup></div>');
@@ -952,16 +953,11 @@ angular.module('pzutil.simplegrid', ['pzutil.services','pzutil.modal'])
                                     var id = row[c.name];
                                     var list = $scope[key];
                                     var s = _.find(list, {id:id});
-                                    $scope[keyActive] = list.indexOf(s);
+                                    comboScope[keyActive] = list.indexOf(s);
                                 }
                             });
                         }
                     });
-
-                    $scope.comboSelect = function(col, activeIdx) {
-                        var c = _.find($scope.columns, {name:col});
-                        $scope.activeRow[col] = $scope[c.$getComboKey(0)][activeIdx].id;
-                    };
 
                     $scope.sortGrid = function(sortOrder) {
                         if ($scope.sgSortOptions) {
