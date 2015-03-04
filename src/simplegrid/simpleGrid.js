@@ -372,8 +372,8 @@ angular.module('pzutil.simplegrid', ['pzutil.services','pzutil.modal'])
             }
         };
     } ])
-    .directive('simpleGrid', ['sgColumn', 'breadcrumbs', 'localizedMessages','crudWait', '$modal','simpleGridExport','$timeout',
-        function (sgColumn, breadcrumbs, localizedMessages,crudWait,$modal,simpleGridExport,$timeout) {
+    .directive('simpleGrid', ['sgColumn', 'breadcrumbs', 'localizedMessages','crudWait', '$modal','simpleGridExport','$timeout', '$position',
+        function (sgColumn, breadcrumbs, localizedMessages,crudWait,$modal,simpleGridExport,$timeout,$position) {
             return {
                 restrict:'E',
                 replace:true,
@@ -402,7 +402,10 @@ angular.module('pzutil.simplegrid', ['pzutil.services','pzutil.modal'])
                 link: function($scope, $element, $attrs, $controller) {
                     $scope.hasSummary = !!$attrs.sgAgg;
                     $scope.modalEdit = function(item, col, e){
-
+                        $scope.position = $position.position(e);
+                        $scope.position.top = $scope.position.top + e.prop('offsetHeight');
+                        $scope.currentRow = item;
+                        $scope[col.$getComboKey(2)]=true;
                     }
                     var sortIt = function(fieldName, sortOrder, sortField, useLookup) {
                         var sortField = sortField || fieldName;
@@ -498,7 +501,8 @@ angular.module('pzutil.simplegrid', ['pzutil.services','pzutil.modal'])
                                 items: key,
                                 active: keyActive,
                                 select: 'comboSelect("' + c.name + '",activeIdx)',
-                                position: 'comboPosition_' + c.name
+                                position: 'comboPosition_' + c.name,
+                                isOpen : c.$getComboKey(2)
                             });
                             var $popup = $compile(popUpEl)($scope);
                             popUpEl.remove();
