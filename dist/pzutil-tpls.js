@@ -692,6 +692,7 @@ angular.module('pzutil.simplegrid', ['pzutil.services','pzutil.modal'])
             templateUrl:'template/simplegrid/combo-edit.html',
             link:function (scope, element, attrs) {
                 scope.isActive = function (matchIdx) {
+                    console.log(scope.active,matchIdx)
                     return scope.active == matchIdx;
                 };
 
@@ -1620,7 +1621,7 @@ angular.module("template/simplegrid/simpleGrid-normal.html", []).run(["$template
     "    <ng-include src=\"'template/simplegrid/header.html'\"></ng-include>\n" +
     "    <div>\n" +
     "        <div style=\"{{scrollStyle}}\">\n" +
-    "            <div ng-repeat=\"item in items\" class=\"row sg-gridrow\" ng-class=\"{true: 'sg-gridrow-active'}[item.$__selected]\" context-menu=\"sgMenu\" >\n" +
+    "            <div ng-repeat=\"item in items\" class=\"row sg-gridrow\" ng-class=\"{true: 'sg-gridrow-active'}[item.$__selected]\" ng-click=\"clickRow(item,$event)\" context-menu=\"sgMenu\" >\n" +
     "                <a href ng-if=\"sgAllowDel && !sgReadonly\" ng-click=\"DelObject(item)\" class=\"col-sg-1\"><i class= 'fa fa-minus-circle fa-lg sg_gridIcon text-danger'></i></a>\n" +
     "                <div class=\"{{col.$getColumnClass(item)}}\" ng-repeat=\"col in columns\" title=\"{{col.$getText(item)}}\" ng-click=\"col.$modalEdit(item,$event)\">\n" +
     "                    <i ng-if=\"$first && item.$__selected\" class=\"fa fa-circle\"></i>\n" +

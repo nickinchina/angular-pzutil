@@ -283,6 +283,7 @@ angular.module('pzutil.simplegrid', ['pzutil.services','pzutil.modal'])
             templateUrl:'template/simplegrid/combo-edit.html',
             link:function (scope, element, attrs) {
                 scope.isActive = function (matchIdx) {
+                    console.log(scope.active,matchIdx)
                     return scope.active == matchIdx;
                 };
 
