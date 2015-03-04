@@ -918,7 +918,7 @@ angular.module('pzutil.simplegrid', ['pzutil.services','pzutil.modal'])
                                 active: keyActive,
                                 select: keySelect +'(activeIdx)',
                                 position: c.$getComboKey(4),
-                                isOpen : c.$getComboKey(2)
+                                isopen : c.$getComboKey(2)
                             });
                             var $popup = $compile(popUpEl)($scope);
                             popUpEl.remove();
@@ -1509,7 +1509,7 @@ angular.module("template/simplegrid/chart.html", []).run(["$templateCache", func
 
 angular.module("template/simplegrid/combo-edit.html", []).run(["$templateCache", function($templateCache) {
   $templateCache.put("template/simplegrid/combo-edit.html",
-    "<div ng-style=\"{top: position.top+'px', left: position.left+'px'}\" style=\"display: block;height:200px;overflow-y:auto\" aria-hidden=\"{{!isOpen}}\" ng-show=\"isOpen\">\n" +
+    "<div ng-style=\"{top: position.top+'px', left: position.left+'px'}\" style=\"display: block;height:200px;overflow-y:auto\" aria-hidden=\"{{!isopen}}\" ng-show=\"isopen\">\n" +
     "    <ul class=\"dropdown-menu\" role=\"listbox\">\n" +
     "        <li ng-repeat=\"item in items track by $index\" ng-class=\"{active: isActive($index) }\" ng-mouseenter=\"selectActive($index)\" ng-click=\"selectMatch($index)\" role=\"option\" id=\"{{item.id}}\">\n" +
     "            {{item.name}}\n" +

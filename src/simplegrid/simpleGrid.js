@@ -509,7 +509,7 @@ angular.module('pzutil.simplegrid', ['pzutil.services','pzutil.modal'])
                                 active: keyActive,
                                 select: keySelect +'(activeIdx)',
                                 position: c.$getComboKey(4),
-                                isOpen : c.$getComboKey(2)
+                                isopen : c.$getComboKey(2)
                             });
                             var $popup = $compile(popUpEl)($scope);
                             popUpEl.remove();
