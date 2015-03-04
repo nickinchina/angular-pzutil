@@ -782,8 +782,8 @@ angular.module('pzutil.simplegrid', ['pzutil.services','pzutil.modal'])
             }
         };
     } ])
-    .directive('simpleGrid', ['sgColumn', 'breadcrumbs', 'localizedMessages','crudWait', '$modal','simpleGridExport','$timeout', '$position','$compile',
-        function (sgColumn, breadcrumbs, localizedMessages,crudWait,$modal,simpleGridExport,$timeout,$position,$compile) {
+    .directive('simpleGrid', ['sgColumn', 'breadcrumbs', 'localizedMessages','crudWait', '$modal','simpleGridExport','$timeout', '$position','$compile','$document',
+        function (sgColumn, breadcrumbs, localizedMessages,crudWait,$modal,simpleGridExport,$timeout,$position,$compile,$document) {
             return {
                 restrict:'E',
                 replace:true,
@@ -813,11 +813,11 @@ angular.module('pzutil.simplegrid', ['pzutil.services','pzutil.modal'])
                     $scope.hasSummary = !!$attrs.sgAgg;
                     $scope.modalEdit = function(item, col, e){
                         var keyPos = col.$getComboKey(4);
-                        $scope[keyPos] = $position.position(e);
+                        $scope[keyPos] = $position.offset(e);
                         $scope[keyPos].top = $scope[keyPos].top + e.prop('offsetHeight');
                         $scope.currentRow = item;
                         $scope[col.$getComboKey(2)]=true;
-                        console.log($scope[col.$getComboKey(0)],$scope[col.$getComboKey(1)],$scope[col.$getComboKey(2)],$scope[col.$getComboKey(3)],$scope[col.$getComboKey(4)]);
+                        e.attr('aria-expanded', true);
                     }
                     var sortIt = function(fieldName, sortOrder, sortField, useLookup) {
                         var sortField = sortField || fieldName;
@@ -903,6 +903,8 @@ angular.module('pzutil.simplegrid', ['pzutil.services','pzutil.modal'])
                     $scope.myLookup = $attrs.sgLookup ? $scope.sgLookup : null;
                     $scope.myLookupTitle = $attrs.sgLookupTitle ? $scope.sgLookupTitle : null;
                     $scope.columns = sgColumn($scope).Parse($attrs.sgColumns);
+
+                    var $popups = [];
                     _($scope.columns).forEach(function(c){
                         if (c.modalEdit){
                             var keyActive = c.$getComboKey(1);
@@ -922,7 +924,8 @@ angular.module('pzutil.simplegrid', ['pzutil.services','pzutil.modal'])
                             });
                             var $popup = $compile(popUpEl)($scope);
                             popUpEl.remove();
-                            $element.after($popup);
+                            $document.find('body').append($popup);
+                            $popups.push($popup);
                         }
                     });
                     Object.defineProperty($scope, 'activeRow', {
@@ -942,6 +945,10 @@ angular.module('pzutil.simplegrid', ['pzutil.services','pzutil.modal'])
                                 }
                             });
                         }
+                    });
+                    $scope.$on('$destroy', function(){
+                        while ($popups.length>0)
+                            $popups.pop().remove();
                     });
 
                     $scope.comboSelect = function(col, activeIdx) {
