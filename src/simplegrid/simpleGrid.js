@@ -12,6 +12,7 @@ angular.module('pzutil.simplegrid', ['pzutil.services','pzutil.modal'])
                 agg = $scope.sgAgg,
                 charter = $scope.charter,
                 modalEditor = $scope.modalEdit,
+                clickRow = $scope.clickRow,
                 showDel = $scope.sgAllowDel && !$scope.sgReadonly;
 
             var mixin = function (data, idx) {
@@ -58,11 +59,10 @@ angular.module('pzutil.simplegrid', ['pzutil.services','pzutil.modal'])
                     return checkbox + 'sg-gridrow-cell col-sg-' + w;
             };
             mixin.prototype.$modalEdit = function(item, e){
-                console.log(e.target);
                 if (this.modalEdit)
                     modalEditor(item,this, $(e.target));
                 else
-                    e.stopPropagation();
+                    clickRow(item,e);
             };
             mixin.prototype.$getComboKey=function(type){
                 switch (type){
