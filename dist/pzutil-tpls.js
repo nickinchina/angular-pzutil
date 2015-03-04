@@ -939,10 +939,11 @@ angular.module('pzutil.simplegrid', ['pzutil.services','pzutil.modal'])
                             var keyActive = c.$getComboKey(1);
                             var key = c.$getComboKey(0);
                             var keySelect = c.$getComboKey(3);
-                            comboScope[keySelect] = function(activeIdx){
-                                var c = _.find($scope.columns, {name:c.name});
-                                $scope.activeRow[col] = comboScope[c.$getComboKey(0)][activeIdx].id;
-                            }
+                            comboScope[keySelect] = (function(col, listKey){
+                                return function(activeIdx){
+                                    $scope.activeRow[col] = comboScope[listKey][activeIdx].id;
+                                };
+                            })(c.name,c.$getComboKey(0));
                             comboScope[key] = $scope.sgModalEdit({col: c.name});
                             var popUpEl = angular.element('<div combo-edit-popup></div>');
                             popUpEl.attr({
@@ -1625,7 +1626,7 @@ angular.module("template/simplegrid/simpleGrid-normal.html", []).run(["$template
     "                    <i ng-if=\"$first && item.$__selected\" class=\"fa fa-circle\"></i>\n" +
     "                    <i ng-if=\"col.bool\" ng-class=\"{true: 'fa fa-check'}[col.$getValue(item)]\"></i>\n" +
     "                    <ng-include  ng-if=\"!sgReadonly && col.template && (col.template.substr(0,9)=='readonly_' || !item.$core || !item.$core())\" src=\"col.template\"></ng-include>\n" +
-    "                    <span class=\"sg-gridrow-cell-span\" ng-if=\"sgReadonly || !col.template || (item.$core && item.$core() && col.template.substr(0,9)!='readonly_')\">{{col.$getText(item)| picker:col.format}}</span>\n" +
+    "                    <span ng-if=\"sgReadonly || !col.template || (item.$core && item.$core() && col.template.substr(0,9)!='readonly_')\">{{col.$getText(item)| picker:col.format}}</span>\n" +
     "                    <i ng-if=\"$last && item.$core && item.$core()\" class=\"fa fa-lock pull-right sg_gridIcon\"></i>\n" +
     "                </div>\n" +
     "            </div>\n" +
