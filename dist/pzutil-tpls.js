@@ -829,7 +829,7 @@ angular.module('pzutil.simplegrid', ['pzutil.services','pzutil.modal'])
                         var keyPos = col.$getComboKey(4);
                         comboScope[keyPos] = $position.offset(e);
                         comboScope[keyPos].top = comboScope[keyPos].top + e.prop('offsetHeight');
-                        $scope.currentRow = item;
+                        $scope.activeRow = item;
                         comboScope[col.$getComboKey(2)]=true;
                         e.attr('aria-expanded', true);
                     }
