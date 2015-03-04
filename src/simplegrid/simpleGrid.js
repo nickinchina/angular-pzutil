@@ -59,7 +59,6 @@ angular.module('pzutil.simplegrid', ['pzutil.services','pzutil.modal'])
                     return checkbox + 'sg-gridrow-cell col-sg-' + w;
             };
             mixin.prototype.$modalEdit = function(item, e){
-                console.log(e.target);
                 if (this.modalEdit)
                     modalEditor(item,this, $(e.target));
                 else
@@ -188,7 +187,6 @@ angular.module('pzutil.simplegrid', ['pzutil.services','pzutil.modal'])
                         .then(function(i){
                             $modalInstance.close();
                         },function(e){
-                            console.log(e);
                             alert(e.message);
                         });
             };
@@ -564,7 +562,6 @@ angular.module('pzutil.simplegrid', ['pzutil.services','pzutil.modal'])
                                     var id = row[c.name];
                                     var list = comboScope[key];
                                     var s = _.find(list, {id:id});
-                                    console.log(list, id, s);
                                     comboScope[keyActive] = list.indexOf(s);
                                 }
                             });

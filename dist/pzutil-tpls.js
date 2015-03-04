@@ -468,7 +468,6 @@ angular.module('pzutil.simplegrid', ['pzutil.services','pzutil.modal'])
                     return checkbox + 'sg-gridrow-cell col-sg-' + w;
             };
             mixin.prototype.$modalEdit = function(item, e){
-                console.log(e.target);
                 if (this.modalEdit)
                     modalEditor(item,this, $(e.target));
                 else
@@ -597,7 +596,6 @@ angular.module('pzutil.simplegrid', ['pzutil.services','pzutil.modal'])
                         .then(function(i){
                             $modalInstance.close();
                         },function(e){
-                            console.log(e);
                             alert(e.message);
                         });
             };
@@ -973,7 +971,6 @@ angular.module('pzutil.simplegrid', ['pzutil.services','pzutil.modal'])
                                     var id = row[c.name];
                                     var list = comboScope[key];
                                     var s = _.find(list, {id:id});
-                                    console.log(list, id, s);
                                     comboScope[keyActive] = list.indexOf(s);
                                 }
                             });
@@ -1628,7 +1625,7 @@ angular.module("template/simplegrid/simpleGrid-normal.html", []).run(["$template
     "                    <i ng-if=\"$first && item.$__selected\" class=\"fa fa-circle\"></i>\n" +
     "                    <i ng-if=\"col.bool\" ng-class=\"{true: 'fa fa-check'}[col.$getValue(item)]\"></i>\n" +
     "                    <ng-include  ng-if=\"!sgReadonly && col.template && (col.template.substr(0,9)=='readonly_' || !item.$core || !item.$core())\" src=\"col.template\"></ng-include>\n" +
-    "                    <span ng-if=\"sgReadonly || !col.template || (item.$core && item.$core() && col.template.substr(0,9)!='readonly_')\">{{col.$getText(item)| picker:col.format}}</span>\n" +
+    "                    <span ng-class=\"{true:'editable-click'}[col.modalEdit]\" ng-if=\"sgReadonly || !col.template || (item.$core && item.$core() && col.template.substr(0,9)!='readonly_')\">{{col.$getText(item)| picker:col.format}}</span>\n" +
     "                    <i ng-if=\"$last && item.$core && item.$core()\" class=\"fa fa-lock pull-right sg_gridIcon\"></i>\n" +
     "                </div>\n" +
     "            </div>\n" +
