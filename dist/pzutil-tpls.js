@@ -1523,7 +1523,7 @@ angular.module("template/simplegrid/combo-edit.html", []).run(["$templateCache",
     "<ul class=\"dropdown-menu zscrollable-menu\" role=\"menu\" ng-style=\"{top: position.top+'px', left: position.left+'px', width: '200px'}\" style=\"display: block;position:absolute;z-index: 100000\" aria-hidden=\"{{!isopen}}\" ng-show=\"isopen\">\n" +
     "    <li ng-repeat=\"item in items track by $index\" role=\"presentation\">\n" +
     "        <a href ng-click=\"selectMatch($index);$event.stopPropagation();\" role=\"menuitem\">\n" +
-    "            <i ng-class=\"{true: 'fa fa-circle', false: 'fa fa-circle-o'}[isActive($index)]\"></i>{{item.name}}\n" +
+    "            <i ng-class=\"{true: 'fa fa-circle', false: 'fa fa-circle-o'}[isActive($index)]\"></i> {{item.name}}\n" +
     "        </a>\n" +
     "    </li>\n" +
     "</ul>");
@@ -1625,7 +1625,7 @@ angular.module("template/simplegrid/simpleGrid-normal.html", []).run(["$template
     "                    <i ng-if=\"$first && item.$__selected\" class=\"fa fa-circle\"></i>\n" +
     "                    <i ng-if=\"col.bool\" ng-class=\"{true: 'fa fa-check'}[col.$getValue(item)]\"></i>\n" +
     "                    <ng-include  ng-if=\"!sgReadonly && col.template && (col.template.substr(0,9)=='readonly_' || !item.$core || !item.$core())\" src=\"col.template\"></ng-include>\n" +
-    "                    <span ng-class=\"{true:'editable-click'}[col.modalEdit]\" ng-if=\"sgReadonly || !col.template || (item.$core && item.$core() && col.template.substr(0,9)!='readonly_')\">{{col.$getText(item)| picker:col.format}}</span>\n" +
+    "                    <span style=\"height: 100%;display:inline-block; vertical-align: middle; \" ng-class=\"{true:'editable-click'}[col.modalEdit]\" ng-if=\"sgReadonly || !col.template || (item.$core && item.$core() && col.template.substr(0,9)!='readonly_')\">{{col.$getText(item)| picker:col.format}}</span>\n" +
     "                    <i ng-if=\"$last && item.$core && item.$core()\" class=\"fa fa-lock pull-right sg_gridIcon\"></i>\n" +
     "                </div>\n" +
     "            </div>\n" +
