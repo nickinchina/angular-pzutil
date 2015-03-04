@@ -550,7 +550,7 @@ angular.module('pzutil.simplegrid', ['pzutil.services','pzutil.modal'])
                             $document.find('body').append($popup);
                             $popups.push($popup);
                         }
-                        if (!$scope.sgReadonly && c.template && col.template.substr(0,9)!='readonly_') $scope.hasEditInput = true;
+                        if (!$scope.sgReadonly && c.template && c.template.substr(0,9)!='readonly_') $scope.hasEditInput = true;
                     });
                     Object.defineProperty($scope, 'activeRow', {
                         get: function() {
