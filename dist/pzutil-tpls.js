@@ -1509,8 +1509,8 @@ angular.module("template/simplegrid/chart.html", []).run(["$templateCache", func
 
 angular.module("template/simplegrid/combo-edit.html", []).run(["$templateCache", function($templateCache) {
   $templateCache.put("template/simplegrid/combo-edit.html",
-    "<div style=\"max-height:200px;overflow-y:auto\">\n" +
-    "    <ul class=\"dropdown-menu\" ng-show=\"isOpen\" ng-style=\"{top: position.top+'px', left: position.left+'px'}\" style=\"display: block;\" role=\"listbox\" aria-hidden=\"{{!isOpen}}\">\n" +
+    "<div ng-style=\"{top: position.top+'px', left: position.left+'px'}\" style=\"display: block;height:200px;overflow-y:auto\" aria-hidden=\"{{!isOpen}}\" ng-show=\"isOpen\">\n" +
+    "    <ul class=\"dropdown-menu\" role=\"listbox\">\n" +
     "        <li ng-repeat=\"item in items track by $index\" ng-class=\"{active: isActive($index) }\" ng-mouseenter=\"selectActive($index)\" ng-click=\"selectMatch($index)\" role=\"option\" id=\"{{item.id}}\">\n" +
     "            {{item.name}}\n" +
     "        </li>\n" +
