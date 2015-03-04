@@ -270,7 +270,7 @@ angular.module('pzutil.simplegrid', ['pzutil.services','pzutil.modal'])
             scope:{
                 items:'=',
                 active:'=',
-                isOpen:'=',
+                isopen:'=',
                 position:'=',
                 select:'&'
             },
