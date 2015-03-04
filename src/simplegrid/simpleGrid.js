@@ -58,7 +58,7 @@ angular.module('pzutil.simplegrid', ['pzutil.services','pzutil.modal'])
                     return checkbox + 'sg-gridrow-cell col-sg-' + w;
             };
             mixin.prototype.$modalEdit = function(item, e){
-                modalEdit({item:item,col:this.name });
+                modalEdit(item,this, $(e.target));
             };
             mixin.prototype.$getComboKey=function(type){
                 switch (type){
