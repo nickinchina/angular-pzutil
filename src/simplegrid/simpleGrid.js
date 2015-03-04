@@ -536,7 +536,7 @@ angular.module('pzutil.simplegrid', ['pzutil.services','pzutil.modal'])
                                     $scope.activeRow[col] = comboScope[listKey][activeIdx].id;
                                     comboScope[openKey]=false;
                                 };
-                            })(c.name,c.$getComboKey(0),col.$getComboKey(2));
+                            })(c.name,c.$getComboKey(0),c.$getComboKey(2));
                             comboScope[key] = $scope.sgModalEdit({col: c.name});
                             var popUpEl = angular.element('<div combo-edit-popup></div>');
                             popUpEl.attr({
