@@ -54,7 +54,7 @@ angular.module('pzutil.simplegrid', ['pzutil.services','pzutil.modal'])
                 if (inactive) checkbox += "sg-deleted ";
                 if ($scope.hasEditInput) checkbox += "sg-gridrow-cell-edit ";
                 w = w * 2;
-                if (this.align)
+                if (this.align && !!item)
                     return checkbox + 'sg-gridrow-cell col-sg-' + w + ' text-' + this.align;
                 else
                     return checkbox + 'sg-gridrow-cell col-sg-' + w;
