@@ -403,6 +403,9 @@ angular.module('pzutil.simplegrid', ['pzutil.services','pzutil.modal'])
                 link: function($scope, $element, $attrs, $controller) {
                     $scope.hasSummary = !!$attrs.sgAgg;
                     var comboScope = $scope.$new();
+                    $element.on('$destroy', function(){
+                        $scope.$destroy();
+                    });
                     $scope.$on('$destroy', function(){
                         console.log('$destroy',$popups.length);
                         while ($popups.length>0)
