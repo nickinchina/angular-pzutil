@@ -460,8 +460,8 @@ angular.module('pzutil.simplegrid', ['pzutil.services','pzutil.modal'])
                 var w = this.width  ? this.width : 2;
                 var checkbox = this.checkbox ? "checkbox checkbox-cell " :"";
                 var inactive = (item && item.inactive);
-                if (inactive) checkbox += " sg-deleted";
-                if ($scope.hasEditInput) checkbox += " sg-gridrow-cell-edit";
+                if (inactive) checkbox += "sg-deleted ";
+                if ($scope.hasEditInput) checkbox += "sg-gridrow-cell-edit ";
                 w = w * 2;
                 if (this.align)
                     return checkbox + 'sg-gridrow-cell col-sg-' + w + ' text-' + this.align;
