@@ -413,6 +413,7 @@ angular.module('pzutil.simplegrid', ['pzutil.services','pzutil.modal'])
                         comboScope.$destroy();
                     });
                     $scope.modalEdit = function(item, col, e){
+                        console.log(e);
                         var keyPos = col.$getComboKey(4);
                         comboScope[keyPos] = $position.offset(e);
                         comboScope[keyPos].top = comboScope[keyPos].top + e.prop('offsetHeight');

@@ -822,6 +822,7 @@ angular.module('pzutil.simplegrid', ['pzutil.services','pzutil.modal'])
                         comboScope.$destroy();
                     });
                     $scope.modalEdit = function(item, col, e){
+                        console.log(e);
                         var keyPos = col.$getComboKey(4);
                         comboScope[keyPos] = $position.offset(e);
                         comboScope[keyPos].top = comboScope[keyPos].top + e.prop('offsetHeight');
@@ -1522,9 +1523,11 @@ angular.module("template/simplegrid/chart.html", []).run(["$templateCache", func
 
 angular.module("template/simplegrid/combo-edit.html", []).run(["$templateCache", function($templateCache) {
   $templateCache.put("template/simplegrid/combo-edit.html",
-    "<ul class=\"dropdown-menu  zscrollable-menu \" role=\"menu\" ng-style=\"{top: position.top+'px', left: position.left+'px', width: '200px'}\" style=\"display: block;position:absolute;z-index: 100000\" aria-hidden=\"{{!isopen}}\" ng-show=\"isopen\">\n" +
-    "    <li ng-repeat=\"item in items track by $index\" ng-class=\"{active: isActive($index) }\" ng-mouseenter=\"selectActive($index)\" ng-click=\"selectMatch($index)\" role=\"menuitem\">\n" +
-    "        {{item.name}}\n" +
+    "<ul class=\"dropdown-menu zscrollable-menu\" role=\"menu\" ng-style=\"{top: position.top+'px', left: position.left+'px', width: '200px'}\" style=\"display: block;position:absolute;z-index: 100000\" aria-hidden=\"{{!isopen}}\" ng-show=\"isopen\">\n" +
+    "    <li ng-repeat=\"item in items track by $index\" role=\"presentation\">\n" +
+    "        <a href ng-click=\"selectMatch($index);$event.stopPropagation();\" role=\"menuitem\">\n" +
+    "            <i ng-class=\"{true: 'fa fa-circle', false: 'fa fa-circle-o'}[selectActive($index)]\"></i>{{item.name}}\n" +
+    "        </a>\n" +
     "    </li>\n" +
     "</ul>");
 }]);
