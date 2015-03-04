@@ -1,7 +1,5 @@
-<div ng-style="{top: position.top+'px', left: position.left+'px'}" style="display: block;height:200px;overflow-y:auto" aria-hidden="{{!isopen}}" ng-show="isopen">
-    <ul class="dropdown-menu" role="listbox">
-        <li ng-repeat="item in items track by $index" ng-class="{active: isActive($index) }" ng-mouseenter="selectActive($index)" ng-click="selectMatch($index)" role="option" id="{{item.id}}">
-            {{item.name}}
-        </li>
-    </ul>
-</div>
+<ul class="dropdown-menu  zscrollable-menu " role="menu" ng-style="{top: position.top+'px', left: position.left+'px', width: '200px'}" style="display: block;position:absolute;z-index: 100000" aria-hidden="{{!isopen}}" ng-show="isopen">
+    <li ng-repeat="item in items track by $index" ng-class="{active: isActive($index) }" ng-mouseenter="selectActive($index)" ng-click="selectMatch($index)" role="menuitem">
+        {{item.name}}
+    </li>
+</ul>

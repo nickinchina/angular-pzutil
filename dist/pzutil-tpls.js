@@ -1522,13 +1522,11 @@ angular.module("template/simplegrid/chart.html", []).run(["$templateCache", func
 
 angular.module("template/simplegrid/combo-edit.html", []).run(["$templateCache", function($templateCache) {
   $templateCache.put("template/simplegrid/combo-edit.html",
-    "<div ng-style=\"{top: position.top+'px', left: position.left+'px'}\" style=\"display: block;height:200px;overflow-y:auto\" aria-hidden=\"{{!isopen}}\" ng-show=\"isopen\">\n" +
-    "    <ul class=\"dropdown-menu\" role=\"listbox\">\n" +
-    "        <li ng-repeat=\"item in items track by $index\" ng-class=\"{active: isActive($index) }\" ng-mouseenter=\"selectActive($index)\" ng-click=\"selectMatch($index)\" role=\"option\" id=\"{{item.id}}\">\n" +
-    "            {{item.name}}\n" +
-    "        </li>\n" +
-    "    </ul>\n" +
-    "</div>");
+    "<ul class=\"dropdown-menu  zscrollable-menu \" role=\"menu\" ng-style=\"{top: position.top+'px', left: position.left+'px', width: '200px'}\" style=\"display: block;position:absolute;z-index: 100000\" aria-hidden=\"{{!isopen}}\" ng-show=\"isopen\">\n" +
+    "    <li ng-repeat=\"item in items track by $index\" ng-class=\"{active: isActive($index) }\" ng-mouseenter=\"selectActive($index)\" ng-click=\"selectMatch($index)\" role=\"menuitem\">\n" +
+    "        {{item.name}}\n" +
+    "    </li>\n" +
+    "</ul>");
 }]);
 
 angular.module("template/simplegrid/export.html", []).run(["$templateCache", function($templateCache) {
