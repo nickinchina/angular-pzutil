@@ -947,6 +947,7 @@ angular.module('pzutil.simplegrid', ['pzutil.services','pzutil.modal'])
                         }
                     });
                     $scope.$on('$destroy', function(){
+                        console.log('$destroy',$popups.length);
                         while ($popups.length>0)
                             $popups.pop().remove();
                     });
