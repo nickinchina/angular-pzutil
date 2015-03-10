@@ -2,7 +2,7 @@
  * pzutil
  * 
 
- * Version: 0.0.18 - 2015-03-04
+ * Version: 0.0.18 - 2015-03-10
  * License: MIT
  */
 angular.module("pzutil", ["pzutil.tpls", "pzutil.aditem","pzutil.adpublish","pzutil.download","pzutil.image","pzutil.modal","pzutil.rest","pzutil.retailhelper","pzutil.services","pzutil.simplegrid","pzutil.tree","pzutil.ztemplate"]);
@@ -1623,7 +1623,7 @@ angular.module("template/simplegrid/simpleGrid-normal.html", []).run(["$template
     "    <ng-include src=\"'template/simplegrid/header.html'\"></ng-include>\n" +
     "    <div>\n" +
     "        <div style=\"{{scrollStyle}}\">\n" +
-    "            <div ng-repeat=\"item in items\" class=\"row sg-gridrow\" ng-class=\"{true: 'sg-gridrow-active'}[item.$__selected]\" ng-click=\"clickRow(item,$event)\" context-menu=\"sgMenu\" >\n" +
+    "            <div ng-repeat=\"item in items\" class=\"row sg-gridrow\" ng-class=\"{true: 'sg-gridrow-active'}[item.$__selected]\" context-menu=\"sgMenu\" >\n" +
     "                <a href ng-if=\"sgAllowDel && !sgReadonly\" ng-click=\"DelObject(item)\" class=\"col-sg-1\"><i class= 'fa fa-minus-circle fa-lg sg_gridIcon text-danger'></i></a>\n" +
     "                <div class=\"{{col.$getColumnClass(item)}}\" ng-repeat=\"col in columns\" title=\"{{col.$getText(item)}}\" ng-click=\"col.$modalEdit(item,$event)\">\n" +
     "                    <i ng-if=\"$first && item.$__selected\" class=\"fa fa-circle\"></i>\n" +
