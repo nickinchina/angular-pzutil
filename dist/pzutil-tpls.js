@@ -469,10 +469,10 @@ angular.module('pzutil.simplegrid', ['pzutil.services','pzutil.modal'])
                     return checkbox + 'sg-gridrow-cell col-sg-' + w;
             };
             mixin.prototype.$modalEdit = function(item, e){
-                if (this.modalEdit) {
-                    $event.stopPropagation();
+                if (this.modalEdit)
                     modalEditor(item,this, $(e.target));
-                }
+                else
+                    clickRow(item,e);
             };
             mixin.prototype.$getComboKey=function(type){
                 switch (type){
@@ -1623,13 +1623,14 @@ angular.module("template/simplegrid/simpleGrid-normal.html", []).run(["$template
     "    <ng-include src=\"'template/simplegrid/header.html'\"></ng-include>\n" +
     "    <div>\n" +
     "        <div style=\"{{scrollStyle}}\">\n" +
-    "            <div ng-repeat=\"item in items\" class=\"row sg-gridrow\" ng-class=\"{true: 'sg-gridrow-active'}[item.$__selected]\" ng-click=\"clickRow(item,$event)\" context-menu=\"sgMenu\" >\n" +
+    "            <div ng-repeat=\"item in items\" class=\"row sg-gridrow\" ng-class=\"{true: 'sg-gridrow-active'}[item.$__selected]\" context-menu=\"sgMenu\" >\n" +
     "                <a href ng-if=\"sgAllowDel && !sgReadonly\" ng-click=\"DelObject(item)\" class=\"col-sg-1\"><i class= 'fa fa-minus-circle fa-lg sg_gridIcon text-danger'></i></a>\n" +
     "                <div class=\"{{col.$getColumnClass(item)}}\" ng-repeat=\"col in columns\" title=\"{{col.$getText(item)}}\" ng-click=\"col.$modalEdit(item,$event)\">\n" +
     "                    <i ng-if=\"$first && item.$__selected\" class=\"fa fa-circle\"></i>\n" +
     "                    <i ng-if=\"col.bool\" ng-class=\"{true: 'fa fa-check'}[col.$getValue(item)]\"></i>\n" +
     "                    <ng-include  ng-if=\"!sgReadonly && col.template && (col.template.substr(0,9)=='readonly_' || !item.$core || !item.$core())\" src=\"col.template\"></ng-include>\n" +
     "                    <span ng-class=\"{true:'editable-click'}[col.modalEdit && !sgReadonly]\" ng-if=\"sgReadonly || !col.template || (item.$core && item.$core() && col.template.substr(0,9)!='readonly_')\">{{col.$getText(item)| picker:col.format}}</span>\n" +
+    "                    <span>\" \"</span>\n" +
     "                    <i ng-if=\"$last && item.$core && item.$core()\" class=\"fa fa-lock pull-right sg_gridIcon\"></i>\n" +
     "                </div>\n" +
     "            </div>\n" +
