@@ -59,7 +59,7 @@ angular.module('pzutil.simplegrid', ['pzutil.services','pzutil.modal'])
                 var checkbox = this.checkbox ? "checkbox checkbox-cell " :"";
                 var inactive = (item && item.inactive);
                 if (inactive) checkbox += "sg-deleted ";
-                if ($scope.hasEditInput) checkbox += "sg-gridrow-cell-edit ";
+                if ($scope.hasEditInput()) checkbox += "sg-gridrow-cell-edit ";
                 w = w * 2;
                 if (this.align && !!item)
                     return checkbox + 'sg-gridrow-cell col-sg-' + w + ' text-' + this.align;
@@ -530,7 +530,12 @@ angular.module('pzutil.simplegrid', ['pzutil.services','pzutil.modal'])
                     $scope.columns = sgColumn($scope).Parse($attrs.sgColumns);
 
                     var $popups = [];
-                    $scope.hasEditInput = false;
+                    $scope.hasEditInput = function(){
+                        if ($scope.sgReadonly) return false;
+                        return !!_.find($scope.columns, function(c){
+                            return c.template && c.template.substr(0,9)!='readonly_';
+                        });
+                    };
                     _($scope.columns).forEach(function(c){
                         if (c.modalEdit){
                             var keyActive = c.$getComboKey(1);
@@ -556,7 +561,6 @@ angular.module('pzutil.simplegrid', ['pzutil.services','pzutil.modal'])
                             $document.find('body').append($popup);
                             $popups.push($popup);
                         }
-                        if (!$scope.sgReadonly && c.template && c.template.substr(0,9)!='readonly_') $scope.hasEditInput = true;
                     });
                     Object.defineProperty($scope, 'activeRow', {
                         get: function() {
