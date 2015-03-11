@@ -23,7 +23,7 @@ angular.module('pzutil.simplegrid', ['pzutil.services','pzutil.modal'])
             };
             Object.defineProperty(mixin.prototype, "width", {
                 get: function() {
-                    if ($scope.sgAllowDel && !$scope.sgReadonly && this._index==0)
+                    if (this._index==0 && $scope.sgAllowDel && !$scope.sgReadonly)
                         return this._width - 0.5;
                     else
                         return this._width;
