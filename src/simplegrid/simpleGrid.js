@@ -12,16 +12,23 @@ angular.module('pzutil.simplegrid', ['pzutil.services','pzutil.modal'])
                 agg = $scope.sgAgg,
                 charter = $scope.charter,
                 modalEditor = $scope.modalEdit,
-                clickRow = $scope.clickRow,
-                showDel = $scope.sgAllowDel && !$scope.sgReadonly;
+                clickRow = $scope.clickRow;
 
             var mixin = function (data, idx) {
                 data.checkbox = ($scope.sgCheckColumn == data.name);
-                if (showDel && idx==0) {
-                    data.width=(data.width||2) - 0.5;
-                }
+                data._width = data.width||2;
+                data._index = idx;
+                delete data.width;
                 angular.extend(this, data);
             };
+            Object.defineProperty(mixin.prototype, "width", {
+                get: function() {
+                    if ($scope.sgAllowDel && !$scope.sgReadonly && this._index==0)
+                        return this._width - 0.5;
+                    else
+                        return this._width;
+                }
+            });
             mixin.sorter = sorter;
             mixin.charter = charter;
             mixin.New = function(o) { return new mixin(o);};
