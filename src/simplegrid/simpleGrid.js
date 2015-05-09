@@ -384,13 +384,11 @@ angular.module('pzutil.simplegrid', ['pzutil.services','pzutil.modal'])
         };
     } ])
 
-    .factory('simpleGridIDb', [ function(){
+    .factory('simpleGridIDb', ['$q', function($q){
         var index = lunr();
-
         function getTokenStream(text) {
             return index.pipeline.run(lunr.tokenizer(text));
-        }
-
+        };
         var service = {
             db : null,
             searchSchema: null,
@@ -413,9 +411,10 @@ angular.module('pzutil.simplegrid', ['pzutil.services','pzutil.modal'])
                 service.db.version(version||1).stores(idbSchema);
                 service.db.open();
             },
-            insert : function(objName, data, lookup){
-                var store = service.db[objName];
+            add : function(objName, data, lookup){
                 var fields = service.searchSchema[objName];
+                if (!fields) return $q.when();
+                var store = service.db[objName];
                 return service.db.transaction('rw', store, function(){
                     store.clear();
                     angular.forEach(data, function(i){
@@ -426,6 +425,20 @@ angular.module('pzutil.simplegrid', ['pzutil.services','pzutil.modal'])
                         })
                         store.add(i);
                     });
+                });
+            },
+            get: function(){
+                var fields = service.searchSchema[objName];
+                if (!fields) return $q.when();
+                var store = service.db[objName];
+                return store.toArray();
+            },
+            remove: function(){
+                var fields = service.searchSchema[objName];
+                if (!fields) return $q.when();
+                var store = service.db[objName];
+                return service.db.transaction('rw', store, function(){
+                    store.clear();
                 });
             },
             simpleSearch : function(objName, search, outputHandler)
@@ -456,7 +469,7 @@ angular.module('pzutil.simplegrid', ['pzutil.services','pzutil.modal'])
             return {
                 restrict:'E',
                 replace:true,
-                scope: { data:"=sgData", listItems:"=",  sgAddObject:"&", sgSortOptions:"=", itemtemplate:"=sgTemplate",sgColumns:"@",sgDelObject:"&", sgAllowDel:"@",
+                scope: { data:"=sgData", listItems:"=",  sgAddObject:"&", sgSortOptions:"=", itemtemplate:"=sgTemplate",sgColumns:"@",sgDelObject:"&", sgAllowDel:"@",sgObjectStore:"=",
                     sgNoPager:'=', sgOnClick:'&', sgLookup:"&", sgGlobalSearch:"@", sgLocalSearch:"@",sgPageSize:"@" ,sgOptions:"=", sgOnChange:"&", sgLookupTitle:"&",sgSortField:"=",sgVirtual:"@",
                     sgCheckColumn:"@", sgCustomSearch:"&", sgModalSearchTemplate:"=", sgModalSearchController:"=", sgModalSearchResolve:"=", sgModalSearch:"&", sgExportTitle:"@",
                     sgPublic:"=", sgAgg:"&", sgReadonly:"=", sgMenu:"=", sgModalEdit:"&"},
@@ -717,10 +730,6 @@ angular.module('pzutil.simplegrid', ['pzutil.services','pzutil.modal'])
                     $scope.public = $scope.sgPublic || {};
                     $scope.public.resetSearch = function(){
                         breadcrumbs.listingSearchModel = $scope.sgGlobalSearch;
-                    };
-                    $scope.public.saveIDb = function(objectStore, data){
-                        $scope.sgObjectStore = objectStore;
-                        return simpleGridIDb.insert(objectStore, data);
                     };
                     $scope.public.refresh = $scope.changed = function(page, reset) {
                         var pagerHelper = function(){
