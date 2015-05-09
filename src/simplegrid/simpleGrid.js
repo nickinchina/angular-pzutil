@@ -383,8 +383,76 @@ angular.module('pzutil.simplegrid', ['pzutil.services','pzutil.modal'])
             }
         };
     } ])
-    .directive('simpleGrid', ['sgColumn', 'breadcrumbs', 'localizedMessages','crudWait', '$modal','simpleGridExport','$timeout', '$position','$compile','$document',
-        function (sgColumn, breadcrumbs, localizedMessages,crudWait,$modal,simpleGridExport,$timeout,$position,$compile,$document) {
+
+    .factory('simpleGridIDb', [ function(){
+        var index = lunr();
+
+        function getTokenStream(text) {
+            return index.pipeline.run(lunr.tokenizer(text));
+        }
+
+        var service = {
+            db : null,
+            searchSchema: null,
+            open: function(app, version, schema){
+                service.searchSchema = schema;
+                var idbSchema = {};
+                angular.forEach(Object.keys(schema), function(t){
+                    var fields = schema[t];
+                    var s = '';
+                    angular.forEach(fields, function(p){
+                        if (s!='') s+=",";
+                        if (p.token)
+                            s += "*"+ p.name+"__tk";
+                        else
+                            s += p.name;
+                    });
+                    idbSchema[t] = s;
+                });
+                service.db = new Dexie(app || 's2k');
+                service.db.version(version||1).stores(idbSchema);
+                service.db.open();
+            },
+            insert : function(objName, data, lookup){
+                var store = service.db[objName];
+                var fields = service.searchSchema[objName];
+                return service.db.transaction('rw', store, function(){
+                    store.clear();
+                    angular.forEach(data, function(i){
+                        angular.forEach(fields, function(f){
+                            var v = i[f.name];
+                            if (lookup) v = lookup({col: f.name, value:v, item:i});
+                            if (f.token) i[f.name+"__tk"] = getTokenStream(v);
+                        })
+                        store.add(i);
+                    });
+                });
+            },
+            simpleSearch : function(objName, search, outputHandler)
+            {
+                var store = service.db[objName];
+                var fields = service.searchSchema[objName];
+                var pointer;
+                for (var i=0;i<fields.length;i++){
+                    var field = fields[i];
+                    var f = field.token ? field.name+'__tk':field.name;
+                    var eq = field.token?"equalsIgnoreCase":"equals"
+                    if (!pointer)
+                        pointer =store.where;
+                    else
+                        pointer= pointer.or;
+                    if (field.parse) search = field.parse(search);
+                    pointer = pointer(f)[eq](search)
+                }
+                return pointer.each(function(o){
+                    outputHandler(o);
+                });
+            }
+        };
+        return service;
+    }])
+    .directive('simpleGrid', ['sgColumn', 'breadcrumbs', 'localizedMessages','crudWait', '$modal','simpleGridExport','$timeout', '$position','$compile','$document','simpleGridIDb',
+        function (sgColumn, breadcrumbs, localizedMessages,crudWait,$modal,simpleGridExport,$timeout,$position,$compile,$document,simpleGridIDb) {
             return {
                 restrict:'E',
                 replace:true,
@@ -650,54 +718,27 @@ angular.module('pzutil.simplegrid', ['pzutil.services','pzutil.modal'])
                     $scope.public.resetSearch = function(){
                         breadcrumbs.listingSearchModel = $scope.sgGlobalSearch;
                     };
+                    $scope.public.saveIDb = function(objectStore, data){
+                        $scope.sgObjectStore = objectStore;
+                        return simpleGridIDb.insert(objectStore, data);
+                    };
                     $scope.public.refresh = $scope.changed = function(page, reset) {
-                        var ps = pageSetting.pageSize;
-                        page = page || pageSetting.currentPage;
-                        pageSetting.currentPage = page;
-                        if (reset){
-                            $scope.resetChecks();
-                        }
-                        var scopeData = $scope.data;
-                        if (pageSetting.modalSearchCriteria && $scope.sgModalSearchTemplate){
-                            scopeData = $scope.sgModalSearch({list:scopeData,c:pageSetting.modalSearchCriteria,lk:$scope.myLookup});
-                        }
-                        var data = null;
-                        if (($scope.sgGlobalSearch || $scope.sgLocalSearch) && $scope.searchService.listingSearch && $scope.searchService.listingSearch!="")
-                        {
-                            var searchString = $scope.searchService.listingSearch.toLowerCase();
-                            data = _.filter(scopeData, function(i){
-                                for (var c = 0; c< $scope.columns.length; c++){
-                                    var col =  $scope.columns[c].name;
-                                    var value = i[col];
-                                    if ($scope.myLookup)
-                                        value = $scope.myLookup({col: col, value:value, item:i});
-                                    if (value) {
-                                        if (value.toString().toLowerCase().indexOf(searchString)>-1)
-                                            return true;
-                                    }
-                                }
-                                if ($scope.sgCustomSearch){
-                                    return $scope.sgCustomSearch({item: i, search: searchString});
-                                }
-                                return false;
-                            });
+                        var pagerHelper = function(){
                             pageSetting.totalItems = data.length;
                             var maxPages = Math.ceil(pageSetting.totalItems / ps);
                             if (page>maxPages){
                                 page = 1;
                                 pageSetting.currentPage = page;
                             }
-                        }
-                        else
-                            data =  scopeData;
-
-                        if ($scope.listItems && angular.isArray($scope.listItems)){
-                            $scope.listItems.length = 0;
-                            $scope.listItems.push.apply($scope.listItems, data);
-                        }
-
-                        var l = $scope.sgVirtual ? angular.copy(data) : _.take(_.rest(data, (page - 1) * ps), ps);
+                        };
                         var loader = function(){
+                            if ($scope.listItems && angular.isArray($scope.listItems)){
+                                $scope.listItems.length = 0;
+                                $scope.listItems.push.apply($scope.listItems, data);
+                            }
+
+                            var l = $scope.sgVirtual ? angular.copy(data) : _.take(_.rest(data, (page - 1) * ps), ps);
+
                             if ($scope.items) {
                                 $scope.items.length = 0;
                                 $scope.items.push.apply($scope.items, l);
@@ -715,6 +756,55 @@ angular.module('pzutil.simplegrid', ['pzutil.services','pzutil.modal'])
                                     size : pageSetting.pageSize
                                 } );
                         };
+
+                        var ps = pageSetting.pageSize;
+                        page = page || pageSetting.currentPage;
+                        pageSetting.currentPage = page;
+                        if (reset){
+                            $scope.resetChecks();
+                        }
+                        var scopeData = $scope.data;
+                        if (pageSetting.modalSearchCriteria && $scope.sgModalSearchTemplate){
+                            scopeData = $scope.sgModalSearch({list:scopeData,c:pageSetting.modalSearchCriteria,lk:$scope.myLookup});
+                        }
+                        var data = null;
+                        if (($scope.sgGlobalSearch || $scope.sgLocalSearch) && $scope.searchService.listingSearch && $scope.searchService.listingSearch!="")
+                        {
+                            var searchString = $scope.searchService.listingSearch.toLowerCase();
+                            var searchSchema;
+                            if (!!$scope.sgObjectStore) searchSchema = simpleGridIDb.searchSchema[$scope.sgObjectStore];
+                            if (!!searchSchema) {
+                                data = [];
+                                return simpleGridIDb.simpleSearch($scope.sgObjectStore,searchString, data)
+                                    .then(function(){
+                                        pagerHelper();
+                                        loader();
+                                    });
+                            }
+                            else {
+                                data = _.filter(scopeData, function(i){
+                                    for (var c = 0; c< $scope.columns.length; c++){
+                                        var col =  $scope.columns[c].name;
+                                        var value = i[col];
+                                        if ($scope.myLookup)
+                                            value = $scope.myLookup({col: col, value:value, item:i});
+                                        if (value) {
+                                            if (value.toString().toLowerCase().indexOf(searchString)>-1)
+                                                return true;
+                                        }
+                                    }
+                                    if ($scope.sgCustomSearch){
+                                        return $scope.sgCustomSearch({item: i, search: searchString});
+                                    }
+                                    return false;
+                                });
+                                pagerHelper();
+                            }
+                        }
+                        else
+                            data =  scopeData;
+
+
                         if ($attrs.sgOnChange) {
                             crudWait.doWork("Please wait...", $scope.sgOnChange({items:l}), loader);
                         }
