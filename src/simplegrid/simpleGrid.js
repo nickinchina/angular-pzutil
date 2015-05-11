@@ -433,13 +433,13 @@ angular.module('pzutil.simplegrid', ['pzutil.services','pzutil.modal'])
                     });
                 });
             },
-            get: function(){
+            get: function(objName){
                 var fields = service.searchSchema[objName];
                 if (!fields) return $q.when();
                 var store = service.db[objName];
                 return store.toArray();
             },
-            remove: function(){
+            remove: function(objName){
                 var fields = service.searchSchema[objName];
                 if (!fields) return $q.when();
                 var store = service.db[objName];
