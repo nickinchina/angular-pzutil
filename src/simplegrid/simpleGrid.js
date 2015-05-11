@@ -416,14 +416,20 @@ angular.module('pzutil.simplegrid', ['pzutil.services','pzutil.modal'])
                 if (!fields) return $q.when();
                 var store = service.db[objName];
                 return service.db.transaction('rw', store, function(){
-                    store.clear();
-                    angular.forEach(data, function(i){
-                        angular.forEach(fields, function(f){
-                            var v = i[f.name];
-                            if (lookup) v = lookup({col: f.name, value:v, item:i});
-                            if (f.token) i[f.name+"__tk"] = getTokenStream(v);
-                        })
-                        store.add(i);
+                    return store.count().then(function(count){
+                        if (count==0){
+                            angular.forEach(data, function(i){
+                                angular.forEach(fields, function(f){
+                                    var v = i[f.name];
+                                    if (lookup) v = lookup({col: f.name, value:v, item:i});
+                                    if (f.token) i[f.name+"__tk"] = getTokenStream(v);
+                                })
+                                store.add(i);
+                            });
+                            return data.length;
+                        }
+                        else
+                            return 0;
                     });
                 });
             },
@@ -441,7 +447,7 @@ angular.module('pzutil.simplegrid', ['pzutil.services','pzutil.modal'])
                     store.clear();
                 });
             },
-            simpleSearch : function(objName, search, outputHandler)
+            simpleSearch : function(objName, search, output)
             {
                 var store = service.db[objName];
                 var fields = service.searchSchema[objName];
@@ -458,7 +464,7 @@ angular.module('pzutil.simplegrid', ['pzutil.services','pzutil.modal'])
                     pointer = pointer(f)[eq](search)
                 }
                 return pointer.each(function(o){
-                    outputHandler(o);
+                    output.push(o);
                 });
             }
         };
@@ -731,7 +737,27 @@ angular.module('pzutil.simplegrid', ['pzutil.services','pzutil.modal'])
                     $scope.public.resetSearch = function(){
                         breadcrumbs.listingSearchModel = $scope.sgGlobalSearch;
                     };
+                    if (!!$scope.sgObjectStore) {
+                        $scope.searchSchema = simpleGridIDb.searchSchema[$scope.sgObjectStore];
+                        if (!!$scope.searchSchema) {
+                            simpleGridIDb.add($scope.sgObjectStore,$scope.data,$scope.myLookup);
+                        }
+                    }
+
                     $scope.public.refresh = $scope.changed = function(page, reset) {
+
+                        var ps = pageSetting.pageSize;
+                        page = page || pageSetting.currentPage;
+                        pageSetting.currentPage = page;
+                        if (reset){
+                            $scope.resetChecks();
+                        }
+                        var scopeData = $scope.data;
+                        if (pageSetting.modalSearchCriteria && $scope.sgModalSearchTemplate){
+                            scopeData = $scope.sgModalSearch({list:scopeData,c:pageSetting.modalSearchCriteria,lk:$scope.myLookup});
+                        }
+                        var data = null;
+
                         var pagerHelper = function(){
                             pageSetting.totalItems = data.length;
                             var maxPages = Math.ceil(pageSetting.totalItems / ps);
@@ -766,23 +792,10 @@ angular.module('pzutil.simplegrid', ['pzutil.services','pzutil.modal'])
                                 } );
                         };
 
-                        var ps = pageSetting.pageSize;
-                        page = page || pageSetting.currentPage;
-                        pageSetting.currentPage = page;
-                        if (reset){
-                            $scope.resetChecks();
-                        }
-                        var scopeData = $scope.data;
-                        if (pageSetting.modalSearchCriteria && $scope.sgModalSearchTemplate){
-                            scopeData = $scope.sgModalSearch({list:scopeData,c:pageSetting.modalSearchCriteria,lk:$scope.myLookup});
-                        }
-                        var data = null;
                         if (($scope.sgGlobalSearch || $scope.sgLocalSearch) && $scope.searchService.listingSearch && $scope.searchService.listingSearch!="")
                         {
                             var searchString = $scope.searchService.listingSearch.toLowerCase();
-                            var searchSchema;
-                            if (!!$scope.sgObjectStore) searchSchema = simpleGridIDb.searchSchema[$scope.sgObjectStore];
-                            if (!!searchSchema) {
+                            if (!!$scope.searchSchema) {
                                 data = [];
                                 return simpleGridIDb.simpleSearch($scope.sgObjectStore,searchString, data)
                                     .then(function(){
