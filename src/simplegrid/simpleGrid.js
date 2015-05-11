@@ -799,6 +799,7 @@ angular.module('pzutil.simplegrid', ['pzutil.services','pzutil.modal'])
                                 data = [];
                                 return simpleGridIDb.simpleSearch($scope.sgObjectStore,searchString, data)
                                     .then(function(){
+                                        console.log(simpleSearch);
                                         pagerHelper();
                                         loader();
                                     });
