@@ -819,7 +819,6 @@ angular.module('pzutil.simplegrid', ['pzutil.services','pzutil.modal'])
                 service.db = new Dexie(app || 's2k');
                 service.db.version(version||1).stores(idbSchema);
                 service.db.open();
-                console.log('service.db.open',service.db);
             },
             add : function(objName, data, lookup){
                 var fields = service.searchSchema[objName];
@@ -859,9 +858,7 @@ angular.module('pzutil.simplegrid', ['pzutil.services','pzutil.modal'])
             },
             simpleSearch : function(objName, search, output)
             {
-                console.log('service.db.store.open',service.db);
                 var store = service.db[objName];
-                console.log('service.db.store',store);
                 var fields = service.searchSchema[objName];
                 var pointer;
                 for (var i=0;i<fields.length;i++){
