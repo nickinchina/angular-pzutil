@@ -658,7 +658,7 @@ angular.module('pzutil.simplegrid', ['pzutil.services','pzutil.modal'])
                                 var value = i[col];
                                 if ($scope.myLookup)
                                     value = $scope.myLookup({col: col, value:value, item:i});
-                                ret+='|' + value;
+                                if (value) ret+='|' + value;
                             }
                             return ret;
                         });
@@ -677,9 +677,7 @@ angular.module('pzutil.simplegrid', ['pzutil.services','pzutil.modal'])
                         if (($scope.sgGlobalSearch || $scope.sgLocalSearch) && $scope.searchService.listingSearch && $scope.searchService.listingSearch!="")
                         {
                             var searchString = $scope.searchService.listingSearch.toLowerCase();
-                            if ($scope.crossfilter == null){
 
-                            }
                             /*
                             data = _.filter(scopeData, function(i){
                                 for (var c = 0; c< $scope.columns.length; c++){
@@ -699,8 +697,8 @@ angular.module('pzutil.simplegrid', ['pzutil.services','pzutil.modal'])
                             });
                             */
                             data = $scope.crossfilter.filterFunction(function(i){
-                                return i.toLowerCase().indexOf(searchString)>-1
-                            });
+                                return i.toLowerCase().indexOf(searchString)>-1;
+                            }).top(Infinity);;
                             pageSetting.totalItems = data.length;
                             var maxPages = Math.ceil(pageSetting.totalItems / ps);
                             if (page>maxPages){
