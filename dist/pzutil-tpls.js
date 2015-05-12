@@ -2,7 +2,7 @@
  * pzutil
  * 
 
- * Version: 0.0.18 - 2015-05-11
+ * Version: 0.0.18 - 2015-05-13
  * License: MIT
  */
 angular.module("pzutil", ["pzutil.tpls", "pzutil.aditem","pzutil.adpublish","pzutil.download","pzutil.image","pzutil.modal","pzutil.rest","pzutil.retailhelper","pzutil.services","pzutil.simplegrid","pzutil.tree","pzutil.ztemplate"]);
@@ -1059,6 +1059,18 @@ angular.module('pzutil.simplegrid', ['pzutil.services','pzutil.modal'])
                     $scope.public.resetSearch = function(){
                         breadcrumbs.listingSearchModel = $scope.sgGlobalSearch;
                     };
+                    $scope.crossfilter = crossfilter($scope.data).dimension(
+                        function(i) {
+                            var ret = '';
+                            for (var c = 0; c< $scope.columns.length; c++){
+                                var col =  $scope.columns[c].name;
+                                var value = i[col];
+                                if ($scope.myLookup)
+                                    value = $scope.myLookup({col: col, value:value, item:i});
+                                ret+='|' + value;
+                            }
+                            return ret;
+                        });
                     $scope.public.refresh = $scope.changed = function(page, reset) {
                         var ps = pageSetting.pageSize;
                         page = page || pageSetting.currentPage;
@@ -1074,6 +1086,10 @@ angular.module('pzutil.simplegrid', ['pzutil.services','pzutil.modal'])
                         if (($scope.sgGlobalSearch || $scope.sgLocalSearch) && $scope.searchService.listingSearch && $scope.searchService.listingSearch!="")
                         {
                             var searchString = $scope.searchService.listingSearch.toLowerCase();
+                            if ($scope.crossfilter == null){
+
+                            }
+                            /*
                             data = _.filter(scopeData, function(i){
                                 for (var c = 0; c< $scope.columns.length; c++){
                                     var col =  $scope.columns[c].name;
@@ -1089,6 +1105,10 @@ angular.module('pzutil.simplegrid', ['pzutil.services','pzutil.modal'])
                                     return $scope.sgCustomSearch({item: i, search: searchString});
                                 }
                                 return false;
+                            });
+                            */
+                            data = $scope.crossfilter.filterFunction(function(i){
+                                return i.toLowerCase().indexOf(searchString)>-1
                             });
                             pageSetting.totalItems = data.length;
                             var maxPages = Math.ceil(pageSetting.totalItems / ps);
