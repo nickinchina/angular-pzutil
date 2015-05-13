@@ -411,7 +411,7 @@ angular.module('pzutil.simplegrid', ['pzutil.services','pzutil.modal'])
                     }
                 },
                 link: function($scope, $element, $attrs, $controller) {
-                    httpRequestTracker.loading = true;
+                    $scope.loadingGrid = true;
                     $scope.hasSummary = !!$attrs.sgAgg;
                     var comboScope = $scope.$new();
                     $element.on('$destroy', function(){
@@ -780,7 +780,7 @@ angular.module('pzutil.simplegrid', ['pzutil.services','pzutil.modal'])
                         pageSetting.currentPage = 1;
                     }
                     pageSetting.totalItems = $scope.data.length;
-                    httpRequestTracker.loading = false;
+                    $scope.loadingGrid = false;
                     $scope.$watchCollection(function() {
                         return $scope.data ;
                     }, function() {

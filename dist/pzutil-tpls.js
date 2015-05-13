@@ -820,7 +820,7 @@ angular.module('pzutil.simplegrid', ['pzutil.services','pzutil.modal'])
                     }
                 },
                 link: function($scope, $element, $attrs, $controller) {
-                    httpRequestTracker.loading = true;
+                    $scope.loadingGrid = true;
                     $scope.hasSummary = !!$attrs.sgAgg;
                     var comboScope = $scope.$new();
                     $element.on('$destroy', function(){
@@ -1189,7 +1189,7 @@ angular.module('pzutil.simplegrid', ['pzutil.services','pzutil.modal'])
                         pageSetting.currentPage = 1;
                     }
                     pageSetting.totalItems = $scope.data.length;
-                    httpRequestTracker.loading = false;
+                    $scope.loadingGrid = false;
                     $scope.$watchCollection(function() {
                         return $scope.data ;
                     }, function() {
@@ -1700,6 +1700,7 @@ angular.module("template/simplegrid/simpleGrid-virtual.html", []).run(["$templat
 angular.module("template/simplegrid/simpleGrid.html", []).run(["$templateCache", function($templateCache) {
   $templateCache.put("template/simplegrid/simpleGrid.html",
     "<div class=\"form-horizontal sg-grid\">\n" +
+    "    {{loadingGrid }}\n" +
     "    <div>\n" +
     "        <button type=\"button\" class=\"btn btn-default\"  ng-click=\"sgAddObject()\"  ng-if=\"sgAddObject\"><i class=\"fa fa-plus\"></i> New</button>\n" +
     "    </div>\n" +
