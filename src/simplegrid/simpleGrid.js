@@ -698,7 +698,7 @@ angular.module('pzutil.simplegrid', ['pzutil.services','pzutil.modal'])
                             */
                             data = $scope.crossfilter.filterFunction(function(i){
                                 return i.toLowerCase().indexOf(searchString)>-1;
-                            }).top(Infinity);;
+                            }).top(Infinity);
                             pageSetting.totalItems = data.length;
                             var maxPages = Math.ceil(pageSetting.totalItems / ps);
                             if (page>maxPages){
@@ -749,7 +749,7 @@ angular.module('pzutil.simplegrid', ['pzutil.services','pzutil.modal'])
                                     if (x==$scope.searchService.listingSearch) {
                                         $scope.changed(pageSetting.currentPage);
                                     }
-                                }, 1000);
+                                }, 500);
                             })($scope.searchService.listingSearch);
                         });
                         if ($scope.sgGlobalSearch) {
