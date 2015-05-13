@@ -383,8 +383,8 @@ angular.module('pzutil.simplegrid', ['pzutil.services','pzutil.modal'])
             }
         };
     } ])
-    .directive('simpleGrid', ['sgColumn', 'breadcrumbs', 'localizedMessages','crudWait', '$modal','simpleGridExport','$timeout', '$position','$compile','$document',
-        function (sgColumn, breadcrumbs, localizedMessages,crudWait,$modal,simpleGridExport,$timeout,$position,$compile,$document) {
+    .directive('simpleGrid', ['sgColumn', 'breadcrumbs', 'localizedMessages','crudWait', '$modal','simpleGridExport','$timeout', '$position','$compile','$document','httpRequestTracker',
+        function (sgColumn, breadcrumbs, localizedMessages,crudWait,$modal,simpleGridExport,$timeout,$position,$compile,$document,httpRequestTracker) {
             return {
                 restrict:'E',
                 replace:true,
@@ -411,6 +411,7 @@ angular.module('pzutil.simplegrid', ['pzutil.services','pzutil.modal'])
                     }
                 },
                 link: function($scope, $element, $attrs, $controller) {
+                    httpRequestTracker.loading = true;
                     $scope.hasSummary = !!$attrs.sgAgg;
                     var comboScope = $scope.$new();
                     $element.on('$destroy', function(){
@@ -779,7 +780,7 @@ angular.module('pzutil.simplegrid', ['pzutil.services','pzutil.modal'])
                         pageSetting.currentPage = 1;
                     }
                     pageSetting.totalItems = $scope.data.length;
-
+                    httpRequestTracker.loading = false;
                     $scope.$watchCollection(function() {
                         return $scope.data ;
                     }, function() {
