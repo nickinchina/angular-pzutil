@@ -411,7 +411,6 @@ angular.module('pzutil.simplegrid', ['pzutil.services','pzutil.modal'])
                     }
                 },
                 link: function($scope, $element, $attrs, $controller) {
-                    $scope.loadingGrid = true;
                     $scope.hasSummary = !!$attrs.sgAgg;
                     var comboScope = $scope.$new();
                     $element.on('$destroy', function(){
@@ -436,30 +435,43 @@ angular.module('pzutil.simplegrid', ['pzutil.services','pzutil.modal'])
                             if (c.name != fieldName)
                                 c.sortOrder = undefined;
                         });
-                        $scope.data.sort(function(a,b) {
-                            var a1,b1;
-                            if (!a.hasOwnProperty(sortField) || col.useLookup){
-                                a1 = $scope.myLookup ?$scope.myLookup({col:sortField,item: a}):undefined;
-                                b1 = $scope.myLookup ?$scope.myLookup({col:sortField,item: b}):undefined;
-                            }
-                            else {
-                                a1 = a[sortField];
-                                b1 = b[sortField];
-                            };
-                            var r;
-                            if (a1==null)
-                                r = -1;
-                            else if (b1==null)
-                                r = 1;
-                            else {
-                                if (angular.isString(a1))
-                                    r = a1.localeCompare(b1);
-                                else
-                                    r = (a1 < b1 ? -1:1);
-                            }
-
-                            return r*(sortOrder? 1:-1);
+                        var sortByFoo = crossfilter.quicksort.by(function(a) {
+                            var r ;
+                            if (!a.hasOwnProperty(sortField) || col.useLookup)
+                                r = $scope.myLookup ?$scope.myLookup({col:sortField,item: a}):undefined;
+                            else
+                                r = a[sortField];
+                            if (angular.isString(r)) r = r.toLowerCase();
+                            return r;
                         });
+                        sortByFoo($scope.data, 0, $scope.data.length);
+                        if (!sortOrder) $scope.data.reverse();
+                        /*
+                         $scope.data.sort(function(a,b) {
+                         var a1,b1;
+                         if (!a.hasOwnProperty(sortField) || col.useLookup){
+                         a1 = $scope.myLookup ?$scope.myLookup({col:sortField,item: a}):undefined;
+                         b1 = $scope.myLookup ?$scope.myLookup({col:sortField,item: b}):undefined;
+                         }
+                         else {
+                         a1 = a[sortField];
+                         b1 = b[sortField];
+                         };
+                         var r;
+                         if (a1==null)
+                         r = -1;
+                         else if (b1==null)
+                         r = 1;
+                         else {
+                         if (angular.isString(a1))
+                         r = a1.localeCompare(b1);
+                         else
+                         r = (a1 < b1 ? -1:1);
+                         }
+
+                         return r*(sortOrder? 1:-1);
+                         });
+                         */
                     }
                     $scope.scInstance = {};
                     $scope.chartSeries = [];
@@ -780,7 +792,6 @@ angular.module('pzutil.simplegrid', ['pzutil.services','pzutil.modal'])
                         pageSetting.currentPage = 1;
                     }
                     pageSetting.totalItems = $scope.data.length;
-                    $scope.loadingGrid = false;
                     $scope.$watchCollection(function() {
                         return $scope.data ;
                     }, function() {
