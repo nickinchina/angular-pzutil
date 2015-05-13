@@ -1700,7 +1700,6 @@ angular.module("template/simplegrid/simpleGrid-virtual.html", []).run(["$templat
 angular.module("template/simplegrid/simpleGrid.html", []).run(["$templateCache", function($templateCache) {
   $templateCache.put("template/simplegrid/simpleGrid.html",
     "<div class=\"form-horizontal sg-grid\">\n" +
-    "    {{loadingGrid }}\n" +
     "    <div>\n" +
     "        <button type=\"button\" class=\"btn btn-default\"  ng-click=\"sgAddObject()\"  ng-if=\"sgAddObject\"><i class=\"fa fa-plus\"></i> New</button>\n" +
     "    </div>\n" +
