@@ -708,13 +708,15 @@ angular.module('pzutil.simplegrid', ['pzutil.services','pzutil.modal'])
                             }
                         }
                         else
-                            data =  scopeData;
+                            data =  $scope.crossfilter.top(Infinity);
 
                         if ($scope.listItems && angular.isArray($scope.listItems)){
                             $scope.listItems.length = 0;
                             $scope.listItems.push.apply($scope.listItems, data);
                         }
                         $scope.gridData = data;
+                        runSort();
+
                         var l = $scope.sgVirtual ? angular.copy(data) : _.take(_.rest(data, (page - 1) * ps), ps);
                         var loader = function(){
                             if ($scope.items) {
@@ -796,30 +798,24 @@ angular.module('pzutil.simplegrid', ['pzutil.services','pzutil.modal'])
                             $scope.sorter(col);
                         }
                     }
-                    var firstTime = true;
                     $scope.$watchCollection(function() {
                         return $scope.data ;
                     }, function() {
-                        if (!firstTime) {
-                            $scope.crossfilter = crossfilter($scope.data).dimension(
-                                function(i) {
-                                    var ret = '';
-                                    for (var c = 0; c< $scope.columns.length; c++){
-                                        var col =  $scope.columns[c].name;
-                                        var value = i[col];
-                                        if ($scope.myLookup)
-                                            value = $scope.myLookup({col: col, value:value, item:i});
-                                        if (value) ret+='|' + value;
-                                    }
-                                    return ret;
-                                });
-                            $scope.changed(pageSetting.currentPage);
-                            if ($scope.gridData!=$scope.data) runSort();
-                        }
-                        else {
-                            firstTime = false;
-                            runSort();
-                        }
+                        var d = new Date();
+                        $scope.crossfilter = crossfilter($scope.data).dimension(
+                            function(i) {
+                                var ret = '';
+                                for (var c = 0; c< $scope.columns.length; c++){
+                                    var col =  $scope.columns[c].name;
+                                    var value = i[col];
+                                    if ($scope.myLookup)
+                                        value = $scope.myLookup({col: col, value:value, item:i});
+                                    if (value) ret+='|' + value;
+                                }
+                                return ret;
+                            });
+                        console.log(new Date()-d);
+                        $scope.changed(pageSetting.currentPage);
                     });
 
                 }
