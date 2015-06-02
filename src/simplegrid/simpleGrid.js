@@ -430,6 +430,7 @@ angular.module('pzutil.simplegrid', ['pzutil.services','pzutil.modal'])
                         e.attr('aria-expanded', true);
                     }
                     var sortIt = function(fieldName, sortOrder, sortField, useLookup) {
+                        console.log('$scope.gridData',!!$scope.gridData);
                         if (!$scope.gridData) return;
 
                         var sortField = sortField || fieldName;
@@ -439,7 +440,7 @@ angular.module('pzutil.simplegrid', ['pzutil.services','pzutil.modal'])
                         });
                         var sortByFoo = crossfilter.quicksort.by(function(a) {
                             var r ;
-                            if (!a.hasOwnProperty(sortField) || col.useLookup)
+                            if (!a.hasOwnProperty(sortField) || useLookup)
                                 r = $scope.myLookup ?$scope.myLookup({col:sortField,item: a}):undefined;
                             else
                                 r = a[sortField];
