@@ -839,8 +839,6 @@ angular.module('pzutil.simplegrid', ['pzutil.services','pzutil.modal'])
                         e.attr('aria-expanded', true);
                     }
                     var sortIt = function(fieldName, sortOrder, sortField, useLookup) {
-                        if (!$scope.griddata) return;
-
                         var sortField = sortField || fieldName;
                         _($scope.columns).forEach(function(c){
                             if (c.name != fieldName)
@@ -855,8 +853,8 @@ angular.module('pzutil.simplegrid', ['pzutil.services','pzutil.modal'])
                             if (angular.isString(r)) r = r.toLowerCase();
                             return r;
                         });
-                        sortByFoo($scope.griddata, 0, $scope.griddata.length);
-                        if (!sortOrder) $scope.griddata.reverse();
+                        sortByFoo($scope.data, 0, $scope.data.length);
+                        if (!sortOrder) $scope.data.reverse();
                         /*
                          $scope.data.sort(function(a,b) {
                          var a1,b1;
@@ -1126,12 +1124,6 @@ angular.module('pzutil.simplegrid', ['pzutil.services','pzutil.modal'])
                             $scope.listItems.push.apply($scope.listItems, data);
                         }
 
-                        $scope.griddata = data;
-                        if ($scope.columns && $scope.columns.length>0) {
-                            var col = _.find($scope.columns, {name: pageSetting.initSort}) || $scope.columns[0];
-                            col.sortOrder = pageSetting.initSortOrder;
-                            $scope.sorter(col);
-                        }
                         var l = $scope.sgVirtual ? angular.copy(data) : _.take(_.rest(data, (page - 1) * ps), ps);
                         var loader = function(){
                             if ($scope.items) {
@@ -1197,19 +1189,10 @@ angular.module('pzutil.simplegrid', ['pzutil.services','pzutil.modal'])
                         pageSetting.currentPage = 1;
                     }
                     pageSetting.totalItems = $scope.data.length;
-
-                    if (!pageSetting.initSort) {
-                        pageSetting.initSort = $scope.sgSortField;
-                        pageSetting.initSortOrder = true;
-                        if (pageSetting.initSort && pageSetting.initSort.substr(0,1)=="!"){
-                            pageSetting.initSortOrder = false;
-                            pageSetting.initSort = pageSetting.initSort.substr(1);
-                        }
-                    }
-
                     $scope.$watchCollection(function() {
                         return $scope.data ;
                     }, function() {
+                        console.log('$scope.$watchCollection');
                         $scope.crossfilter = crossfilter($scope.data).dimension(
                             function(i) {
                                 var ret = '';
@@ -1225,6 +1208,19 @@ angular.module('pzutil.simplegrid', ['pzutil.services','pzutil.modal'])
                         $scope.changed(pageSetting.currentPage);
                     });
 
+                    if (!pageSetting.initSort) {
+                        pageSetting.initSort = $scope.sgSortField;
+                        pageSetting.initSortOrder = true;
+                        if (pageSetting.initSort && pageSetting.initSort.substr(0,1)=="!"){
+                            pageSetting.initSortOrder = false;
+                            pageSetting.initSort = pageSetting.initSort.substr(1);
+                        }
+                    }
+                    if ($scope.columns && $scope.columns.length>0) {
+                        var col = _.find($scope.columns, {name: pageSetting.initSort}) || $scope.columns[0];
+                        col.sortOrder = pageSetting.initSortOrder;
+                        $scope.sorter(col);
+                    }
                 }
             };
         }]);
