@@ -430,6 +430,7 @@ angular.module('pzutil.simplegrid', ['pzutil.services','pzutil.modal'])
                         e.attr('aria-expanded', true);
                     }
                     var sortIt = function(fieldName, sortOrder, sortField, useLookup) {
+                        var d = new Date();
                         var sortField = sortField || fieldName;
                         _($scope.columns).forEach(function(c){
                             if (c.name != fieldName)
@@ -446,6 +447,8 @@ angular.module('pzutil.simplegrid', ['pzutil.services','pzutil.modal'])
                         });
                         sortByFoo($scope.gridData, 0, $scope.gridData.length);
                         if (!sortOrder) $scope.gridData.reverse();
+                        loader();
+                        console.log("sort",new Date()-d);
                         /*
                          $scope.data.sort(function(a,b) {
                          var a1,b1;
@@ -671,32 +674,10 @@ angular.module('pzutil.simplegrid', ['pzutil.services','pzutil.modal'])
                             $scope.resetChecks();
                         }
                         var scopeData = $scope.data;
-                        if (pageSetting.modalSearchCriteria && $scope.sgModalSearchTemplate){
-                            scopeData = $scope.sgModalSearch({list:scopeData,c:pageSetting.modalSearchCriteria,lk:$scope.myLookup});
-                        }
                         var data = null;
                         if (($scope.sgGlobalSearch || $scope.sgLocalSearch) && $scope.searchService.listingSearch && $scope.searchService.listingSearch!="")
                         {
                             var searchString = $scope.searchService.listingSearch.toLowerCase();
-
-                            /*
-                            data = _.filter(scopeData, function(i){
-                                for (var c = 0; c< $scope.columns.length; c++){
-                                    var col =  $scope.columns[c].name;
-                                    var value = i[col];
-                                    if ($scope.myLookup)
-                                        value = $scope.myLookup({col: col, value:value, item:i});
-                                    if (value) {
-                                        if (value.toString().toLowerCase().indexOf(searchString)>-1)
-                                            return true;
-                                    }
-                                }
-                                if ($scope.sgCustomSearch){
-                                    return $scope.sgCustomSearch({item: i, search: searchString});
-                                }
-                                return false;
-                            });
-                            */
                             data = $scope.crossfilter.filterFunction(function(i){
                                 return i.toLowerCase().indexOf(searchString)>-1;
                             }).top(Infinity);
@@ -707,8 +688,13 @@ angular.module('pzutil.simplegrid', ['pzutil.services','pzutil.modal'])
                                 pageSetting.currentPage = page;
                             }
                         }
-                        else
+                        else {
                             data =  $scope.crossfilter.top(Infinity);
+                        }
+
+                        if (pageSetting.modalSearchCriteria && $scope.sgModalSearchTemplate){
+                            data = $scope.sgModalSearch({list:data,c:pageSetting.modalSearchCriteria,lk:$scope.myLookup});
+                        }
 
                         if ($scope.listItems && angular.isArray($scope.listItems)){
                             $scope.listItems.length = 0;
@@ -716,32 +702,35 @@ angular.module('pzutil.simplegrid', ['pzutil.services','pzutil.modal'])
                         }
                         $scope.gridData = data;
                         runSort();
-
-                        var l = $scope.sgVirtual ? angular.copy(data) : _.take(_.rest(data, (page - 1) * ps), ps);
-                        var loader = function(){
-                            if ($scope.items) {
-                                $scope.items.length = 0;
-                                $scope.items.push.apply($scope.items, l);
-                            }
-                            else
-                                $scope.items = l;
-
-                            pageSetting.totalItems = data.length;
-
-                            $scope.footer = localizedMessages.get(pageSetting.totalItems<=pageSetting.pageSize?'common.totalcount1Page': 'common.totalcount',
-                                {
-                                    from: ps * (page - 1) + 1,
-                                    to: Math.min(ps* page,pageSetting.totalItems) ,
-                                    total: pageSetting.totalItems,
-                                    size : pageSetting.pageSize
-                                } );
-                        };
-                        if ($attrs.sgOnChange) {
-                            crudWait.doWork("Please wait...", $scope.sgOnChange({items:l}), loader);
+                    };
+                    function runSort(){
+                        if ($scope.columns && $scope.columns.length>0) {
+                            var col = _.find($scope.columns, {name: pageSetting.initSort}) || $scope.columns[0];
+                            col.sortOrder = pageSetting.initSortOrder;
+                            $scope.sorter(col);
                         }
-                        else {
-                            loader();
+                    }
+                    function loader(){
+                        var ps = pageSetting.pageSize;
+                        var data = $scope.gridData;
+                        var page = pageSetting.currentPage;
+                        var l =  _.take(_.rest(data, (page - 1) * ps), ps);
+                        if ($scope.items) {
+                            $scope.items.length = 0;
+                            $scope.items.push.apply($scope.items, l);
                         }
+                        else
+                            $scope.items = l;
+
+                        pageSetting.totalItems = data.length;
+
+                        $scope.footer = localizedMessages.get(pageSetting.totalItems<=pageSetting.pageSize?'common.totalcount1Page': 'common.totalcount',
+                            {
+                                from: ps * (page - 1) + 1,
+                                to: Math.min(ps* page,pageSetting.totalItems) ,
+                                total: pageSetting.totalItems,
+                                size : pageSetting.pageSize
+                            } );
                     };
                     if ($scope.sgGlobalSearch || $scope.sgLocalSearch) {
                         $scope.$watch(function() {
@@ -791,13 +780,6 @@ angular.module('pzutil.simplegrid', ['pzutil.services','pzutil.modal'])
                             pageSetting.initSort = pageSetting.initSort.substr(1);
                         }
                     }
-                    function runSort(){
-                        if ($scope.columns && $scope.columns.length>0) {
-                            var col = _.find($scope.columns, {name: pageSetting.initSort}) || $scope.columns[0];
-                            col.sortOrder = pageSetting.initSortOrder;
-                            $scope.sorter(col);
-                        }
-                    }
                     $scope.$watchCollection(function() {
                         return $scope.data ;
                     }, function() {
@@ -814,7 +796,7 @@ angular.module('pzutil.simplegrid', ['pzutil.services','pzutil.modal'])
                                 }
                                 return ret;
                             });
-                        console.log(new Date()-d);
+                        console.log('crossfilter',new Date()-d);
                         $scope.changed(pageSetting.currentPage);
                     });
 
