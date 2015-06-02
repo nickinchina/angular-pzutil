@@ -430,9 +430,6 @@ angular.module('pzutil.simplegrid', ['pzutil.services','pzutil.modal'])
                         e.attr('aria-expanded', true);
                     }
                     var sortIt = function(fieldName, sortOrder, sortField, useLookup) {
-                        console.log('$scope.gridData',!!$scope.gridData);
-                        if (!$scope.gridData) return;
-
                         var sortField = sortField || fieldName;
                         _($scope.columns).forEach(function(c){
                             if (c.name != fieldName)
@@ -783,29 +780,6 @@ angular.module('pzutil.simplegrid', ['pzutil.services','pzutil.modal'])
                         pageSetting.currentPage = 1;
                     }
                     pageSetting.totalItems = $scope.data.length;
-                    $scope.$watchCollection(function() {
-                        return $scope.data ;
-                    }, function() {
-                        console.log('$scope.$watchCollection');
-                        $scope.crossfilter = crossfilter($scope.data).dimension(
-                            function(i) {
-                                var ret = '';
-                                for (var c = 0; c< $scope.columns.length; c++){
-                                    var col =  $scope.columns[c].name;
-                                    var value = i[col];
-                                    if ($scope.myLookup)
-                                        value = $scope.myLookup({col: col, value:value, item:i});
-                                    if (value) ret+='|' + value;
-                                }
-                                return ret;
-                            });
-                        $scope.changed(pageSetting.currentPage);
-                        if ($scope.columns && $scope.columns.length>0) {
-                            var col = _.find($scope.columns, {name: pageSetting.initSort}) || $scope.columns[0];
-                            col.sortOrder = pageSetting.initSortOrder;
-                            $scope.sorter(col);
-                        }
-                    });
 
                     if (!pageSetting.initSort) {
                         pageSetting.initSort = $scope.sgSortField;
@@ -815,6 +789,38 @@ angular.module('pzutil.simplegrid', ['pzutil.services','pzutil.modal'])
                             pageSetting.initSort = pageSetting.initSort.substr(1);
                         }
                     }
+                    function runSort(){
+                        if ($scope.columns && $scope.columns.length>0) {
+                            var col = _.find($scope.columns, {name: pageSetting.initSort}) || $scope.columns[0];
+                            col.sortOrder = pageSetting.initSortOrder;
+                            $scope.sorter(col);
+                        }
+                    }
+                    var firstTime = true;
+                    $scope.$watchCollection(function() {
+                        return $scope.data ;
+                    }, function() {
+                        if (!firstTime) {
+                            $scope.crossfilter = crossfilter($scope.data).dimension(
+                                function(i) {
+                                    var ret = '';
+                                    for (var c = 0; c< $scope.columns.length; c++){
+                                        var col =  $scope.columns[c].name;
+                                        var value = i[col];
+                                        if ($scope.myLookup)
+                                            value = $scope.myLookup({col: col, value:value, item:i});
+                                        if (value) ret+='|' + value;
+                                    }
+                                    return ret;
+                                });
+                            $scope.changed(pageSetting.currentPage);
+                            if ($scope.gridData!=$scope.data) runSort();
+                        }
+                        else {
+                            firstTime = false;
+                            runSort();
+                        }
+                    });
 
                 }
             };
