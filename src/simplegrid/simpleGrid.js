@@ -689,7 +689,7 @@ angular.module('pzutil.simplegrid', ['pzutil.services','pzutil.modal'])
                             }
                         }
                         else {
-                            data =  $scope.crossfilter.top(Infinity);
+                            data = $scope.crossfilter.filterAll().top(Infinity);
                         }
 
                         if (pageSetting.modalSearchCriteria && $scope.sgModalSearchTemplate){
