@@ -1197,6 +1197,16 @@ angular.module('pzutil.simplegrid', ['pzutil.services','pzutil.modal'])
                         pageSetting.currentPage = 1;
                     }
                     pageSetting.totalItems = $scope.data.length;
+
+                    if (!pageSetting.initSort) {
+                        pageSetting.initSort = $scope.sgSortField;
+                        pageSetting.initSortOrder = true;
+                        if (pageSetting.initSort && pageSetting.initSort.substr(0,1)=="!"){
+                            pageSetting.initSortOrder = false;
+                            pageSetting.initSort = pageSetting.initSort.substr(1);
+                        }
+                    }
+
                     $scope.$watchCollection(function() {
                         return $scope.data ;
                     }, function() {
@@ -1214,15 +1224,6 @@ angular.module('pzutil.simplegrid', ['pzutil.services','pzutil.modal'])
                             });
                         $scope.changed(pageSetting.currentPage);
                     });
-
-                    if (!pageSetting.initSort) {
-                        pageSetting.initSort = $scope.sgSortField;
-                        pageSetting.initSortOrder = true;
-                        if (pageSetting.initSort && pageSetting.initSort.substr(0,1)=="!"){
-                            pageSetting.initSortOrder = false;
-                            pageSetting.initSort = pageSetting.initSort.substr(1);
-                        }
-                    }
 
                 }
             };
