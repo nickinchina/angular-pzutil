@@ -2,7 +2,7 @@
  * pzutil
  * 
 
- * Version: 0.0.18 - 2015-06-02
+ * Version: 0.0.18 - 2015-06-10
  * License: MIT
  */
 angular.module("pzutil", ["pzutil.tpls", "pzutil.aditem","pzutil.adpublish","pzutil.download","pzutil.image","pzutil.modal","pzutil.rest","pzutil.retailhelper","pzutil.services","pzutil.simplegrid","pzutil.tree","pzutil.ztemplate"]);
@@ -325,14 +325,20 @@ angular.module('pzutil.services', []).
     factory('attrHelper', [
         function(){
             var attrService = {
-                parseIds : function(ids, taxons){
-                    var r=[];
-                    _(ids.split(',')).forEach(function(i){
-                        var f = _.find(taxons, {id: i});
-                        if (f)
-                            r.push(f.name);
-                    });
-                    return r.join(", ");
+                parseIds : function(ids, taxons, isCrossFilter){
+                    if (isCrossFilter){
+                        var ids = ids.split(',');
+                        return _.map(taxons.filterFunction(function(id) { return ids.indexOf(id)>-1; }).top(Infinity),"name").join(", ");
+                    }
+                    else {
+                        var r=[];
+                        _(ids.split(',')).forEach(function(i){
+                            var f = _.find(taxons, {id: i});
+                            if (f)
+                                r.push(f.name);
+                        });
+                        return r.join(", ");
+                    }
                 }
             };
             return attrService;
@@ -413,7 +419,7 @@ angular.module('pzutil.services', []).
 angular.module('pzutil.simplegrid', ['pzutil.services','pzutil.modal'])
     .factory('sgColumn', ['localizedMessages', function (localizedMessages) {
 
-        var factory = function($scope) {
+        var factory = function($scope, sgFlexWidth) {
 
             var sorter = $scope.sorter,
                 lookup = $scope.myLookup,
@@ -463,17 +469,28 @@ angular.module('pzutil.simplegrid', ['pzutil.services','pzutil.modal'])
                 }
             };
 
+            mixin.prototype.$getColumnStyle = function(item){
+                var w = this.width ;
+                if (sgFlexWidth)
+                    return 'width:' + w + 'px';
+                else
+                    return '';
+            };
+
             mixin.prototype.$getColumnClass = function(item){
                 var w = this.width  ? this.width : 2;
                 var checkbox = this.checkbox ? "checkbox checkbox-cell " :"";
                 var inactive = (item && item.inactive);
                 if (inactive) checkbox += "sg-deleted ";
                 if ($scope.hasEditInput()) checkbox += "sg-gridrow-cell-edit ";
-                w = w * 2;
-                if (this.align && !!item)
-                    return checkbox + 'sg-gridrow-cell col-sg-' + w + ' text-' + this.align;
+                if (sgFlexWidth)
+                    w = "";
                 else
-                    return checkbox + 'sg-gridrow-cell col-sg-' + w;
+                    w = 'col-sg-' +  w * 2;
+                if (this.align && !!item)
+                    return checkbox + 'sg-gridrow-cell ' + w + ' text-' + this.align;
+                else
+                    return checkbox + 'sg-gridrow-cell ' + w;
             };
             mixin.prototype.$modalEdit = function(item, e){
                 if (this.modalEdit){
@@ -800,7 +817,7 @@ angular.module('pzutil.simplegrid', ['pzutil.services','pzutil.modal'])
                 scope: { data:"=sgData", listItems:"=",  sgAddObject:"&", sgSortOptions:"=", itemtemplate:"=sgTemplate",sgColumns:"@",sgDelObject:"&", sgAllowDel:"@",
                     sgNoPager:'=', sgOnClick:'&', sgLookup:"&", sgGlobalSearch:"@", sgLocalSearch:"@",sgPageSize:"@" ,sgOptions:"=", sgOnChange:"&", sgLookupTitle:"&",sgSortField:"=",sgVirtual:"@",
                     sgCheckColumn:"@", sgCustomSearch:"&", sgModalSearchTemplate:"=", sgModalSearchController:"=", sgModalSearchResolve:"=", sgModalSearch:"&", sgExportTitle:"@",
-                    sgPublic:"=", sgAgg:"&", sgReadonly:"=", sgMenu:"=", sgModalEdit:"&"},
+                    sgPublic:"=", sgAgg:"&", sgReadonly:"=", sgMenu:"=", sgModalEdit:"&", sgFlexWidth:"="},
                 templateUrl: function($element, $attrs) {
                     var t = $attrs.sgTemplate;
                     if (t) {
@@ -952,7 +969,7 @@ angular.module('pzutil.simplegrid', ['pzutil.services','pzutil.modal'])
                     }
                     $scope.myLookup = $attrs.sgLookup ? $scope.sgLookup : null;
                     $scope.myLookupTitle = $attrs.sgLookupTitle ? $scope.sgLookupTitle : null;
-                    $scope.columns = sgColumn($scope).Parse($attrs.sgColumns);
+                    $scope.columns = sgColumn($scope).Parse($attrs.sgColumns, $scope.sgFlexWidth);
 
                     var $popups = [];
                     $scope.hasEditInput = function(){
@@ -1618,7 +1635,7 @@ angular.module("template/simplegrid/header.html", []).run(["$templateCache", fun
     "</div>\n" +
     "<div class=\"row sg-gridheader\" >\n" +
     "    <div class=\"col-sg-1\" ng-if=\"sgAllowDel && !sgReadonly\" ></div>\n" +
-    "    <div class=\"{{col.$getColumnClass()}}\" ng-click=\"col.$sort()\" ng-repeat=\"col in columns\">\n" +
+    "    <div class=\"{{col.$getColumnClass()}}\" style=\"{{col.$getColumnStyle()}}\" ng-click=\"col.$sort()\" ng-repeat=\"col in columns\">\n" +
     "        <span>{{col.$getTitle()}}</span>\n" +
     "        <i class=\"fa fa-long-arrow-down pull-right sg_gridIcon\" ng-show=\"!col.sortOrder && col.sortOrder!=undefined\" style=\"top:50%;\"></i>\n" +
     "        <i class=\"fa fa-long-arrow-up pull-right sg_gridIcon\" ng-show=\"col.sortOrder\" style=\"top:50%;\"></i>\n" +
@@ -1654,7 +1671,7 @@ angular.module("template/simplegrid/simpleGrid-normal.html", []).run(["$template
     "        <div style=\"{{scrollStyle}}\">\n" +
     "            <div ng-repeat=\"item in items\" class=\"row sg-gridrow\" ng-class=\"{true: 'sg-gridrow-active'}[item.$__selected]\" ng-click=\"clickRow(item,$event)\" context-menu=\"sgMenu\" >\n" +
     "                <a href ng-if=\"sgAllowDel && !sgReadonly\" ng-click=\"DelObject(item)\" class=\"col-sg-1\"><i class= 'fa fa-minus-circle fa-lg sg_gridIcon text-danger'></i></a>\n" +
-    "                <div class=\"{{col.$getColumnClass(item)}}\" ng-repeat=\"col in columns\" title=\"{{col.$getText(item)}}\">\n" +
+    "                <div class=\"{{col.$getColumnClass(item)}}\" style=\"{{col.$getColumnStyle()}}\" ng-repeat=\"col in columns\" title=\"{{col.$getText(item)}}\">\n" +
     "                    <i ng-if=\"$first && item.$__selected\" class=\"fa fa-circle\"></i>\n" +
     "                    <i ng-if=\"col.bool\" ng-class=\"{true: 'fa fa-check'}[col.$getValue(item)]\"></i>\n" +
     "                    <ng-include  ng-if=\"!sgReadonly && col.template && (col.template.substr(0,9)=='readonly_' || !item.$core || !item.$core())\" src=\"col.template\"></ng-include>\n" +

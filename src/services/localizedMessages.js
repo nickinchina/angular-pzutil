@@ -5,14 +5,20 @@ angular.module('pzutil.services', []).
     factory('attrHelper', [
         function(){
             var attrService = {
-                parseIds : function(ids, taxons){
-                    var r=[];
-                    _(ids.split(',')).forEach(function(i){
-                        var f = _.find(taxons, {id: i});
-                        if (f)
-                            r.push(f.name);
-                    });
-                    return r.join(", ");
+                parseIds : function(ids, taxons, isCrossFilter){
+                    if (isCrossFilter){
+                        var ids = ids.split(',');
+                        return _.map(taxons.filterFunction(function(id) { return ids.indexOf(id)>-1; }).top(Infinity),"name").join(", ");
+                    }
+                    else {
+                        var r=[];
+                        _(ids.split(',')).forEach(function(i){
+                            var f = _.find(taxons, {id: i});
+                            if (f)
+                                r.push(f.name);
+                        });
+                        return r.join(", ");
+                    }
                 }
             };
             return attrService;

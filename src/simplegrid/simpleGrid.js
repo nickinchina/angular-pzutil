@@ -4,7 +4,7 @@
 angular.module('pzutil.simplegrid', ['pzutil.services','pzutil.modal'])
     .factory('sgColumn', ['localizedMessages', function (localizedMessages) {
 
-        var factory = function($scope) {
+        var factory = function($scope, sgFlexWidth) {
 
             var sorter = $scope.sorter,
                 lookup = $scope.myLookup,
@@ -54,17 +54,28 @@ angular.module('pzutil.simplegrid', ['pzutil.services','pzutil.modal'])
                 }
             };
 
+            mixin.prototype.$getColumnStyle = function(item){
+                var w = this.width ;
+                if (sgFlexWidth)
+                    return 'width:' + w + 'px';
+                else
+                    return '';
+            };
+
             mixin.prototype.$getColumnClass = function(item){
                 var w = this.width  ? this.width : 2;
                 var checkbox = this.checkbox ? "checkbox checkbox-cell " :"";
                 var inactive = (item && item.inactive);
                 if (inactive) checkbox += "sg-deleted ";
                 if ($scope.hasEditInput()) checkbox += "sg-gridrow-cell-edit ";
-                w = w * 2;
-                if (this.align && !!item)
-                    return checkbox + 'sg-gridrow-cell col-sg-' + w + ' text-' + this.align;
+                if (sgFlexWidth)
+                    w = "";
                 else
-                    return checkbox + 'sg-gridrow-cell col-sg-' + w;
+                    w = 'col-sg-' +  w * 2;
+                if (this.align && !!item)
+                    return checkbox + 'sg-gridrow-cell ' + w + ' text-' + this.align;
+                else
+                    return checkbox + 'sg-gridrow-cell ' + w;
             };
             mixin.prototype.$modalEdit = function(item, e){
                 if (this.modalEdit){
@@ -391,7 +402,7 @@ angular.module('pzutil.simplegrid', ['pzutil.services','pzutil.modal'])
                 scope: { data:"=sgData", listItems:"=",  sgAddObject:"&", sgSortOptions:"=", itemtemplate:"=sgTemplate",sgColumns:"@",sgDelObject:"&", sgAllowDel:"@",
                     sgNoPager:'=', sgOnClick:'&', sgLookup:"&", sgGlobalSearch:"@", sgLocalSearch:"@",sgPageSize:"@" ,sgOptions:"=", sgOnChange:"&", sgLookupTitle:"&",sgSortField:"=",sgVirtual:"@",
                     sgCheckColumn:"@", sgCustomSearch:"&", sgModalSearchTemplate:"=", sgModalSearchController:"=", sgModalSearchResolve:"=", sgModalSearch:"&", sgExportTitle:"@",
-                    sgPublic:"=", sgAgg:"&", sgReadonly:"=", sgMenu:"=", sgModalEdit:"&"},
+                    sgPublic:"=", sgAgg:"&", sgReadonly:"=", sgMenu:"=", sgModalEdit:"&", sgFlexWidth:"="},
                 templateUrl: function($element, $attrs) {
                     var t = $attrs.sgTemplate;
                     if (t) {
@@ -543,7 +554,7 @@ angular.module('pzutil.simplegrid', ['pzutil.services','pzutil.modal'])
                     }
                     $scope.myLookup = $attrs.sgLookup ? $scope.sgLookup : null;
                     $scope.myLookupTitle = $attrs.sgLookupTitle ? $scope.sgLookupTitle : null;
-                    $scope.columns = sgColumn($scope).Parse($attrs.sgColumns);
+                    $scope.columns = sgColumn($scope).Parse($attrs.sgColumns, $scope.sgFlexWidth);
 
                     var $popups = [];
                     $scope.hasEditInput = function(){
