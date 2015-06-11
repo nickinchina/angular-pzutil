@@ -62,24 +62,13 @@ angular.module('pzutil.simplegrid', ['pzutil.services','pzutil.modal'])
                 return false;
             };
 
-            mixin.prototype.$getColumnStyle = function(item){
-                var w = this.width ;
-                if (sgFlexWidth)
-                    return 'width:' + w + 'px;float:left';
-                else
-                    return '';
-            };
-
             mixin.prototype.$getColumnClass = function(item){
                 var w = this.width  ? this.width : 2;
                 var checkbox = this.checkbox ? "checkbox checkbox-cell " :"";
                 var inactive = (item && item.inactive);
                 if (inactive) checkbox += "sg-deleted ";
                 if ($scope.hasEditInput()) checkbox += "sg-gridrow-cell-edit ";
-                if (sgFlexWidth)
-                    w = "";
-                else
-                    w = 'col-sg-' +  w * 2;
+                w = 'col-sg-' +  w * 2;
                 if (this.align && !!item)
                     return checkbox + 'sg-gridrow-cell ' + w + ' text-' + this.align;
                 else
@@ -563,7 +552,12 @@ angular.module('pzutil.simplegrid', ['pzutil.services','pzutil.modal'])
                     $scope.myLookup = $attrs.sgLookup ? $scope.sgLookup : null;
                     $scope.myLookupTitle = $attrs.sgLookupTitle ? $scope.sgLookupTitle : null;
                     $scope.columns = sgColumn($scope, $scope.sgFlexWidth).Parse($attrs.sgColumns);
-
+                    $scope.getRowCss =function(css)  {
+                        return ($scope.sgFlexWidth?"row-fluid sg-nowrap ":"row ")+css;
+                    }
+                    $scope.getCellStyle =function()  {
+                        return ($scope.sgFlexWidth?"display: inline-block;":"");
+                    }
                     var $popups = [];
                     $scope.hasEditInput = function(){
                         if ($scope.sgReadonly) return false;

@@ -2,9 +2,9 @@
     <ng-include src="'template/simplegrid/header.html'"></ng-include>
     <div>
         <div style="{{scrollStyle}}">
-            <div ng-repeat="item in items" class="row sg-gridrow" ng-class="{true: 'sg-gridrow-active'}[item.$__selected]" ng-click="clickRow(item,$event)" context-menu="sgMenu" >
+            <div ng-repeat="item in items" class="{{getRowCss('sg-gridrow')}}" ng-class="{true: 'sg-gridrow-active'}[item.$__selected]" ng-click="clickRow(item,$event)" context-menu="sgMenu" >
                 <a href ng-if="sgAllowDel && !sgReadonly" ng-click="DelObject(item)" class="col-sg-1"><i class= 'fa fa-minus-circle fa-lg sg_gridIcon text-danger'></i></a>
-                <div class="{{col.$getColumnClass(item)}}" style="{{col.$getColumnStyle()}}" ng-repeat="col in columns" title="{{col.$getText(item)}}">
+                <div class="{{col.$getColumnClass(item)}}" style="{{getCellStyle()}}" ng-repeat="col in columns" title="{{col.$getText(item)}}">
                     <i ng-if="$first && item.$__selected" class="fa fa-circle"></i>
                     <i ng-if="col.bool" ng-class="{true: 'fa fa-check'}[col.$getValue(item)]"></i>
                     <ng-include  ng-if="!sgReadonly && col.template && (col.template.substr(0,9)=='readonly_' || !item.$core || !item.$core())" src="col.template" ng-init="col=col"></ng-include>
