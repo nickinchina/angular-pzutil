@@ -2,7 +2,7 @@
  * pzutil
  * 
 
- * Version: 0.0.18 - 2015-06-10
+ * Version: 0.0.18 - 2015-06-11
  * License: MIT
  */
 angular.module("pzutil", ["pzutil.tpls", "pzutil.aditem","pzutil.adpublish","pzutil.download","pzutil.image","pzutil.modal","pzutil.rest","pzutil.retailhelper","pzutil.services","pzutil.simplegrid","pzutil.tree","pzutil.ztemplate"]);
@@ -969,7 +969,7 @@ angular.module('pzutil.simplegrid', ['pzutil.services','pzutil.modal'])
                     }
                     $scope.myLookup = $attrs.sgLookup ? $scope.sgLookup : null;
                     $scope.myLookupTitle = $attrs.sgLookupTitle ? $scope.sgLookupTitle : null;
-                    $scope.columns = sgColumn($scope).Parse($attrs.sgColumns, $scope.sgFlexWidth);
+                    $scope.columns = sgColumn($scope, $scope.sgFlexWidth).Parse($attrs.sgColumns);
 
                     var $popups = [];
                     $scope.hasEditInput = function(){
@@ -1674,7 +1674,7 @@ angular.module("template/simplegrid/simpleGrid-normal.html", []).run(["$template
     "                <div class=\"{{col.$getColumnClass(item)}}\" style=\"{{col.$getColumnStyle()}}\" ng-repeat=\"col in columns\" title=\"{{col.$getText(item)}}\">\n" +
     "                    <i ng-if=\"$first && item.$__selected\" class=\"fa fa-circle\"></i>\n" +
     "                    <i ng-if=\"col.bool\" ng-class=\"{true: 'fa fa-check'}[col.$getValue(item)]\"></i>\n" +
-    "                    <ng-include  ng-if=\"!sgReadonly && col.template && (col.template.substr(0,9)=='readonly_' || !item.$core || !item.$core())\" src=\"col.template\"></ng-include>\n" +
+    "                    <ng-include  ng-if=\"!sgReadonly && col.template\" src=\"col.template\"></ng-include>\n" +
     "                    <span ng-click=\"col.$modalEdit(item,$event)\" ng-class=\"{true:'editable-click'}[col.modalEdit && !sgReadonly]\" ng-if=\"sgReadonly || !col.template || (item.$core && item.$core() && col.template.substr(0,9)!='readonly_')\">{{col.$getText(item)| picker:col.format}}</span>\n" +
     "                    <i ng-if=\"$last && item.$core && item.$core()\" class=\"fa fa-lock pull-right sg_gridIcon\"></i>\n" +
     "                </div>\n" +

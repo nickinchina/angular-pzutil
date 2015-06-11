@@ -554,7 +554,7 @@ angular.module('pzutil.simplegrid', ['pzutil.services','pzutil.modal'])
                     }
                     $scope.myLookup = $attrs.sgLookup ? $scope.sgLookup : null;
                     $scope.myLookupTitle = $attrs.sgLookupTitle ? $scope.sgLookupTitle : null;
-                    $scope.columns = sgColumn($scope).Parse($attrs.sgColumns, $scope.sgFlexWidth);
+                    $scope.columns = sgColumn($scope, $scope.sgFlexWidth).Parse($attrs.sgColumns);
 
                     var $popups = [];
                     $scope.hasEditInput = function(){
