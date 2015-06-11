@@ -469,11 +469,11 @@ angular.module('pzutil.simplegrid', ['pzutil.services','pzutil.modal'])
                 }
             };
 
-            mixin.prototype.showSpan(item)
+            mixin.prototype.showSpan = function(item)
             {
                 if ($scope.sgReadonly) return true;
                 if (!this.template&&!this.editTemplate) return true;
-                if (this.template && item.$core && item.$core() && col.template.substr(0,9)!='readonly_') return true;
+                if (this.template && item.$core && item.$core() && this.template.substr(0,9)!='readonly_') return true;
                 return false;
             };
 
