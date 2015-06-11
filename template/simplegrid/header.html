@@ -6,9 +6,9 @@
     <span class="pull-right" style="margin-right: 10px"  ng-if="sgModalSearchTemplate"><small>To select, press <kbd>CTRL</kbd> key to click</small></span>
     <input type="text" placeholder="Search" class="pull-right form-control" ng-model="searchService.listingSearch" ng-if="sgLocalSearch" style="width: auto">
 </div>
-<div class="{{getRowCss('sg-gridheader')}}" >
+<div class="row sg-gridheader" >
     <div class="col-sg-1" ng-if="sgAllowDel && !sgReadonly" ></div>
-    <div class="{{col.$getColumnClass()}}" ng-click="col.$sort()" ng-repeat="col in columns">
+    <div class="{{col.$getColumnClass()}}" style="{{col.$getColumnStyle()}}" ng-click="col.$sort()" ng-repeat="col in columns">
         <span>{{col.$getTitle()}}</span>
         <i class="fa fa-long-arrow-down pull-right sg_gridIcon" ng-show="!col.sortOrder && col.sortOrder!=undefined" style="top:50%;"></i>
         <i class="fa fa-long-arrow-up pull-right sg_gridIcon" ng-show="col.sortOrder" style="top:50%;"></i>
