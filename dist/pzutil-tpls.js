@@ -469,6 +469,14 @@ angular.module('pzutil.simplegrid', ['pzutil.services','pzutil.modal'])
                 }
             };
 
+            mixin.prototype.showSpan(item)
+            {
+                if ($scope.sgReadonly) return true;
+                if (!this.template&&!this.editTemplate) return true;
+                if (this.template && item.$core && item.$core() && col.template.substr(0,9)!='readonly_') return true;
+                return false;
+            };
+
             mixin.prototype.$getColumnStyle = function(item){
                 var w = this.width ;
                 if (sgFlexWidth)
@@ -1676,7 +1684,7 @@ angular.module("template/simplegrid/simpleGrid-normal.html", []).run(["$template
     "                    <i ng-if=\"col.bool\" ng-class=\"{true: 'fa fa-check'}[col.$getValue(item)]\"></i>\n" +
     "                    <ng-include  ng-if=\"!sgReadonly && col.template && (col.template.substr(0,9)=='readonly_' || !item.$core || !item.$core())\" src=\"col.template\" ng-init=\"col=col\"></ng-include>\n" +
     "                    <span ng-if=\"!sgReadonly && col.editTemplate\" z-template=\"col.editTemplate\"></span>\n" +
-    "                    <span ng-click=\"col.$modalEdit(item,$event)\" ng-class=\"{true:'editable-click'}[col.modalEdit && !sgReadonly]\" ng-if=\"sgReadonly || !col.template || (item.$core && item.$core() && col.template.substr(0,9)!='readonly_')\">{{col.$getText(item)| picker:col.format}}</span>\n" +
+    "                    <span ng-click=\"col.$modalEdit(item,$event)\" ng-class=\"{true:'editable-click'}[col.modalEdit && !sgReadonly]\" ng-if=\"col.showSpan(item)\">{{col.$getText(item)| picker:col.format}}</span>\n" +
     "                    <i ng-if=\"$last && item.$core && item.$core()\" class=\"fa fa-lock pull-right sg_gridIcon\"></i>\n" +
     "                </div>\n" +
     "            </div>\n" +
