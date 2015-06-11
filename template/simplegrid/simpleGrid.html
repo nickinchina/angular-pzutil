@@ -2,12 +2,10 @@
     <div>
         <button type="button" class="btn btn-default"  ng-click="sgAddObject()"  ng-if="sgAddObject"><i class="fa fa-plus"></i> New</button>
     </div>
-    <div style="{{sgFlexWidth?'overflow: auto':''}}">
-        <ng-include src="'template/simplegrid/header.html'" ng-if="sgColumns"></ng-include>
-        <div style="{{scrollStyle}}">
-            <div ng-repeat="item in items" style="padding: 3px 0px 3px">
-                <ng-include src="itemtemplate"></ng-include>
-            </div>
+    <ng-include src="'template/simplegrid/header.html'" ng-if="sgColumns"></ng-include>
+    <div style="{{scrollStyle}}">
+        <div ng-repeat="item in items" style="padding: 3px 0px 3px">
+            <ng-include src="itemtemplate"></ng-include>
         </div>
     </div>
     <ng-include src="'template/simplegrid/footer.html'"></ng-include>
