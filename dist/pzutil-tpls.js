@@ -1675,7 +1675,7 @@ angular.module("template/simplegrid/simpleGrid-normal.html", []).run(["$template
     "                    <i ng-if=\"$first && item.$__selected\" class=\"fa fa-circle\"></i>\n" +
     "                    <i ng-if=\"col.bool\" ng-class=\"{true: 'fa fa-check'}[col.$getValue(item)]\"></i>\n" +
     "                    <ng-include  ng-if=\"!sgReadonly && col.template && (col.template.substr(0,9)=='readonly_' || !item.$core || !item.$core())\" src=\"col.template\" ng-init=\"col=col\"></ng-include>\n" +
-    "                    <span ng-if=\"!sgReadonly && col.simpleEdit\"><input ng-model=\"item.{{col.name}}\" class=\"form-control\" type=\"{{col.simpleEdit}}\"></span>\n" +
+    "                    <span ng-if=\"!sgReadonly && col.editTemplate\" z-template=\"col.editTemplate\"></span>\n" +
     "                    <span ng-click=\"col.$modalEdit(item,$event)\" ng-class=\"{true:'editable-click'}[col.modalEdit && !sgReadonly]\" ng-if=\"sgReadonly || !col.template || (item.$core && item.$core() && col.template.substr(0,9)!='readonly_')\">{{col.$getText(item)| picker:col.format}}</span>\n" +
     "                    <i ng-if=\"$last && item.$core && item.$core()\" class=\"fa fa-lock pull-right sg_gridIcon\"></i>\n" +
     "                </div>\n" +
