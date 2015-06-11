@@ -57,7 +57,7 @@ angular.module('pzutil.simplegrid', ['pzutil.services','pzutil.modal'])
             mixin.prototype.$getColumnStyle = function(item){
                 var w = this.width ;
                 if (sgFlexWidth)
-                    return 'width:' + w + 'px';
+                    return 'width:' + w + 'px;float:left';
                 else
                     return '';
             };
