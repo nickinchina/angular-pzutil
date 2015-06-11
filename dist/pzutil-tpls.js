@@ -1047,7 +1047,7 @@ angular.module('pzutil.simplegrid', ['pzutil.services','pzutil.modal'])
                     if ($attrs.gridHeight)
                         $scope.scrollStyle = "max-height:" + $attrs.gridHeight +";overflow-y:auto";
                     else
-                        $scope.scrollStyle = $scope.sgFlexWidth?"overflow-y:auto":"";
+                        $scope.scrollStyle ="";
 
                     $scope.modalSearchReset = function(){
                         if (pageSetting.modalSearchCriteria) {
@@ -1723,10 +1723,12 @@ angular.module("template/simplegrid/simpleGrid.html", []).run(["$templateCache",
     "    <div>\n" +
     "        <button type=\"button\" class=\"btn btn-default\"  ng-click=\"sgAddObject()\"  ng-if=\"sgAddObject\"><i class=\"fa fa-plus\"></i> New</button>\n" +
     "    </div>\n" +
-    "    <ng-include src=\"'template/simplegrid/header.html'\" ng-if=\"sgColumns\"></ng-include>\n" +
-    "    <div style=\"{{scrollStyle}}\">\n" +
-    "        <div ng-repeat=\"item in items\" style=\"padding: 3px 0px 3px\">\n" +
-    "            <ng-include src=\"itemtemplate\"></ng-include>\n" +
+    "    <div style=\"{{sgFlexWidth?'overflow: auto':''}}\">\n" +
+    "        <ng-include src=\"'template/simplegrid/header.html'\" ng-if=\"sgColumns\"></ng-include>\n" +
+    "        <div style=\"{{scrollStyle}}\">\n" +
+    "            <div ng-repeat=\"item in items\" style=\"padding: 3px 0px 3px\">\n" +
+    "                <ng-include src=\"itemtemplate\"></ng-include>\n" +
+    "            </div>\n" +
     "        </div>\n" +
     "    </div>\n" +
     "    <ng-include src=\"'template/simplegrid/footer.html'\"></ng-include>\n" +

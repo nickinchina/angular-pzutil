@@ -632,7 +632,7 @@ angular.module('pzutil.simplegrid', ['pzutil.services','pzutil.modal'])
                     if ($attrs.gridHeight)
                         $scope.scrollStyle = "max-height:" + $attrs.gridHeight +";overflow-y:auto";
                     else
-                        $scope.scrollStyle = $scope.sgFlexWidth?"overflow-y:auto":"";
+                        $scope.scrollStyle ="";
 
                     $scope.modalSearchReset = function(){
                         if (pageSetting.modalSearchCriteria) {
