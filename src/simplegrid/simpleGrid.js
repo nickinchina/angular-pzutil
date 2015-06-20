@@ -728,6 +728,8 @@ angular.module('pzutil.simplegrid', ['pzutil.services','pzutil.modal'])
                             col.sortOrder = pageSetting.initSortOrder;
                             $scope.sorter(col);
                         }
+                        else
+                            loader();
                     }
                     function loader(){
                         var ps = pageSetting.pageSize;
