@@ -789,7 +789,7 @@ angular.module('pzutil.simplegrid', ['pzutil.services','pzutil.modal'])
                             pageSetting.pageSize = 20;
                         pageSetting.currentPage = 1;
                     }
-                    pageSetting.totalItems = $scope.data.length;
+                    if (!!$scope.data) pageSetting.totalItems = $scope.data.length;
 
                     if (!pageSetting.initSort) {
                         pageSetting.initSort = $scope.sgSortField;
@@ -806,12 +806,14 @@ angular.module('pzutil.simplegrid', ['pzutil.services','pzutil.modal'])
                         $scope.crossfilter = crossfilter($scope.data).dimension(
                             function(i) {
                                 var ret = '';
-                                for (var c = 0; c< $scope.columns.length; c++){
-                                    var col =  $scope.columns[c].name;
-                                    var value = i[col];
-                                    if ($scope.myLookup)
-                                        value = $scope.myLookup({col: col, value:value, item:i});
-                                    if (value) ret+='|' + value;
+                                if (!!$scope.columns){
+                                    for (var c = 0; c< $scope.columns.length; c++){
+                                        var col =  $scope.columns[c].name;
+                                        var value = i[col];
+                                        if ($scope.myLookup)
+                                            value = $scope.myLookup({col: col, value:value, item:i});
+                                        if (value) ret+='|' + value;
+                                    }
                                 }
                                 return ret;
                             });
