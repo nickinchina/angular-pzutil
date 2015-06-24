@@ -2,7 +2,7 @@
  * pzutil
  * 
 
- * Version: 0.0.18 - 2015-06-20
+ * Version: 0.0.18 - 2015-06-24
  * License: MIT
  */
 angular.module("pzutil", ["pzutil.tpls", "pzutil.aditem","pzutil.adpublish","pzutil.download","pzutil.image","pzutil.modal","pzutil.rest","pzutil.retailhelper","pzutil.services","pzutil.simplegrid","pzutil.tree","pzutil.ztemplate"]);
@@ -1047,9 +1047,9 @@ angular.module('pzutil.simplegrid', ['pzutil.services','pzutil.modal'])
                             docTitle = localizedMessages.get($scope.sgExportTitle);
                         else
                             docTitle = "Table";
-                        var d = (!$scope.listItems || $scope.listItems.length == 0) ? $scope.data:$scope.listItems;
+                        var d = (!$scope.listItems || $scope.listItems.length == 0) ? $scope.gridData:$scope.listItems;
                         simpleGridExport.export($scope.columns, d,docTitle);
-                    };
+                    };grunt
                     if ($attrs.gridHeight)
                         $scope.scrollStyle = "max-height:" + $attrs.gridHeight +";overflow-y:auto";
                     else
