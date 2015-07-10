@@ -2,7 +2,7 @@
  * pzutil
  * 
 
- * Version: 0.0.18 - 2015-06-25
+ * Version: 0.0.18 - 2015-07-10
  * License: MIT
  */
 angular.module("pzutil", ["pzutil.tpls", "pzutil.aditem","pzutil.adpublish","pzutil.download","pzutil.image","pzutil.modal","pzutil.rest","pzutil.retailhelper","pzutil.services","pzutil.simplegrid","pzutil.tree","pzutil.ztemplate"]);
@@ -1101,6 +1101,7 @@ angular.module('pzutil.simplegrid', ['pzutil.services','pzutil.modal'])
                     $scope.public.resetSearch = function(){
                         breadcrumbs.listingSearchModel = $scope.sgGlobalSearch;
                     };
+                    $scope.public.columns = $scope.columns;
                     $scope.public.refresh = $scope.changed = function(page, reset) {
                         var ps = pageSetting.pageSize;
                         page = page || pageSetting.currentPage;

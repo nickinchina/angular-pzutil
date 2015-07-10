@@ -686,6 +686,7 @@ angular.module('pzutil.simplegrid', ['pzutil.services','pzutil.modal'])
                     $scope.public.resetSearch = function(){
                         breadcrumbs.listingSearchModel = $scope.sgGlobalSearch;
                     };
+                    $scope.public.columns = $scope.columns;
                     $scope.public.refresh = $scope.changed = function(page, reset) {
                         var ps = pageSetting.pageSize;
                         page = page || pageSetting.currentPage;
