@@ -724,6 +724,7 @@ angular.module('pzutil.simplegrid', ['pzutil.services','pzutil.modal'])
                         $scope.gridData = data;
                         runSort();
                     };
+                    if ($scope.public.cb) $scope.public.cb();
                     function runSort(){
                         if ($scope.columns && $scope.columns.length>0) {
                             var col = _.find($scope.columns, {name: pageSetting.initSort}) || $scope.columns[0];
