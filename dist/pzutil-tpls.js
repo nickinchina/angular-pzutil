@@ -2,7 +2,7 @@
  * pzutil
  * 
 
- * Version: 0.0.18 - 2015-12-11
+ * Version: 0.0.18 - 2016-07-11
  * License: MIT
  */
 angular.module("pzutil", ["pzutil.tpls", "pzutil.aditem","pzutil.adpublish","pzutil.download","pzutil.image","pzutil.modal","pzutil.rest","pzutil.retailhelper","pzutil.services","pzutil.simplegrid","pzutil.tree","pzutil.ztemplate"]);
@@ -139,6 +139,9 @@ angular.module('pzutil.download', []).
                 params.data = data;
                 params.url = httpPath;
                 params.method = method;
+                params.headers = {
+                    'no-stringify': true
+                };
                 $http(params)
                     .success( function(data, status, headers) {
                         var octetStreamMime = 'application/octet-stream';
@@ -221,6 +224,7 @@ angular.module('pzutil.download', []).
             };
             return service;
         }])
+
 /**
  * Created by s2k on 14-6-8.
  */
