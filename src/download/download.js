@@ -12,6 +12,9 @@ angular.module('pzutil.download', []).
                 params.data = data;
                 params.url = httpPath;
                 params.method = method;
+                params.headers = {
+                    'no-stringify': true
+                };
                 $http(params)
                     .success( function(data, status, headers) {
                         var octetStreamMime = 'application/octet-stream';
