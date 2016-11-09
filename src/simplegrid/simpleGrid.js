@@ -410,7 +410,7 @@ angular.module('pzutil.simplegrid', ['pzutil.services','pzutil.modal'])
                 scope: { data:"=sgData", listItems:"=",  sgAddObject:"&", sgSortOptions:"=", itemtemplate:"=sgTemplate",sgColumns:"@",sgDelObject:"&", sgAllowDel:"@",
                     sgNoPager:'=', sgOnClick:'&', sgLookup:"&", sgGlobalSearch:"@", sgLocalSearch:"@",sgPageSize:"@" ,sgOptions:"=", sgOnChange:"&", sgLookupTitle:"&",sgSortField:"=",sgVirtual:"@",
                     sgCheckColumn:"@", sgCustomSearch:"&", sgModalSearchTemplate:"=", sgModalSearchController:"=", sgModalSearchResolve:"=", sgModalSearch:"&", sgExportTitle:"@",
-                    sgPublic:"=", sgAgg:"&", sgReadonly:"=", sgMenu:"=", sgModalEdit:"&", sgFlexWidth:"=",sgExportColumns:"@"},
+                    sgPublic:"=", sgAgg:"&", sgReadonly:"=", sgMenu:"=", sgModalEdit:"&", sgFlexWidth:"=",sgExportColumns:"@",sgSelectOnly:"@"},
                 templateUrl: function($element, $attrs) {
                     var t = $attrs.sgTemplate;
                     if (t) {
@@ -546,7 +546,7 @@ angular.module('pzutil.simplegrid', ['pzutil.services','pzutil.modal'])
                         return value;
                     };
                     $scope.clickRow = function(row,e){
-                        if (e.ctrlKey) {
+                        if (e.ctrlKey||$scope.sgSelectOnly) {
                             row.$__selected = !row.$__selected;
                         }
                         else {
