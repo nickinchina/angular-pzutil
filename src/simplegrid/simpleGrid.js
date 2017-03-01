@@ -826,6 +826,39 @@ angular.module('pzutil.simplegrid', ['pzutil.services','pzutil.modal'])
                         $scope.changed(pageSetting.currentPage);
                     });
 
+
+
+
+
+                    // Define a method to load a page of data
+                    function load(page) {
+
+
+                        var pageSetting = $scope.pageSetting;
+                        var isTerminal = pageSetting &&
+                            pageSetting.currentPage >= pageSetting.total_pages &&
+                            pageSetting.currentPage <= 1;
+
+                        // Determine if there is a need to load a new page
+                        if (!isTerminal) {
+                            $scope.changed(page);
+                        }
+                    }
+
+                    // Register event handler
+                    $scope.$on('endlessScroll:next', function() {
+                        // Determine which page to load
+                       var pageSetting = $scope.pageSetting;
+
+                        var page =pageSetting ?pageSetting.currentPage + 1 : 1;
+
+                        // Load page
+                        load(page);
+                    });
+
+                    // Load initial page (first page or from query param)
+                    load(1);
+
                 }
             };
         }]);
