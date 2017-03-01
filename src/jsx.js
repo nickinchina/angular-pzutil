@@ -1,7 +1,8 @@
 var sgReact = React.createClass( {displayName: "sgReact",
     propTypes : {
         items: React.PropTypes.array.isRequired,
-        columns: React.PropTypes.array.isRequired
+        columns: React.PropTypes.array.isRequired,
+        rowClick: React.PropTypes.array.func
     },
 
     getDefaultProps: function() {
@@ -10,13 +11,19 @@ var sgReact = React.createClass( {displayName: "sgReact",
 
     render: function() {
         var self = this;
+        var getRowClass = function(item){
+            var r = "row sg-gridrow";
+            if (item.item.$__selected) r+=" sg-gridrow-active";
+            return r;
+        }
         return (React.createElement("div", null, 
              this.props.items.map(function(item) {
-                    return React.createElement("div", {key: item.id, className: "row sg-gridrow"}, 
+                    var boundItemClick = self.props.rowClick.bind(self, item);
+                    return React.createElement("div", {key: item.id, className: getRowClass(item), onClick: boundItemClick}, 
                         
                             self.props.columns.map(function(col){
                                 return (
-                                React.createElement("div", {className: col.$getColumnClass(item), title: col.$getText(item)}, 
+                                React.createElement("div", {className: col.$getColumnClass(item), title: col.$getText(item), style: col.$getColumnStyleReact()}, 
                                     col.$getText(item)
                                 ));
                             })

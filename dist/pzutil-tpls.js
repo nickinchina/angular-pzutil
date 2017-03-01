@@ -494,6 +494,14 @@ angular.module('pzutil.simplegrid', ['pzutil.services','pzutil.modal'])
                 else
                     return '';
             };
+            
+            mixin.prototype.$getColumnStyleReact = function(){
+                var w = this.width ;
+                if (sgFlexWidth)
+                    return {width: w + 'px', float:'left'};
+                else
+                    return {};
+            };
 
             mixin.prototype.$getColumnClass = function(item){
                 var w = this.width  ? this.width : 2;
@@ -1163,14 +1171,18 @@ angular.module('pzutil.simplegrid', ['pzutil.services','pzutil.modal'])
                         var ps = pageSetting.pageSize;
                         var data = $scope.gridData;
                         var page = pageSetting.currentPage;
-                        var l =  _.take(_.rest(data, (page - 1) * ps), ps);
-                        if ($scope.items) {
-                            $scope.items.length = 0;
-                            $scope.items.push.apply($scope.items, l);
+                        if ($scope.sgVirtual){
+                            $scope.items = data;
                         }
-                        else
-                            $scope.items = l;
-
+                        else {
+                            var l =  _.take(_.rest(data, (page - 1) * ps), ps);
+                            if ($scope.items) {
+                                $scope.items.length = 0;
+                                $scope.items.push.apply($scope.items, l);
+                            }
+                            else
+                                $scope.items = l;
+                        }
                         pageSetting.totalItems = data.length;
 
                         $scope.footer = localizedMessages.get(pageSetting.totalItems<=pageSetting.pageSize?'common.totalcount1Page': 'common.totalcount',
@@ -1726,7 +1738,7 @@ angular.module("template/simplegrid/simpleGrid-virtual.html", []).run(["$templat
   $templateCache.put("template/simplegrid/simpleGrid-virtual.html",
     "<div class=\"sg-grid\" style=\"overflow: hidden\">\n" +
     "    <ng-include src=\"'template/simplegrid/header.html'\"></ng-include>\n" +
-    "    <sg-react items='items' columns='columns' ></sg-react>\n" +
+    "    <sg-react items='items' columns='columns' row-click='clickRow' watch-depth=\"collection\" ></sg-react>\n" +
     "    <ng-include src=\"'template/simplegrid/footer-virtual.html'\"></ng-include>\n" +
     "</div>");
 }]);
@@ -1750,7 +1762,8 @@ angular.module("template/simplegrid/simpleGrid.html", []).run(["$templateCache",
 var sgReact = React.createClass( {displayName: "sgReact",
     propTypes : {
         items: React.PropTypes.array.isRequired,
-        columns: React.PropTypes.array.isRequired
+        columns: React.PropTypes.array.isRequired,
+        rowClick: React.PropTypes.array.func
     },
 
     getDefaultProps: function() {
@@ -1759,13 +1772,19 @@ var sgReact = React.createClass( {displayName: "sgReact",
 
     render: function() {
         var self = this;
+        var getRowClass = function(item){
+            var r = "row sg-gridrow";
+            if (item.item.$__selected) r+=" sg-gridrow-active";
+            return r;
+        }
         return (React.createElement("div", null, 
              this.props.items.map(function(item) {
-                    return React.createElement("div", {key: item.id, className: "row sg-gridrow"}, 
+                    var boundItemClick = self.props.rowClick.bind(self, item);
+                    return React.createElement("div", {key: item.id, className: getRowClass(item), onClick: boundItemClick}, 
                         
                             self.props.columns.map(function(col){
                                 return (
-                                React.createElement("div", {className: col.$getColumnClass(item), title: col.$getText(item)}, 
+                                React.createElement("div", {className: col.$getColumnClass(item), title: col.$getText(item), style: col.$getColumnStyleReact()}, 
                                     col.$getText(item)
                                 ));
                             })
