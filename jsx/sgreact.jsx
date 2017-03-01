@@ -2,9 +2,11 @@ var sgReact = React.createClass( {
     propTypes : {
         items: React.PropTypes.array.isRequired,
         columns: React.PropTypes.array.isRequired,
-        rowClick: React.PropTypes.array.func
+        rowClick: React.PropTypes.func.isRequired
     },
-
+    componentDidMount: function() {
+      console.log('self.domRef:',self.domRef.offsetHeight);
+    },
     getDefaultProps: function() {
         return { items: [], columns: [] };
     },
@@ -13,10 +15,25 @@ var sgReact = React.createClass( {
         var self = this;
         var getRowClass = function(item){
             var r = "row sg-gridrow";
-            if (item.item.$__selected) r+=" sg-gridrow-active";
+            if (item.$__selected) r+=" sg-gridrow-active";
             return r;
         }
-        return (<div>
+        var getDomRef = function(ref){
+            self.domRef = ref;
+        }
+        this.itemPerPage = 50;
+        this.noOfItems = this.props.items.length;
+        var items;
+        if (this.noOfItems>this.itemPerPage){
+            var offset = self.offset||0;
+            for (var i =0;i<this.itemPerPage;i++){
+                items.push(this.props.items[offset+i]);
+            }
+        }
+        else 
+            items = this.props.items;
+        
+        return (<div ref={ getDomRef }>
             { this.props.items.map(function(item) {
                     var boundItemClick = self.props.rowClick.bind(self, item);
                     return <div key={item.id} className={getRowClass(item)} onClick={boundItemClick}>
