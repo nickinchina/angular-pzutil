@@ -5,7 +5,13 @@ var sgReact = React.createClass( {
         rowClick: React.PropTypes.func.isRequired
     },
     componentDidMount: function() {
-      console.log('self.domRef:',self.domRef.offsetHeight);
+        if (!this.rowHeight && this.domRef.offsetHeight>0){
+            this.domRef.onscroll = function(e){
+                console.log(e.scrollTop);
+            };
+            this.rowHeight = this.domRef.offsetHeight/this.itemPerPage;
+            this.domRef.style.height=Math.ceil(this.rowHeight*this.noOfItems) + "px";
+        }
     },
     getDefaultProps: function() {
         return { items: [], columns: [] };
@@ -26,6 +32,7 @@ var sgReact = React.createClass( {
         var items;
         if (this.noOfItems>this.itemPerPage){
             var offset = self.offset||0;
+            items = [];
             for (var i =0;i<this.itemPerPage;i++){
                 items.push(this.props.items[offset+i]);
             }
@@ -33,8 +40,13 @@ var sgReact = React.createClass( {
         else 
             items = this.props.items;
         
-        return (<div ref={ getDomRef }>
-            { this.props.items.map(function(item) {
+        const divStyle = {
+          "min-height": '100%'
+        };
+        return (
+            <div style={divStyle} >
+            <div ref={ getDomRef } >
+            { items.map(function(item) {
                     var boundItemClick = self.props.rowClick.bind(self, item);
                     return <div key={item.id} className={getRowClass(item)} onClick={boundItemClick}>
                         {
@@ -47,6 +59,7 @@ var sgReact = React.createClass( {
                         }</div>
                 })
             }
+            </div>
             </div>);
         }
     });
