@@ -1,3 +1,421 @@
+/*
+ * pzutil
+ * 
+
+ * Version: 0.0.18 - 2017-03-01
+ * License: MIT
+ */
+angular.module("pzutil", ["pzutil.aditem","pzutil.adpublish","pzutil.download","pzutil.image","pzutil.modal","pzutil.rest","pzutil.retailhelper","pzutil.services","pzutil.simplegrid","pzutil.tree","pzutil.ztemplate"]);
+/**
+ * Created by gordon on 2014/5/26.
+ */
+angular.module('pzutil.aditem',[])
+    .directive('adItem',['rest',function(rest) {
+        return {
+            restrict: 'E',
+            // restrict and template attributes are the same as before.
+            // we don't need anymore to bind the value to the external ngModel
+            // as we require its controller and thus can access it directly
+
+            scope: {item: '=',itemClass:'=',itemStyle:'='},
+            templateUrl:  "template/aditem/aditem.tpl.html" ,
+            link: function ($scope, iElement, iAttrs) {
+
+                $scope.getItemTemplate = function() {
+                    switch ($scope.item.type) {
+                        case 0:
+                            return "html.tpl.html";
+                        case 1:
+                            return "taxonImage.tpl.html";
+                        case 2:
+                            return 'productImagePrice.tpl.html';
+                        case 3:
+                            return "promotion.tpl.html";
+                        case 4:
+                            return "imageClickable.tpl.html";
+                        case 5:
+                            return 'imageNotClickable.tpl.html';
+                    }
+                }
+
+
+                $scope.itemStyle = angular.fromJson($scope.itemStyle)||{};
+
+                console.log( $scope.itemClass);
+
+
+            }
+
+        }
+    }]);
+
+/**
+ * Created by gordon on 2014/5/26.
+ {id:0, name:localizedMessages.get('adpublish.place.feature')},
+ {id:1, name:localizedMessages.get('adpublish.place.new') },
+ {id:2, name:localizedMessages.get('adpublish.place.staffPick') },
+ {id:3, name:localizedMessages.get('adpublish.place.homeSlider') },
+ {id:4, name:localizedMessages.get('adpublish.place.homeFixeTop') },
+ {id:5, name:localizedMessages.get('adpublish.place.storeTV') }];
+ */
+angular.module('pzutil.adpublish',[])
+    .directive('adPublish',['rest','retailHelper',function(rest,retailHelper) {
+        return {
+            restrict: 'E',
+            scope: {place: '=',itemClass:'@',itemStyle:'@'},
+            templateUrl: function($element, $attrs) {
+                if ($attrs.template)
+                    return 'template/adpublish/' + $attrs.template + '.tpl.html';
+                else if ($attrs.place==3)
+                    return 'template/adpublish/adpublish_slide.tpl.html';
+                else
+                    return 'template/adpublish/adpublish_grid.tpl.html';
+            },
+            link: function ($scope, iElement, iAttrs) {
+                $scope.loading = true;
+                rest.callApi('adpublish',{place:$scope.place}).then(function(r){
+                    $scope.items = r.data[0];
+                    switch ($scope.place) {
+                        case 0:
+                            $scope.placeText = "adpublish.place.feature";
+                            break;
+                        case 1:
+                            $scope.placeText = "adpublish.place.new";
+                            break;
+                        case 2:
+                            $scope.placeText = "adpublish.place.staffPick";
+                            break;
+                        case 50:
+                            $scope.placeText = 'adpublish.place.adminHighlights';
+                            break;
+                    }
+                    _($scope.items).forEach(function(i){
+                        i.props = angular.fromJson(i.props) || {};
+
+                        if (i.type==2){
+                            rest.callApi('getProduct',{pid:i.props.product})
+                                .then(function(r){
+                                    i.product = r.data[0][0];
+                                    var max = _.max(r.data[1], 'retail');
+                                    var min = _.min(r.data[1], 'retail');
+
+                                    i.product.retail = retailHelper.getRetail(min.retail, max.retail);
+
+                                    var images = [];
+                                    _(r.data[1]).forEach(function(v){
+                                        if (v.images) {
+                                            _(v.images.split(',')).forEach(function(img){
+                                                images.push(img);
+                                            });
+                                        }
+                                    });
+                                    i.product.images = images;
+                                    if (images.length>0)
+                                        i.product.image = images[0];
+                              });
+                        }
+
+
+                    });
+
+                    $scope.loading = false;
+                });
+
+            }
+        }
+    }]);
+/**
+ * Created by gordon on 2014/11/3.
+ */
+angular.module('pzutil.download', []).
+    factory('downloadHelper', ['$http','$q',
+        function($http,$q){
+            var service = { };
+            service.downloadFile = function(httpPath,method,data) {
+                var deferred = $q.defer();
+                // Use an arraybuffer
+                var params = { responseType: 'arraybuffer' };
+                params.data = data;
+                params.url = httpPath;
+                params.method = method;
+                params.headers = {
+                    'no-stringify': true
+                };
+                $http(params)
+                    .success( function(data, status, headers) {
+                        var octetStreamMime = 'application/octet-stream';
+                        var success = false;
+                        // Get the headers
+                        headers = headers();
+                        // Get the filename from the x-filename header or default to "download.bin"
+                        var filename = headers['x-filename'] || 'download.bin';
+                        // Determine the content type from the header or default to "application/octet-stream"
+                        var contentType = headers['content-type'] || octetStreamMime;
+                        try
+                        {
+                            // Try using msSaveBlob if supported
+                            console.log("Trying saveBlob method ...");
+                            var blob = new Blob([data], { type: contentType });
+                            if(navigator.msSaveBlob)
+                                navigator.msSaveBlob(blob, filename);
+                            else {
+                                // Try using other saveBlob implementations, if available
+                                var saveBlob = navigator.webkitSaveBlob || navigator.mozSaveBlob || navigator.saveBlob;
+                                if(saveBlob){
+                                    saveBlob(blob, filename);
+                                    console.log("saveBlob succeeded");
+                                    success = true;
+                                    deferred.resolve(filename);
+                                }
+                            }
+                        } catch(ex)
+                        {
+                            console.log("saveBlob method failed with the following exception:");
+                            console.log(ex);
+                        }
+
+                        if(!success)
+                        {
+                            // Get the blob url creator
+                            var urlCreator = window.URL || window.webkitURL || window.mozURL || window.msURL;
+                            if(urlCreator)
+                            {
+                                // Try to use a download link
+                                var link = document.createElement('a');
+                                if('download' in link)
+                                {
+                                    // Try to simulate a click
+                                    try
+                                    {
+                                        // Prepare a blob URL
+                                        console.log("Trying download link method with simulated click ...");
+                                        var blob = new Blob([data], { type: contentType });
+                                        var url = urlCreator.createObjectURL(blob);
+                                        link.setAttribute('href', url);
+
+                                        // Set the download attribute (Supported in Chrome 14+ / Firefox 20+)
+                                        link.setAttribute("download", filename);
+
+                                        // Simulate clicking the download link
+                                        var event = document.createEvent('MouseEvents');
+                                        event.initMouseEvent('click', true, true, window, 1, 0, 0, 0, 0, false, false, false, false, 0, null);
+                                        link.dispatchEvent(event);
+                                        console.log("Download link method with simulated click succeeded");
+                                        success = true;
+                                        deferred.resolve(filename);
+
+                                    } catch(ex) {
+                                        console.log("Download link method with simulated click failed with the following exception:");
+                                        console.log(ex);
+                                        deferred.reject( "Download link method with simulated click failed with the following exception:: " + ex);
+                                    }
+                                }
+
+                            }
+                        }
+                    })
+                    .error(function(data, status) {
+                        console.log("Request failed with status: " + status);
+                        console.log("Request failed with data: " , params.data);
+                        deferred.reject( "Request failed with status: " + status);
+                    });
+                return deferred.promise;
+            };
+            return service;
+        }])
+
+/**
+ * Created by s2k on 14-6-8.
+ */
+angular.module('pzutil.image', [])
+    .factory('imageHelper', [
+        function(){
+            var imageService = {
+                getUrl : function(image, container){
+                    return "http://portalvhdsmzdfsgd15ll8f.blob.core.windows.net/" + (container ? container+ "/" : "") + image;
+                }
+            };
+            return imageService;
+        }])
+    .filter('zImageUrl', ['imageHelper',
+        function (imageHelper){
+            return function(image, container){
+                return imageHelper.getUrl(image, container);
+            };
+        }]);
+/**
+ * Created by gordon on 2014/4/25.
+ */
+angular.module('pzutil.modal', [])
+    .directive('crudModal', function () {
+        return {
+            restrict:'E',
+            replace: true,
+            transclude: 'element',
+            templateUrl: 'template/modal/modal.html'
+        };
+    })
+    .directive('crudModalForm', function () {
+        return {
+            restrict:'E',
+            replace: true,
+            transclude: 'element',
+            templateUrl: 'template/modal/modal-form.html'
+        };
+    })
+    .factory('crudWait',['$http','$modal', function($http, $modal) {
+        var arrSelected = [];
+        var mixin = {
+            doWork : function(msg, promise, cb) {
+                 var modalInstance = $modal.open({
+                    templateUrl: 'template/modal/wait.html',
+                    controller: 'crudWaitCtrl',
+                    resolve: {
+                        msg: function () {
+                            return msg;
+                        }
+                    }
+                });
+
+                modalInstance.result.then(function (r) {}, function () {});
+
+                promise.then(function(r){
+                    cb();
+                    modalInstance.close();
+                });
+            }
+        };
+        return mixin;
+    }])
+    .controller('crudWaitCtrl', [ '$scope', '$modalInstance','msg',function( $scope, $modalInstance,msg) {
+        $scope.msg = msg;
+}]);
+/**
+ * Created by gordon on 2014/5/26.
+ */
+angular.module('pzutil.rest', []).
+    factory('rest', ['$http',
+        function($http){
+            var url = '/api/public';
+            var restService = {
+                callApi : function(method, params){
+                    params = params || {};
+                    params.aid = 2;
+                    return $http.post(url + '/' + method, params);
+                }
+            };
+            return restService;
+        }]);
+/**
+ * Created by s2k on 14-5-27.
+ */
+angular.module('pzutil.retailhelper', [])
+    .factory('retailHelper', [
+        function(){
+            var retailService = {
+                getRetail : function(retailmin, retailmax){
+                    return retailmin == retailmax
+                        ? accounting.formatMoney(retailmax)
+                        : accounting.formatMoney(retailmin) + " ~ " + accounting.formatMoney(retailmax);
+                }
+            };
+            return retailService;
+        }]);
+/**
+ * Created by gordon on 2014/4/4.
+ */
+angular.module('pzutil.services', []).
+    factory('attrHelper', [
+        function(){
+            var attrService = {
+                parseIds : function(ids, taxons, isCrossFilter){
+                    if (isCrossFilter){
+                        var ids = ids.split(',');
+                        return _.map(taxons.filterFunction(function(id) { return ids.indexOf(id)>-1; }).top(Infinity),"name").join(", ");
+                    }
+                    else {
+                        var r=[];
+                        _(ids.split(',')).forEach(function(i){
+                            var f = _.find(taxons, {id: i});
+                            if (f)
+                                r.push(f.name);
+                        });
+                        return r.join(", ");
+                    }
+                }
+            };
+            return attrService;
+        }])
+    .factory('localizedMessages', ['$interpolate', 'I18N.MESSAGES', function ($interpolate, i18nmessages) {
+
+    var handleNotFound = function (msg, msgKey) {
+        //return msg || '?' + msgKey + '?';
+        return msg || msgKey;
+    };
+
+    return {
+        get : function (msgKey, interpolateParams) {
+            var msg =  i18nmessages[msgKey];
+            if (msg) {
+                return $interpolate(msg)(interpolateParams);
+            } else {
+                return handleNotFound(msg, msgKey);
+            }
+        },
+        rawGet : function(msgKey){
+            return  i18nmessages[msgKey];
+        }
+    };
+}])
+    // simple translation filter
+    // usage {{ TOKEN | i18n }}
+    .filter('i18n', ['localizedMessages', function (localizedMessages) {
+        return function (input) {
+            return localizedMessages.get(input);
+        };
+    }])
+    // translation directive that can handle dynamic strings
+    // updates the text value of the attached element
+    // usage <span data-i18n="TOKEN" ></span>
+    // or
+    // <span data-i18n="TOKEN|VALUE1|VALUE2" ></span>
+    .directive('i18n', ['localizedMessages', function(localizedMessages){
+        var i18nDirective = {
+            restrict:"EAC",
+            updateText:function(elm, token){
+                elm.text( localizedMessages.get(token, interpolateParams));
+            },
+
+            link:function (scope, elm, attrs) {
+                attrs.$observe('i18n', function (value) {
+                    i18nDirective.updateText(elm, attrs.i18n);
+                });
+            }
+        };
+
+        return i18nDirective;
+    }])
+    // translation directive that can handle dynamic strings
+    // updates the attribute value of the attached element
+    // usage <span data-i18n-attr="TOKEN|ATTRIBUTE" ></span>
+    // or
+    // <span data-i18n-attr="TOKEN|ATTRIBUTE|VALUE1|VALUE2" ></span>
+    .directive('i18nAttr', ['localize', function (localizedMessages) {
+        var i18NAttrDirective = {
+            restrict: "EAC",
+            updateText:function(elm, token){
+                elm.text( localizedMessages.get(token, interpolateParams));
+            },
+            link: function (scope, elm, attrs) {
+
+                attrs.$observe('i18nAttr', function (value) {
+                    i18NAttrDirective.updateText(elm, value);
+                });
+            }
+        };
+
+        return i18NAttrDirective;
+    }]);
 /**
  * Created by gordon on 2014/4/14.
  */
@@ -833,3 +1251,196 @@ angular.module('pzutil.simplegrid', ['pzutil.services','pzutil.modal'])
     .directive( 'sgReact', function( reactDirective ) {
       return reactDirective( 'sgReact' );
     } );
+/**
+ * Created by gordon on 2014/4/16.
+ */
+angular.module('pzutil.tree', [])
+    .factory('zTreeHelper', [function () {
+        var buildTreeHelper = function(items, parentItem, ForeignKeyValue, ForeignKey, recursive, pos) {
+            var r = _.filter(items, function (i) {
+                var pid = i.parentid ? i.parentid : 0;
+                if (ForeignKey) {
+                    if (parentItem == null)
+                        return i[ForeignKey] == ForeignKeyValue && pid == 0;
+                    else
+                        return pid == parentItem.id && i[ForeignKey] == ForeignKeyValue;
+                }
+                else
+                    return (parentItem == null ?pid == 0 :pid == parentItem.id);
+            });
+            r = _.sortBy(_.sortBy(r, 'name'), 'position');
+            if (parentItem != null)
+                parentItem.children = r;
+
+            if (recursive || pos) {
+                var pos = 1;
+                _(r).forEach(function (i) {
+                    if (pos)
+                        i.position = pos;
+                    if (recursive)
+                        buildTreeHelper(items, i, ForeignKeyValue, ForeignKey, recursive, pos);
+                    pos++;
+                });
+            }
+            return r;
+        };
+
+        var buildDropdownListHelper = function(result, ForeignKey, breadcrumb, items) {
+            _(items).forEach(function(i) {
+                var text = breadcrumb + i.name;
+                if (i[ForeignKey])
+                    result.push({id : i.id, name: text});
+
+                buildDropdownListHelper(result,ForeignKey, i.id ? text + " >> " :"", i.children);
+            });
+        }
+
+        var findBuddy = function(primary, foreign, foreignKey, item, up) {
+            var fk = item[foreignKey];
+            var pid = 0;
+            var col;
+            if (fk) {
+                pid =  item.parentid ? item.parentid : 0;
+                col = (pid==0 ? _.find(primary, { id : fk }): _.find(foreign, { id : pid  })).children;
+            }
+            else
+                col = primary;
+            if (up)
+                return _.findLast(col, function(i) {
+                    var pid2 = i.parentid ? i.parentid : 0 ;
+                    console.log(i.position.toString() + ':' + item.position.toString());
+                    return (pid==pid2 && i.position<item.position) ;
+                });
+            else
+                return _.find(col, function(i) {
+                    var pid2 = i.parentid ? i.parentid : 0 ;
+                    return (pid==pid2 && i.position>item.position) ;
+                });
+        };
+        var getMaxId = function(array) {
+            return uuid.v4();
+        };
+        var service = {
+            updateTreeValue : function(o, propName, treeValue, replace){
+                switch (replace){
+                    case "2":
+                        var v = o[propName];
+                        if (v){
+                            var vArray = v.split(',');
+                            _(treeValue.split(',')).forEach(function(i){
+                                var idx = vArray.indexOf(i);
+                                if (idx>=0){
+                                    vArray.splice(idx, 1);
+                                }
+                            });
+                            o[propName] =  vArray.join(',');
+                        }
+                        break;
+                    case "1":
+                        o[propName] =  treeValue;
+                        break;
+                    default:
+                        var v = o[propName];
+                        if (v){
+                            var vArray = v.split(',');
+                            _(treeValue.split(',')).forEach(function(i){
+                                if (vArray.indexOf(i)<0){
+                                    vArray.push(i);
+                                }
+                            });
+                            o[propName] =  vArray.join(',');
+                        }
+                        else
+                            o[propName] =  treeValue;
+                        break;
+                }
+            },
+            buildTree : function(primary, foreign, foreignKey, recursive, pos)
+            {
+                if (foreignKey) {
+                    var position = 1;
+                    if (pos)
+                        primary.sort(function(a,b){
+                            return (a.position - b.position);
+                        });
+                    _(primary).forEach(function(obj){
+                        if (pos)
+                            obj.position = position;
+                        obj.children = buildTreeHelper(foreign, null, obj.id, foreignKey, recursive, pos);
+                        position++;
+                    });
+                }
+                else
+                    buildTreeHelper(foreign, null, null, foreignKey, recursive, pos);
+            },
+
+            addTreeItem : function(item, primary, foreign, foreignKey, primaryFactory, foreignFactory, cb)
+            {
+                if (item) {
+                    if (item.root && primaryFactory) {
+                        var i = primaryFactory();
+                        i.children= [];
+                        i.id = getMaxId(primary);
+                        primary.push(i);
+                    }
+                    else {
+                        var i = foreignFactory();
+                        i.children= [];
+                        i.id = getMaxId(foreign);
+                        if (foreignKey) {
+                            if (item[foreignKey])
+                            {
+                                i[foreignKey] = item[foreignKey];
+                                i.parentid = item.id;
+                            }
+                            else {
+                                i[foreignKey] =  item.id;
+                            }
+                        }
+                        else
+                        {
+                            if (!item.root)
+                                i.parentid = item.id;
+                        }
+                        foreign.push(i);
+                    }
+                    cb();
+                }
+            },
+
+            moveTreeItem : function(primary, foreign, foreignKey, item, up, cb) {
+                var buddy = findBuddy(primary, foreign, foreignKey, item, up);
+                if (buddy)
+                {
+                    var pos = item.position;
+                    item.position = buddy.position;
+                    buddy.position = pos;
+                    cb();
+                }
+            },
+            buildDropdownList : function(foreignKey, items) {
+                var r = [];
+                buildDropdownListHelper(r, foreignKey, '', items);
+                return r;
+            }
+        };
+        return service;
+    }]);
+/**
+ * Created by gordon on 2014/5/4.
+ */
+angular.module('pzutil.ztemplate', ['pzutil.services'])
+    .directive('zTemplate',['localizedMessages', '$compile', function (localizedMessages,$compile) {
+        return {
+            restrict: 'A',
+            scope: false,
+            compile: function(element, attrs)
+            {
+                return function(scope, element, attrs) {
+                    var sc = element.scope();
+                    var template = sc.$eval(attrs.zTemplate);
+                    element.append($compile(template)(sc));
+                };
+            }
+        }
+    }]);

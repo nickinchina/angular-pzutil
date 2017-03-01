@@ -2,7 +2,7 @@
  * pzutil
  * 
 
- * Version: 0.0.18 - 2016-07-11
+ * Version: 0.0.18 - 2017-03-01
  * License: MIT
  */
 angular.module("pzutil", ["pzutil.tpls", "pzutil.aditem","pzutil.adpublish","pzutil.download","pzutil.image","pzutil.modal","pzutil.rest","pzutil.retailhelper","pzutil.services","pzutil.simplegrid","pzutil.tree","pzutil.ztemplate"]);
@@ -829,7 +829,7 @@ angular.module('pzutil.simplegrid', ['pzutil.services','pzutil.modal'])
                 scope: { data:"=sgData", listItems:"=",  sgAddObject:"&", sgSortOptions:"=", itemtemplate:"=sgTemplate",sgColumns:"@",sgDelObject:"&", sgAllowDel:"@",
                     sgNoPager:'=', sgOnClick:'&', sgLookup:"&", sgGlobalSearch:"@", sgLocalSearch:"@",sgPageSize:"@" ,sgOptions:"=", sgOnChange:"&", sgLookupTitle:"&",sgSortField:"=",sgVirtual:"@",
                     sgCheckColumn:"@", sgCustomSearch:"&", sgModalSearchTemplate:"=", sgModalSearchController:"=", sgModalSearchResolve:"=", sgModalSearch:"&", sgExportTitle:"@",
-                    sgPublic:"=", sgAgg:"&", sgReadonly:"=", sgMenu:"=", sgModalEdit:"&", sgFlexWidth:"=",sgExportColumns:"@",sgSelectOnly:"@"},
+                    sgPublic:"=", sgAgg:"&", sgReadonly:"=", sgMenu:"=", sgModalEdit:"&", sgFlexWidth:"=",sgExportColumns:"@"},
                 templateUrl: function($element, $attrs) {
                     var t = $attrs.sgTemplate;
                     if (t) {
@@ -965,7 +965,7 @@ angular.module('pzutil.simplegrid', ['pzutil.services','pzutil.modal'])
                         return value;
                     };
                     $scope.clickRow = function(row,e){
-                        if (e.ctrlKey||$scope.sgSelectOnly) {
+                        if (e.ctrlKey) {
                             row.$__selected = !row.$__selected;
                         }
                         else {
@@ -1115,7 +1115,7 @@ angular.module('pzutil.simplegrid', ['pzutil.services','pzutil.modal'])
                         }
                         var scopeData = $scope.data;
                         var data = null;
-                        if (($scope.sgGlobalSearch || $scope.sgLocalSearch) && $scope.searchService.listingSearch && $scope.searchService.listingSearch!="")
+                        if (($scope.sgGlobalSearch || $scope.sgLocalSearch) && $scope.seService.listingSearch && $scope.searchService.listingSearch!="")
                         {
                             var searchString = $scope.searchService.listingSearch.toLowerCase();
                             data = $scope.crossfilter.filterFunction(function(i){
@@ -1247,7 +1247,11 @@ angular.module('pzutil.simplegrid', ['pzutil.services','pzutil.modal'])
 
                 }
             };
-        }]);
+        }])
+    .value("sgReact", sgReact)
+    .directive( 'sgReact', function( reactDirective ) {
+      return reactDirective( 'sgReact' );
+    } );
 /**
  * Created by gordon on 2014/4/16.
  */
@@ -1648,9 +1652,9 @@ angular.module("template/simplegrid/header.html", []).run(["$templateCache", fun
     "    <button type=\"button\" class=\"btn btn-success\"  ng-click=\"modalSearch()\" ng-if=\"sgModalSearchTemplate\"><i class=\"fa fa-search\"></i> {{'common.searchAdv' | i18n}}</button>\n" +
     "    <button type=\"button\" class=\"btn btn-default\"  ng-click=\"modalSearchReset()\" ng-if=\"sgModalSearchTemplate\"><i class=\"fa fa-undo\"></i> {{'common.Reset' | i18n}}</button>\n" +
     "    <button type=\"button\" class=\"btn btn-default\"  ng-click=\"export()\"><i class=\"fa fa-file-excel-o\"></i> {{'common.Export' | i18n}}</button>\n" +
-    "    <button type=\"button\" class=\"btn btn-default pull-right\"  ng-click=\"checkAll()\" ng-if=\"sgModalSearchTemplate\"><i class=\"fa fa-check\"></i> {{'common.checkAll' | i18n}}</button>\n" +
+    "    <button type=\"button\" class=\"btn btn-default pull-right\"  ng-click=\"checkAll()\" ng-if=\"sgModalSearchTemplate||sgSelectOnly\"><i class=\"fa fa-check\"></i> {{'common.checkAll' | i18n}}</button>\n" +
     "    <span class=\"pull-right\" style=\"margin-right: 10px\"  ng-if=\"sgModalSearchTemplate\"><small>To select, press <kbd>CTRL</kbd> key to click</small></span>\n" +
-    "    <input type=\"text\" placeholder=\"Search\" class=\"pull-right form-control\" ng-model=\"searchService.listingSearch\" ng-if=\"sgLocalSearch\" style=\"width: auto\">\n" +
+    "    <input type=\"text\" placeholder=\"Search\" class=\"pull-right form-control\" ng-model=\"searchService.listingSearch\" ng-if=\"sgLocalSearch\" style=\"width: auto;margin-left:2px\">\n" +
     "</div>\n" +
     "<div class=\"row sg-gridheader\" >\n" +
     "    <div class=\"col-sg-1\" ng-if=\"sgAllowDel && !sgReadonly\" ></div>\n" +
@@ -1718,18 +1722,7 @@ angular.module("template/simplegrid/simpleGrid-virtual.html", []).run(["$templat
   $templateCache.put("template/simplegrid/simpleGrid-virtual.html",
     "<div class=\"sg-grid\" style=\"overflow: hidden\">\n" +
     "    <ng-include src=\"'template/simplegrid/header.html'\"></ng-include>\n" +
-    "    <div style=\"{{scrollStyle}}\">\n" +
-    "        <div sf-virtual-repeat=\"item in items\" class=\"row sg-gridrow\" ng-click=\"clickRow(item,$event)\" ng-class=\"{true: 'sg-gridrow-active'}[item.$__selected]\" >\n" +
-    "            <div class=\"{{col.$getColumnClass()}}\" ng-repeat=\"col in columns\">\n" +
-    "                <i ng-if=\"$first && item.$__selected\" class=\"fa fa-circle\"></i>\n" +
-    "                <i ng-if=\"col.bool\" ng-class=\"{true: 'fa fa-check'}[col.$getValue(item)]\"></i>\n" +
-    "                <a href ng-if=\"$first && sgAllowDel\" ng-click=\"DelObject(item)\"><i class= 'glyphicon glyphicon-remove'></i></a>\n" +
-    "                <ng-include  ng-if=\"col.template && (!item.$core || !item.$core())\" src=\"col.template\"></ng-include>\n" +
-    "                <span ng-if=\"!col.template || (item.$core && item.$core())\">{{col.$getText(item)}}</span>\n" +
-    "                <i ng-if=\"$last && item.$core && item.$core()\" class=\"fa fa-lock pull-right sg_gridIcon\"></i>\n" +
-    "            </div>\n" +
-    "        </div>\n" +
-    "    </div>\n" +
+    "    <ng-react items='items' columns='columns' ></ng-react>\n" +
     "    <ng-include src=\"'template/simplegrid/footer-virtual.html'\"></ng-include>\n" +
     "</div>");
 }]);
@@ -1749,3 +1742,31 @@ angular.module("template/simplegrid/simpleGrid.html", []).run(["$templateCache",
     "    <ng-include src=\"'template/simplegrid/footer.html'\"></ng-include>\n" +
     "</div>");
 }]);
+
+var sgReact = React.createClass( {displayName: "sgReact",
+    propTypes : {
+        items: React.PropTypes.object.isRequired,
+        columns: React.PropTypes.object.isRequired
+    },
+
+    getDefaultProps: function() {
+        return { items: [], columns: [] };
+    },
+
+    render: function() {
+        return (React.createElement("div", null, 
+             this.props.items.map(function(item) {
+                    return React.createElement("div", {class: "row sg-gridrow"}, 
+                        
+                            this.props.columns.map(function(col){
+                                return (
+                                React.createElement("div", {class: "{col.$getColumnClass(item)}", style: "{col.$getColumnStyle()}", title: "{col.$getText(item)}"}, 
+                                    "col.$getText(item)"
+                                ));
+                            })
+                        )
+                })
+            
+            ));
+        }
+    });
