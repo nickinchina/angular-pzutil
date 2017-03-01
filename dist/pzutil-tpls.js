@@ -1115,7 +1115,7 @@ angular.module('pzutil.simplegrid', ['pzutil.services','pzutil.modal'])
                         }
                         var scopeData = $scope.data;
                         var data = null;
-                        if (($scope.sgGlobalSearch || $scope.sgLocalSearch) && $scope.seService.listingSearch && $scope.searchService.listingSearch!="")
+                        if (($scope.sgGlobalSearch || $scope.sgLocalSearch) && $scope.searchService.listingSearch && $scope.searchService.listingSearch!="")
                         {
                             var searchString = $scope.searchService.listingSearch.toLowerCase();
                             data = $scope.crossfilter.filterFunction(function(i){
@@ -1722,7 +1722,7 @@ angular.module("template/simplegrid/simpleGrid-virtual.html", []).run(["$templat
   $templateCache.put("template/simplegrid/simpleGrid-virtual.html",
     "<div class=\"sg-grid\" style=\"overflow: hidden\">\n" +
     "    <ng-include src=\"'template/simplegrid/header.html'\"></ng-include>\n" +
-    "    <ng-react items='items' columns='columns' ></ng-react>\n" +
+    "    <sg-react items='items' columns='columns' ></sg-react>\n" +
     "    <ng-include src=\"'template/simplegrid/footer-virtual.html'\"></ng-include>\n" +
     "</div>");
 }]);

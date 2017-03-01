@@ -1114,7 +1114,7 @@ angular.module('pzutil.simplegrid', ['pzutil.services','pzutil.modal'])
                         }
                         var scopeData = $scope.data;
                         var data = null;
-                        if (($scope.sgGlobalSearch || $scope.sgLocalSearch) && $scope.seService.listingSearch && $scope.searchService.listingSearch!="")
+                        if (($scope.sgGlobalSearch || $scope.sgLocalSearch) && $scope.searchService.listingSearch && $scope.searchService.listingSearch!="")
                         {
                             var searchString = $scope.searchService.listingSearch.toLowerCase();
                             data = $scope.crossfilter.filterFunction(function(i){
