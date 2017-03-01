@@ -419,7 +419,7 @@ angular.module('pzutil.simplegrid', ['pzutil.services','pzutil.modal'])
                             return 'template/simplegrid/simpleGrid-simple.html';
                         }
                         else {
-                            return 'template/simplegrid/simpleGrid.html';
+                            return 'template/simplegrid/simpleGrid-scroll.html';
                         }
                     }
                     else {
