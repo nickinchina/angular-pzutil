@@ -12,12 +12,12 @@ var sgReact = React.createClass( {
         var self = this;
         return (<div>
             { this.props.items.map(function(item) {
-                    return <div class="row sg-gridrow">
+                    return <div key={item.id} className="row sg-gridrow">
                         {
                             self.props.columns.map(function(col){
                                 return (
-                                <div class="{col.$getColumnClass(item)}" style="{col.$getColumnStyle()}" title="{col.$getText(item)}">
-                                    col.$getText(item)
+                                <div className={col.$getColumnClass(item)} title={col.$getText(item)}>
+                                    {col.$getText(item)}
                                 </div>);
                             })
                         }</div>

@@ -12,12 +12,12 @@ var sgReact = React.createClass( {displayName: "sgReact",
         var self = this;
         return (React.createElement("div", null, 
              this.props.items.map(function(item) {
-                    return React.createElement("div", {class: "row sg-gridrow"}, 
+                    return React.createElement("div", {key: item.id, className: "row sg-gridrow"}, 
                         
                             self.props.columns.map(function(col){
                                 return (
-                                React.createElement("div", {class: "{col.$getColumnClass(item)}", style: "{col.$getColumnStyle()}", title: "{col.$getText(item)}"}, 
-                                    "col.$getText(item)"
+                                React.createElement("div", {className: col.$getColumnClass(item), title: col.$getText(item)}, 
+                                    col.$getText(item)
                                 ));
                             })
                         )
