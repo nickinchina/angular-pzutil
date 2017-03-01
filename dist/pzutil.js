@@ -419,6 +419,12 @@ angular.module('pzutil.services', []).
 /**
  * Created by gordon on 2014/4/14.
  */
+
+var sgReactFunc = function( reactDirective ) {
+      return reactDirective( 'sgReact' );
+    };
+sgReactFunc.$inject = ['reactDirective'];
+
 angular.module('pzutil.simplegrid', ['pzutil.services','pzutil.modal'])
     .factory('sgColumn', ['localizedMessages', function (localizedMessages) {
 
@@ -1248,9 +1254,7 @@ angular.module('pzutil.simplegrid', ['pzutil.services','pzutil.modal'])
             };
         }])
     .value("sgReact", sgReact)
-    .directive( 'sgReact', function( reactDirective ) {
-      return reactDirective( 'sgReact' );
-    } );
+    .directive( 'sgReact',  sgReactFunc);
 /**
  * Created by gordon on 2014/4/16.
  */
