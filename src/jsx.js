@@ -21,6 +21,7 @@ var sgReact = React.createClass( {displayName: "sgReact",
             for (var i =0;i<self.domRef.childNodes.length;i++){
                 self.domRef.childNodes[i].style.position= "absolute";
                 self.domRef.childNodes[i].style.top = (self.state.scrollOffset + i*self.state.rowHeight) + "px";
+                self.domRef.childNodes[i].style.width= "100%";
             }
         }
         if (self.domRef.offsetHeight>0){
@@ -30,10 +31,11 @@ var sgReact = React.createClass( {displayName: "sgReact",
             self.domVpRef.scrollTop=self.state.scrollOffset;
             self.domVpRef.onscroll = function(e){
                 var scrollOffset = self.domVpRef.scrollTop;
-                var firstRow = Math.floor(self.scrollOffset / self.rowHeight); 
+                var firstRow = Math.floor(scrollOffset / self.state.rowHeight); 
+                var itemsPerPage= Math.ceil(vp/self.state.rowHeight);
                 if (scrollOffset!=self.state.scrollOffset || firstRow != self.state.firstRow){
                     self.setState({
-                        scrollOffset:scrollOffset,firstRow:firstRow
+                        scrollOffset:scrollOffset,firstRow:firstRow,itemsPerPage:itemsPerPage
                     });
                 }
             };
@@ -41,7 +43,7 @@ var sgReact = React.createClass( {displayName: "sgReact",
                 var rowHeight = self.domRef.offsetHeight/self.state.itemsPerPage;
                 var itemsPerPage=Math.ceil(vp/rowHeight);
                 self.setState({
-                    itemsPerPage:itemsPerPage,rowHeight:rowHeight
+                    itemsPerPage:itemsPerPage,rowHeight:rowHeight,noOfItems:this.props.items.length
                 })
             }
             else {
@@ -67,7 +69,8 @@ var sgReact = React.createClass( {displayName: "sgReact",
         
         var items = [];
         for (var i =0;i<self.state.itemsPerPage;i++){
-            items.push(this.props.items[self.state.firstRow+i]);
+            if (self.state.firstRow+i<this.props.items.length)
+                items.push(this.props.items[self.state.firstRow+i]);
         }
         return (
             React.createElement("div", {ref:  getDomRef }, 
