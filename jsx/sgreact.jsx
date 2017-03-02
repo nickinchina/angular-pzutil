@@ -4,38 +4,48 @@ var sgReact = React.createClass( {
         columns: React.PropTypes.array.isRequired,
         rowClick: React.PropTypes.func.isRequired
     },
+    getInitialState: function() {
+        return {
+            scrollOffset: 0,
+            firstRow : 0,
+            itemsPerPage : 1,
+            rowHeight: 0,
+            noOfItems: this.props.items.length
+        };
+    },
     componentDidUpdate: function() {
-        if (!this.virtualized) return;
         
         var self = this;
         var getViewPortHeight = function(){ return window.innerHeight-self.domVpRef.offsetTop-40;}
         var arrangeChildren = function(){
-            for (var i =0;i<this.domRef.childNodes.length;i++){
-                this.domRef.childNodes[i].style.top = (self.scrollOffset + i*this.rowHeight) + "px";
+            for (var i =0;i<self.domRef.childNodes.length;i++){
+                self.domRef.childNodes[i].style.position= "absolute";
+                self.domRef.childNodes[i].style.top = (self.state.scrollOffset + i*self.state.rowHeight) + "px";
             }
         }
-        if (this.domRef.offsetHeight>0){
-            this.domVpRef = this.domRef.parentNode.parentNode;
+        if (self.domRef.offsetHeight>0){
+            self.domVpRef = this.domRef.parentNode.parentNode;
             var vp = getViewPortHeight();
-            this.domVpRef.style.height=vp+"px";
-            this.domVpRef.onscroll = function(e){
-                self.scrollOffset = self.domVpRef.scrollTop;
-                var oFirstRow = self.firstRow;
-                self.firstRow = Math.floor(self.scrollOffset / self.rowHeight); 
-                if (oFirstRow!=self.firstRow){
-                    console.log('self.forceUpdate2');
-                    self.forceUpdate();
+            self.domVpRef.style.height=vp+"px";
+            self.domVpRef.scrollTop=self.state.scrollOffset;
+            self.domVpRef.onscroll = function(e){
+                var scrollOffset = self.domVpRef.scrollTop;
+                var firstRow = Math.floor(self.scrollOffset / self.rowHeight); 
+                if (scrollOffset!=self.state.scrollOffset || firstRow != self.state.firstRow){
+                    self.setState({
+                        scrollOffset:scrollOffset,firstRow:firstRow
+                    });
                 }
             };
-            this.rowHeight = this.domRef.offsetHeight/this.itemPerPage;
-            this.domRef.style.height=Math.ceil(this.rowHeight*this.noOfItems) + "px";
-            var oItemPerPage = this.itemPerPage;
-            this.itemPerPage=Math.ceil(vp/this.rowHeight); 
-            if (oItemPerPage<this.itemPerPage) {
-                console.log('self.forceUpdate');
-                self.forceUpdate();
+            if (self.state.rowHeight==0){
+                var rowHeight = self.domRef.offsetHeight/self.state.itemsPerPage;
+                var itemsPerPage=Math.ceil(vp/rowHeight);
+                self.setState({
+                    itemsPerPage:itemsPerPage,rowHeight:rowHeight
+                })
             }
             else {
+                self.domRef.style.height=Math.ceil(self.state.rowHeight*self.state.noOfItems) + "px";
                 arrangeChildren();
             }
         }
@@ -54,23 +64,10 @@ var sgReact = React.createClass( {
         var getDomRef = function(ref){
             self.domRef = ref;
         }
-        this.itemPerPage = 50;
-        this.noOfItems = this.props.items.length;
-        var items;
-        if (this.noOfItems>this.itemPerPage){
-            var firstRow = self.firstRow||0;
-            items = [];
-            for (var i =0;i<this.itemPerPage;i++){
-                items.push(this.props.items[firstRow+i]);
-            }
-            this.virtualized = true;
-        }
-        else 
-            items = this.props.items;
-            
-        var styleWrapper = function(style){
-            if (this.virtualized) style.position= "absolute";
-            return style;
+        
+        var items = [];
+        for (var i =0;i<self.state.itemsPerPage;i++){
+            items.push(this.props.items[self.state.firstRow+i]);
         }
         return (
             <div ref={ getDomRef }>
@@ -80,7 +77,7 @@ var sgReact = React.createClass( {
                         {
                             self.props.columns.map(function(col){
                                 return (
-                                <div className={col.$getColumnClass(item)} title={col.$getText(item)} style={styleWrapper(col.$getColumnStyleReact())}>
+                                <div className={col.$getColumnClass(item)} title={col.$getText(item)} style={col.$getColumnStyleReact()}>
                                     {col.$getText(item)}
                                 </div>);
                             })
