@@ -2,7 +2,7 @@
  * pzutil
  * 
 
- * Version: 0.0.18 - 2017-03-01
+ * Version: 0.0.18 - 2017-03-02
  * License: MIT
  */
 angular.module("pzutil", ["pzutil.tpls", "pzutil.aditem","pzutil.adpublish","pzutil.download","pzutil.image","pzutil.modal","pzutil.rest","pzutil.retailhelper","pzutil.services","pzutil.simplegrid","pzutil.tree","pzutil.ztemplate"]);
@@ -1738,7 +1738,9 @@ angular.module("template/simplegrid/simpleGrid-virtual.html", []).run(["$templat
   $templateCache.put("template/simplegrid/simpleGrid-virtual.html",
     "<div class=\"sg-grid\" style=\"overflow: hidden\">\n" +
     "    <ng-include src=\"'template/simplegrid/header.html'\"></ng-include>\n" +
-    "    <sg-react items='items' columns='columns' row-click='clickRow' watch-depth=\"collection\" ></sg-react>\n" +
+    "    <div style=\"box-sizing: border-box; direction: ltr; position: relative; will-change: transform; overflow: auto;\">\n" +
+    "        <sg-react items='items' columns='columns' row-click='clickRow' watch-depth=\"collection\" ></sg-react>\n" +
+    "    </div>\n" +
     "    <ng-include src=\"'template/simplegrid/footer-virtual.html'\"></ng-include>\n" +
     "</div>");
 }]);
@@ -1765,17 +1767,34 @@ var sgReact = React.createClass( {displayName: "sgReact",
         columns: React.PropTypes.array.isRequired,
         rowClick: React.PropTypes.func.isRequired
     },
-    componentDidMount: function() {
-        if (!this.rowHeight && this.domRef.offsetHeight>0){
-            this.domRef.onscroll = function(e){
-                console.log(e.scrollTop);
+    componentDidUpdate: function() {
+        var self = this;
+        var getViewPortHeight = function(){ return window.innerHeight-self.domVpRef.offsetTop-40;}
+        if (this.domRef.offsetHeight>0){
+            var vp = getViewPortHeight();
+            this.domVpRef = this.domRef.parentNode.parentNode;
+            this.domVpRef.style.height=vp+"px";
+            this.domVpRef.onscroll = function(e){
+                var scrollOffset = self.domVpRef.scrollTop;
+                if ((self.itemPerPage*self.rowHeight-scrollOffset-vp)<10){
+                    self.offset = Math.floor(scrollOffset / self.rowHeight); 
+                    self.domRef.style.top = self.domRef.scrollTop+"px";
+                    console.log('self.forceUpdate');
+                    self.forceUpdate();
+                }
             };
             this.rowHeight = this.domRef.offsetHeight/this.itemPerPage;
-            this.domRef.style.height=Math.ceil(this.rowHeight*this.noOfItems) + "px";
+            this.domRef.parentNode.style.height=Math.ceil(this.rowHeight*this.noOfItems) + "px";
+            var oItemPerPage = this.itemPerPage;
+            this.itemPerPage=Math.ceil(vp/this.rowHeight); 
+            if (oItemPerPage<this.itemPerPage) {
+                console.log('self.forceUpdate');
+                self.forceUpdate();
+            }
         }
     },
     getDefaultProps: function() {
-        return { items: [], columns: [] };
+        return { items: [], columns: [], rowClick: function(){} };
     },
 
     render: function() {
@@ -1800,12 +1819,12 @@ var sgReact = React.createClass( {displayName: "sgReact",
         }
         else 
             items = this.props.items;
-        
-        const divStyle = {
-          "min-height": '100%'
+        const style = {
+            position: "absolute",
+            top: "0px"
         };
         return (
-            React.createElement("div", {style: divStyle}, 
+            React.createElement("div", {style: style}, 
             React.createElement("div", {ref:  getDomRef }, 
              items.map(function(item) {
                     var boundItemClick = self.props.rowClick.bind(self, item);

@@ -1,5 +1,7 @@
 <div class="sg-grid" style="overflow: hidden">
     <ng-include src="'template/simplegrid/header.html'"></ng-include>
-    <sg-react items='items' columns='columns' row-click='clickRow' watch-depth="collection" ></sg-react>
+    <div style="box-sizing: border-box; direction: ltr; position: relative; will-change: transform; overflow: auto;">
+        <sg-react items='items' columns='columns' row-click='clickRow' watch-depth="collection" ></sg-react>
+    </div>
     <ng-include src="'template/simplegrid/footer-virtual.html'"></ng-include>
 </div>

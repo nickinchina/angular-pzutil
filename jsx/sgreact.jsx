@@ -4,17 +4,34 @@ var sgReact = React.createClass( {
         columns: React.PropTypes.array.isRequired,
         rowClick: React.PropTypes.func.isRequired
     },
-    componentDidMount: function() {
-        if (!this.rowHeight && this.domRef.offsetHeight>0){
-            this.domRef.onscroll = function(e){
-                console.log(e.scrollTop);
+    componentDidUpdate: function() {
+        var self = this;
+        var getViewPortHeight = function(){ return window.innerHeight-self.domVpRef.offsetTop-40;}
+        if (this.domRef.offsetHeight>0){
+            var vp = getViewPortHeight();
+            this.domVpRef = this.domRef.parentNode.parentNode;
+            this.domVpRef.style.height=vp+"px";
+            this.domVpRef.onscroll = function(e){
+                var scrollOffset = self.domVpRef.scrollTop;
+                if ((self.itemPerPage*self.rowHeight-scrollOffset-vp)<10){
+                    self.offset = Math.floor(scrollOffset / self.rowHeight); 
+                    self.domRef.style.top = self.domRef.scrollTop+"px";
+                    console.log('self.forceUpdate');
+                    self.forceUpdate();
+                }
             };
             this.rowHeight = this.domRef.offsetHeight/this.itemPerPage;
-            this.domRef.style.height=Math.ceil(this.rowHeight*this.noOfItems) + "px";
+            this.domRef.parentNode.style.height=Math.ceil(this.rowHeight*this.noOfItems) + "px";
+            var oItemPerPage = this.itemPerPage;
+            this.itemPerPage=Math.ceil(vp/this.rowHeight); 
+            if (oItemPerPage<this.itemPerPage) {
+                console.log('self.forceUpdate');
+                self.forceUpdate();
+            }
         }
     },
     getDefaultProps: function() {
-        return { items: [], columns: [] };
+        return { items: [], columns: [], rowClick: function(){} };
     },
 
     render: function() {
@@ -39,13 +56,13 @@ var sgReact = React.createClass( {
         }
         else 
             items = this.props.items;
-        
-        const divStyle = {
-          "min-height": '100%'
+        const style = {
+            position: "absolute",
+            top: "0px"
         };
         return (
-            <div style={divStyle} >
-            <div ref={ getDomRef } >
+            <div style={style}>
+            <div ref={ getDomRef }>
             { items.map(function(item) {
                     var boundItemClick = self.props.rowClick.bind(self, item);
                     return <div key={item.id} className={getRowClass(item)} onClick={boundItemClick}>

@@ -274,7 +274,9 @@ angular.module("template/simplegrid/simpleGrid-virtual.html", []).run(["$templat
   $templateCache.put("template/simplegrid/simpleGrid-virtual.html",
     "<div class=\"sg-grid\" style=\"overflow: hidden\">\n" +
     "    <ng-include src=\"'template/simplegrid/header.html'\"></ng-include>\n" +
-    "    <sg-react items='items' columns='columns' row-click='clickRow' watch-depth=\"collection\" ></sg-react>\n" +
+    "    <div style=\"box-sizing: border-box; direction: ltr; position: relative; will-change: transform; overflow: auto;\">\n" +
+    "        <sg-react items='items' columns='columns' row-click='clickRow' watch-depth=\"collection\" ></sg-react>\n" +
+    "    </div>\n" +
     "    <ng-include src=\"'template/simplegrid/footer-virtual.html'\"></ng-include>\n" +
     "</div>");
 }]);
