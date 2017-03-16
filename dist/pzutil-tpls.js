@@ -1848,14 +1848,21 @@ var sgReact = React.createClass( {displayName: "sgReact",
             React.createElement("div", {ref:  getDomRef }, 
              items.map(function(item) {
                     var boundItemClick = clickRow.bind(self, item);
+                    var count = 0;
                     return React.createElement("div", {key: item.id, className: getRowClass(item), onClick: boundItemClick}, 
-                            React.createElement("i", {style: getRowSelected(item), className: "fa fa-circle"}), 
                         
                             self.props.columns.map(function(col){
-                                return (
-                                React.createElement("div", {className: col.$getColumnClass(item), title: col.$getText(item), style: col.$getColumnStyleReact()}, 
-                                    col.$getText(item)
-                                ));
+                                count++;
+                                if (count>1)
+                                    return (
+                                    React.createElement("div", {className: col.$getColumnClass(item), title: col.$getText(item), style: col.$getColumnStyleReact()}, 
+                                        col.$getText(item)
+                                    ));
+                                else
+                                    return (
+                                    React.createElement("div", {className: col.$getColumnClass(item), title: col.$getText(item), style: col.$getColumnStyleReact()}, 
+                                        React.createElement("i", {style: getRowSelected(item), className: "fa fa-circle"}), col.$getText(item)
+                                    ));
                             })
                         )
                 })
