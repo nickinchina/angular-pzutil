@@ -65,7 +65,7 @@ var sgReact = React.createClass( {
         }
         var getRowSelected = function(item){
             var r ={
-                display: item.$__selected?"block":"none"
+                display: item.$__selected?"inline":"none"
             }
             return r;
         }
