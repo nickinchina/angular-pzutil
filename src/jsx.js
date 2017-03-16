@@ -64,7 +64,9 @@ var sgReact = React.createClass( {displayName: "sgReact",
             return r;
         }
         var getRowSelected = function(item){
-            var r =item.$__selected?"display:block":"display:none";
+            var r ={
+                display: item.$__selected?"block":"none"
+            }
             return r;
         }
         var getDomRef = function(ref){
