@@ -1826,6 +1826,10 @@ var sgReact = React.createClass( {displayName: "sgReact",
             if (item.$__selected) r+=" sg-gridrow-active";
             return r;
         }
+        var getRowSelected = function(item){
+            var r =item.$__selected?"display:block":"display:none";
+            return r;
+        }
         var getDomRef = function(ref){
             self.domRef = ref;
         }
@@ -1843,6 +1847,7 @@ var sgReact = React.createClass( {displayName: "sgReact",
              items.map(function(item) {
                     var boundItemClick = clickRow.bind(self, item);
                     return React.createElement("div", {key: item.id, className: getRowClass(item), onClick: boundItemClick}, 
+                            React.createElement("i", {style: getRowSelected(item), class: "fa fa-circle"}), 
                         
                             self.props.columns.map(function(col){
                                 return (
