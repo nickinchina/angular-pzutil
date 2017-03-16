@@ -66,7 +66,10 @@ var sgReact = React.createClass( {
         var getDomRef = function(ref){
             self.domRef = ref;
         }
-        
+        var clickRow = function(row,e){
+            self.props.rowClick(row,e);
+            self.setState({rowHeight:self.state.rowHeight});
+        }
         var items = [];
         for (var i =0;i<self.state.itemsPerPage;i++){
             if (self.state.firstRow+i<this.props.items.length)
@@ -75,7 +78,7 @@ var sgReact = React.createClass( {
         return (
             <div ref={ getDomRef }>
             { items.map(function(item) {
-                    var boundItemClick = self.props.rowClick.bind(self, item);
+                    var boundItemClick = clickRow.bind(self, item);
                     return <div key={item.id} className={getRowClass(item)} onClick={boundItemClick}>
                         {
                             self.props.columns.map(function(col){
