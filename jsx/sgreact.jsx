@@ -86,7 +86,7 @@ var sgReact = React.createClass( {
             { items.map(function(item) {
                     var boundItemClick = clickRow.bind(self, item);
                     return <div key={item.id} className={getRowClass(item)} onClick={boundItemClick}>
-                            <i style={getRowSelected(item)} class="fa fa-circle"></i>
+                            <i style={getRowSelected(item)} className="fa fa-circle"></i>
                         {
                             self.props.columns.map(function(col){
                                 return (
