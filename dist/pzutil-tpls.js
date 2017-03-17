@@ -2,7 +2,7 @@
  * pzutil
  * 
 
- * Version: 0.0.18 - 2017-03-16
+ * Version: 0.0.18 - 2017-03-17
  * License: MIT
  */
 angular.module("pzutil", ["pzutil.tpls", "pzutil.aditem","pzutil.adpublish","pzutil.download","pzutil.image","pzutil.modal","pzutil.rest","pzutil.retailhelper","pzutil.services","pzutil.simplegrid","pzutil.tree","pzutil.ztemplate"]);
@@ -1772,8 +1772,7 @@ var sgReact = React.createClass( {displayName: "sgReact",
             scrollOffset: 0,
             firstRow : 0,
             itemsPerPage : 1,
-            rowHeight: 0,
-            noOfItems: this.props.items.length
+            rowHeight: 0
         };
     },
     componentDidUpdate: function() {
@@ -1806,11 +1805,11 @@ var sgReact = React.createClass( {displayName: "sgReact",
                 var rowHeight = self.domRef.offsetHeight/self.state.itemsPerPage;
                 var itemsPerPage=Math.ceil(vp/rowHeight);
                 self.setState({
-                    itemsPerPage:itemsPerPage,rowHeight:rowHeight,noOfItems:this.props.items.length
+                    itemsPerPage:itemsPerPage,rowHeight:rowHeight
                 })
             }
             else {
-                self.domRef.style.height=Math.ceil(self.state.rowHeight*self.state.noOfItems) + "px";
+                self.domRef.style.height=Math.ceil(self.state.rowHeight*self.props.items.length) + "px";
                 arrangeChildren();
             }
         }

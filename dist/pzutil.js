@@ -2,7 +2,7 @@
  * pzutil
  * 
 
- * Version: 0.0.18 - 2017-03-16
+ * Version: 0.0.18 - 2017-03-17
  * License: MIT
  */
 angular.module("pzutil", ["pzutil.aditem","pzutil.adpublish","pzutil.download","pzutil.image","pzutil.modal","pzutil.rest","pzutil.retailhelper","pzutil.services","pzutil.simplegrid","pzutil.tree","pzutil.ztemplate"]);
