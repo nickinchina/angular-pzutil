@@ -97,7 +97,7 @@ var sgReact = React.createClass( {
                                 else
                                     return (
                                     <div className={col.$getColumnClass(item)} title={col.$getText(item)} style={col.$getColumnStyleReact()}>
-                                        <i style={getRowSelected(item)} className="fa fa-circle"></i>{ $filter('picker')(col.$getText(item), col.format)}
+                                        <i style={getRowSelected(item)} className="fa fa-circle"></i>{ col.$getTextFiltered(item)}
                                     </div>);
                             })
                         }</div>

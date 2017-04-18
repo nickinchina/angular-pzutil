@@ -427,7 +427,7 @@ var sgReactFunc = function( reactDirective ) {
 sgReactFunc.$inject = ['reactDirective'];
 
 angular.module('pzutil.simplegrid', ['pzutil.services','pzutil.modal'])
-    .factory('sgColumn', ['localizedMessages', function (localizedMessages) {
+    .factory('sgColumn', ['localizedMessages','$filter', function (localizedMessages,$filter) {
 
         var factory = function($scope, sgFlexWidth) {
 
@@ -553,6 +553,9 @@ angular.module('pzutil.simplegrid', ['pzutil.services','pzutil.modal'])
                         v = lookup({col: this.name, value:v, item: item});
                     return v ;
                 }
+            };
+            mixin.prototype.$getTextFiltered = function(item){
+                return $filter('picker')(this.$getText(item), this.format);
             };
             mixin.prototype.$getValue = function(item){
                 var v = item[this.name];
@@ -1860,7 +1863,7 @@ var sgReact = React.createClass( {displayName: "sgReact",
                                 else
                                     return (
                                     React.createElement("div", {className: col.$getColumnClass(item), title: col.$getText(item), style: col.$getColumnStyleReact()}, 
-                                        React.createElement("i", {style: getRowSelected(item), className: "fa fa-circle"}),  $filter('picker')(col.$getText(item), col.format)
+                                        React.createElement("i", {style: getRowSelected(item), className: "fa fa-circle"}),  col.$getTextFiltered(item)
                                     ));
                             })
                         )
