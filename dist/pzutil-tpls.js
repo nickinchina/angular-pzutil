@@ -2,7 +2,7 @@
  * pzutil
  * 
 
- * Version: 0.0.18 - 2017-03-17
+ * Version: 0.0.18 - 2017-04-18
  * License: MIT
  */
 angular.module("pzutil", ["pzutil.tpls", "pzutil.aditem","pzutil.adpublish","pzutil.download","pzutil.image","pzutil.modal","pzutil.rest","pzutil.retailhelper","pzutil.services","pzutil.simplegrid","pzutil.tree","pzutil.ztemplate"]);
@@ -653,7 +653,7 @@ angular.module('pzutil.simplegrid', ['pzutil.services','pzutil.modal'])
                 $modalInstance.dismiss('cancel');
             };
         }])
-    .directive('contextMenu', function ($parse) {
+    .directive('contextMenu', ['$parse',function ($parse) {
         var renderContextMenu = function ($scope, event, options) {
             if (!$) { var $ = angular.element; }
             $(event.currentTarget).addClass('context');
@@ -725,7 +725,7 @@ angular.module('pzutil.simplegrid', ['pzutil.services','pzutil.modal'])
                 });
             }
         };
-    })
+    }])
     .directive('comboEditPopup', function () {
         return {
             restrict:'EA',
@@ -1860,7 +1860,7 @@ var sgReact = React.createClass( {displayName: "sgReact",
                                 else
                                     return (
                                     React.createElement("div", {className: col.$getColumnClass(item), title: col.$getText(item), style: col.$getColumnStyleReact()}, 
-                                        React.createElement("i", {style: getRowSelected(item), className: "fa fa-circle"}), col.$getText(item)
+                                        React.createElement("i", {style: getRowSelected(item), className: "fa fa-circle"}),  $filter('picker')(col.$getText(item), col.format)
                                     ));
                             })
                         )

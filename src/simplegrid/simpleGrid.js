@@ -234,7 +234,7 @@ angular.module('pzutil.simplegrid', ['pzutil.services','pzutil.modal'])
                 $modalInstance.dismiss('cancel');
             };
         }])
-    .directive('contextMenu', function ($parse) {
+    .directive('contextMenu', ['$parse',function ($parse) {
         var renderContextMenu = function ($scope, event, options) {
             if (!$) { var $ = angular.element; }
             $(event.currentTarget).addClass('context');
@@ -306,7 +306,7 @@ angular.module('pzutil.simplegrid', ['pzutil.services','pzutil.modal'])
                 });
             }
         };
-    })
+    }])
     .directive('comboEditPopup', function () {
         return {
             restrict:'EA',
