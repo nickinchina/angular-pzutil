@@ -2,7 +2,7 @@
  * pzutil
  * 
 
- * Version: 0.0.18 - 2017-04-18
+ * Version: 0.0.18 - 2017-04-19
  * License: MIT
  */
 angular.module("pzutil", ["pzutil.tpls", "pzutil.aditem","pzutil.adpublish","pzutil.download","pzutil.image","pzutil.modal","pzutil.rest","pzutil.retailhelper","pzutil.services","pzutil.simplegrid","pzutil.tree","pzutil.ztemplate"]);
@@ -555,7 +555,12 @@ angular.module('pzutil.simplegrid', ['pzutil.services','pzutil.modal'])
                 }
             };
             mixin.prototype.$getTextFiltered = function(item){
-                return $filter('picker')(this.$getText(item), this.format);
+                var v = this.$getText(item);
+                if (this.format)v = $filter(this.format)(v);
+                return v;
+            };
+            mixin.prototype.$getKey = function(item){
+                return this.name + item.id;
             };
             mixin.prototype.$getValue = function(item){
                 var v = item[this.name];
@@ -1857,12 +1862,12 @@ var sgReact = React.createClass( {displayName: "sgReact",
                                 count++;
                                 if (count>1)
                                     return (
-                                    React.createElement("div", {className: col.$getColumnClass(item), title: col.$getText(item), style: col.$getColumnStyleReact()}, 
+                                    React.createElement("div", {key: col.$getKey(item), className: col.$getColumnClass(item), title: col.$getTextFiltered(item), style: col.$getColumnStyleReact()}, 
                                         col.$getText(item)
                                     ));
                                 else
                                     return (
-                                    React.createElement("div", {className: col.$getColumnClass(item), title: col.$getText(item), style: col.$getColumnStyleReact()}, 
+                                    React.createElement("div", {key: col.$getKey(item), className: col.$getColumnClass(item), title: col.$getText(item), style: col.$getColumnStyleReact()}, 
                                         React.createElement("i", {style: getRowSelected(item), className: "fa fa-circle"}),  col.$getTextFiltered(item)
                                     ));
                             })

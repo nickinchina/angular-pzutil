@@ -14,10 +14,13 @@ module.exports = function(grunt) {
     grunt.loadNpmTasks('grunt-karma');
     grunt.loadNpmTasks('grunt-conventional-changelog');
     grunt.loadNpmTasks('grunt-ngdocs');
+    grunt.loadNpmTasks('grunt-react'); 
 
     // Project configuration.
     grunt.util.linefeed = '\n';
-
+    
+    require('load-grunt-tasks')(grunt); 
+    
     grunt.initConfig({
         ngversion: '1.2.16',
         bsversion: '3.1.1',
@@ -190,7 +193,16 @@ module.exports = function(grunt) {
                 src: ['src/**/*.js', 'src/**/*.ngdoc'],
                 title: 'API Documentation'
             }
-        }
+        },
+        react: {
+            combined_file_output: {
+              files: {
+                'src/jsx.js': [
+                  'jsx/sgreact.jsx'
+                ]
+              }
+            }
+          }
     });
 
     //register before and after test tasks so we've don't have to change cli
@@ -322,9 +334,9 @@ module.exports = function(grunt) {
             .concat(srcFiles));
         //Set the concat-with-templates task to concat the given src & tpl modules
         grunt.config('concat.dist_tpls.src', grunt.config('concat.dist_tpls.src')
-            .concat(srcFiles).concat(['src/templates_tmp.js']));
+            .concat(srcFiles).concat(['src/templates_tmp.js','src/jsx.js']));
 
-        grunt.task.run(['html2js', 'concat', 'uglify']);
+        grunt.task.run(['html2js','react', 'concat',  'uglify']);
     });
 
     grunt.registerTask('test', 'Run tests on singleRun karma server', function () {

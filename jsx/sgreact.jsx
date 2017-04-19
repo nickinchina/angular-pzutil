@@ -91,12 +91,12 @@ var sgReact = React.createClass( {
                                 count++;
                                 if (count>1)
                                     return (
-                                    <div className={col.$getColumnClass(item)} title={col.$getText(item)} style={col.$getColumnStyleReact()}>
+                                    <div key={col.$getKey(item)} className={col.$getColumnClass(item)} title={col.$getTextFiltered(item)} style={col.$getColumnStyleReact()}>
                                         {col.$getText(item)}
                                     </div>);
                                 else
                                     return (
-                                    <div className={col.$getColumnClass(item)} title={col.$getText(item)} style={col.$getColumnStyleReact()}>
+                                    <div key={col.$getKey(item)} className={col.$getColumnClass(item)} title={col.$getText(item)} style={col.$getColumnStyleReact()}>
                                         <i style={getRowSelected(item)} className="fa fa-circle"></i>{ col.$getTextFiltered(item)}
                                     </div>);
                             })

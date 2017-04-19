@@ -2,7 +2,7 @@
  * pzutil
  * 
 
- * Version: 0.0.18 - 2017-04-18
+ * Version: 0.0.18 - 2017-04-19
  * License: MIT
  */
 angular.module("pzutil", ["pzutil.aditem","pzutil.adpublish","pzutil.download","pzutil.image","pzutil.modal","pzutil.rest","pzutil.retailhelper","pzutil.services","pzutil.simplegrid","pzutil.tree","pzutil.ztemplate"]);
@@ -554,7 +554,12 @@ angular.module('pzutil.simplegrid', ['pzutil.services','pzutil.modal'])
                 }
             };
             mixin.prototype.$getTextFiltered = function(item){
-                return $filter('picker')(this.$getText(item), this.format);
+                var v = this.$getText(item);
+                if (this.format)v = $filter(this.format)(v);
+                return v;
+            };
+            mixin.prototype.$getKey = function(item){
+                return this.name + item.id;
             };
             mixin.prototype.$getValue = function(item){
                 var v = item[this.name];
