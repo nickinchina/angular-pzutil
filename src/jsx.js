@@ -92,11 +92,11 @@ var sgReact = React.createClass( {displayName: "sgReact",
                                 if (count>1)
                                     return (
                                     React.createElement("div", {key: col.$getKey(item), className: col.$getColumnClass(item), title: col.$getTextFiltered(item), style: col.$getColumnStyleReact()}, 
-                                        col.$getText(item)
+                                        col.$getTextFiltered(item)
                                     ));
                                 else
                                     return (
-                                    React.createElement("div", {key: col.$getKey(item), className: col.$getColumnClass(item), title: col.$getText(item), style: col.$getColumnStyleReact()}, 
+                                    React.createElement("div", {key: col.$getKey(item), className: col.$getColumnClass(item), title: col.$getTextFiltered(item), style: col.$getColumnStyleReact()}, 
                                         React.createElement("i", {style: getRowSelected(item), className: "fa fa-circle"}),  col.$getTextFiltered(item)
                                     ));
                             })
