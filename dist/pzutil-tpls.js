@@ -2,7 +2,7 @@
  * pzutil
  * 
 
- * Version: 0.0.18 - 2017-04-19
+ * Version: 0.0.18 - 2017-04-25
  * License: MIT
  */
 angular.module("pzutil", ["pzutil.tpls", "pzutil.aditem","pzutil.adpublish","pzutil.download","pzutil.image","pzutil.modal","pzutil.rest","pzutil.retailhelper","pzutil.services","pzutil.simplegrid","pzutil.tree","pzutil.ztemplate"]);
@@ -1603,15 +1603,9 @@ angular.module("template/modal/wait.html", []).run(["$templateCache", function($
 
 angular.module("template/simplegrid/chart.html", []).run(["$templateCache", function($templateCache) {
   $templateCache.put("template/simplegrid/chart.html",
-    "<div kendo-chart=\"kendoInstance\"\n" +
-    "     k-chart-area='{background: \"#ffffff\"}'\n" +
-    "     k-category-axis='{field: \"category\"}'\n" +
-    "     k-legend=\"{ position: 'bottom' }\"\n" +
-    "     k-series-defaults=\"{ type: scChartType }\"\n" +
-    "     k-series=\"scSeries\"\n" +
-    "     k-data-source=\"items\"\n" +
-    "     k-theme=\"'silver'\"\n" +
-    "     k-series-hover=\"scSeriesClick\"></div>");
+    "<canvas height=\"140\" id=\"bar\" class=\"chart chart-bar\"\n" +
+    "       chart-data=\"chart.data\" chart-series=\"chart.series\" chart-labels=\"chart.labels\"\n" +
+    "       chart-dataset-override=\"barOverride\"> ");
 }]);
 
 angular.module("template/simplegrid/combo-edit.html", []).run(["$templateCache", function($templateCache) {
