@@ -131,9 +131,15 @@ angular.module("template/modal/wait.html", []).run(["$templateCache", function($
 
 angular.module("template/simplegrid/chart.html", []).run(["$templateCache", function($templateCache) {
   $templateCache.put("template/simplegrid/chart.html",
-    "<canvas height=\"140\" id=\"bar\" class=\"chart chart-bar\"\n" +
-    "       chart-data=\"chart.data\" chart-series=\"chart.series\" chart-labels=\"chart.labels\"\n" +
-    "       chart-dataset-override=\"barOverride\"> ");
+    "<div kendo-chart=\"kendoInstance\"\n" +
+    "     k-chart-area='{background: \"#ffffff\"}'\n" +
+    "     k-category-axis='{field: \"category\"}'\n" +
+    "     k-legend=\"{ position: 'bottom' }\"\n" +
+    "     k-series-defaults=\"{ type: scChartType }\"\n" +
+    "     k-series=\"scSeries\"\n" +
+    "     k-data-source=\"items\"\n" +
+    "     k-theme=\"'silver'\"\n" +
+    "     k-series-hover=\"scSeriesClick\"></div>");
 }]);
 
 angular.module("template/simplegrid/combo-edit.html", []).run(["$templateCache", function($templateCache) {
@@ -181,9 +187,9 @@ angular.module("template/simplegrid/footer.html", []).run(["$templateCache", fun
     "</div>\n" +
     "<div class=\"row\">\n" +
     "    <div class=\"col-md-9\">\n" +
-    "        <pagination ng-if=\"!sgNoPager && pageSetting.totalItems>pageSetting.pageSize\"\n" +
+    "        <uib-pagination ng-if=\"!sgNoPager && pageSetting.totalItems>pageSetting.pageSize\"\n" +
     "                    total-items=\"pageSetting.totalItems\" page=\"pageSetting.currentPage\" items-per-page=\"pageSetting.pageSize\" rotate=\"false\"\n" +
-    "                    max-size=\"5\" class=\"pagination-sm\" boundary-links=\"true\"  on-select-page=\"changed(page, true)\" />\n" +
+    "                    max-size=\"5\" class=\"uib-pagination-sm\" boundary-links=\"true\"  on-select-page=\"changed(page, true)\" />\n" +
     "    </div>\n" +
     "    <div class=\"col-md-3 sg-footer\">\n" +
     "        <strong><a href=\"#\" editable-number=\"pageSetting.pageSize\" e-min=\"20\" e-max=\"400\" onaftersave=\"changed(1)\">\n" +
