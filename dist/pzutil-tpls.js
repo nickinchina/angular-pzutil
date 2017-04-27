@@ -2,7 +2,7 @@
  * pzutil
  * 
 
- * Version: 0.0.18 - 2017-04-19
+ * Version: 0.0.18 - 2017-04-27
  * License: MIT
  */
 angular.module("pzutil", ["pzutil.tpls", "pzutil.aditem","pzutil.adpublish","pzutil.download","pzutil.image","pzutil.modal","pzutil.rest","pzutil.retailhelper","pzutil.services","pzutil.simplegrid","pzutil.tree","pzutil.ztemplate"]);
@@ -264,11 +264,11 @@ angular.module('pzutil.modal', [])
             templateUrl: 'template/modal/modal-form.html'
         };
     })
-    .factory('crudWait',['$http','$uibModal', function($http, $uibModal) {
+    .factory('crudWait',['$http','$modal', function($http, $modal) {
         var arrSelected = [];
         var mixin = {
             doWork : function(msg, promise, cb) {
-                 var modalInstance = $uibModal.open({
+                 var modalInstance = $modal.open({
                     templateUrl: 'template/modal/wait.html',
                     controller: 'crudWaitCtrl',
                     resolve: {
@@ -288,7 +288,7 @@ angular.module('pzutil.modal', [])
         };
         return mixin;
     }])
-    .controller('crudWaitCtrl', [ '$scope', '$uibModalInstance','msg',function( $scope, $uibModalInstance,msg) {
+    .controller('crudWaitCtrl', [ '$scope', '$modalInstance','msg',function( $scope, $modalInstance,msg) {
         $scope.msg = msg;
 }]);
 /**
@@ -518,7 +518,7 @@ angular.module('pzutil.simplegrid', ['pzutil.services','pzutil.modal'])
                 else
                     return checkbox + 'sg-gridrow-cell ' + w;
             };
-            mixin.prototype.$uibModalEdit = function(item, e){
+            mixin.prototype.$modalEdit = function(item, e){
                 if (this.modalEdit){
                     modalEditor(item,this, $(e.target));
                 }
@@ -575,13 +575,13 @@ angular.module('pzutil.simplegrid', ['pzutil.services','pzutil.modal'])
         }
         return factory;
     }])
-    .factory('simpleGridExport', ['$uibModal', '$location','$q','zTreeHelper', function($uibModal,zrest,$q,zTreeHelper){
+    .factory('simpleGridExport', ['$modal', '$location','$q','zTreeHelper', function($modal,zrest,$q,zTreeHelper){
         var service = {
 
             export : function(columns, data, docTitle)
             {
                 var deferred = $q.defer();
-                var  modalInstance = $uibModal.open({
+                var  modalInstance = $modal.open({
                     templateUrl: "template/simplegrid/export.html",
                     controller: "simpleGridExportCtrl",
                     resolve: {
@@ -620,8 +620,8 @@ angular.module('pzutil.simplegrid', ['pzutil.services','pzutil.modal'])
         };
         return service;
     }])
-    .controller('simpleGridExportCtrl', [ '$scope', '$uibModalInstance','columns','data','docTitle','downloadHelper','localizedMessages','browser',
-        function( $scope, $uibModalInstance,columns,data,docTitle,downloadHelper,localizedMessages,browser) {
+    .controller('simpleGridExportCtrl', [ '$scope', '$modalInstance','columns','data','docTitle','downloadHelper','localizedMessages','browser',
+        function( $scope, $modalInstance,columns,data,docTitle,downloadHelper,localizedMessages,browser) {
             $scope.item = {};
             $scope.columns = columns;
             $scope.data = data;
@@ -652,13 +652,13 @@ angular.module('pzutil.simplegrid', ['pzutil.services','pzutil.modal'])
                 else
                     downloadHelper.downloadFile("/pzobject/excel", "post", p)
                         .then(function(i){
-                            $uibModalInstance.close();
+                            $modalInstance.close();
                         },function(e){
                             alert(e.message);
                         });
             };
             $scope.cancel = function () {
-                $uibModalInstance.dismiss('cancel');
+                $modalInstance.dismiss('cancel');
             };
         }])
     .directive('contextMenu', ['$parse',function ($parse) {
@@ -771,10 +771,18 @@ angular.module('pzutil.simplegrid', ['pzutil.services','pzutil.modal'])
             templateUrl: 'template/simplegrid/chart.html',
             link: function(scope, iElement, iAttrs ) {
                 scope.items_chart = [];
-                scope.items = new kendo.data.DataSource({data: []});
+                //scope.items = new kendo.data.DataSource({data: []});
                 scope.scChartInstance = scope.scChartInstance ||{};
+                scope.chart = {
+                    data: [],
+                    labels:[],
+                    series: []
+                };
                 var chartIt = function(){
                     scope.items_chart.length = 0;
+                    scope.chart.data.length = 0;
+                    scope.chart.labels.length = 0;
+                    scope.chart.series.length = 0;
                     if (scope.scData.length>0){
                         var g;
                         if (scope.scData[0].hasOwnProperty(scope.scCategory))
@@ -823,8 +831,12 @@ angular.module('pzutil.simplegrid', ['pzutil.services','pzutil.modal'])
                             }
                         }
                     }
-                    scope.items.data(scope.items_chart);
-                    console.log('scope.items',scope.items);
+                    scope.chart.labels.push.apply(scope.chart.labels, _.map(scope.items_chart,scope.scCategory));
+                    _(scope.scSeries).forEach(function(j){
+                        scope.chart.series.push(j.field);
+                        scope.chart.data.push(_.map(scope.items_chart,j.field))
+                    })
+                    //scope.items.data(scope.items_chart);
                     if (scope.kendoInstance){
                         var chartOptions = scope.kendoInstance.options;
                         chartOptions.series.length = 0;
@@ -844,8 +856,8 @@ angular.module('pzutil.simplegrid', ['pzutil.services','pzutil.modal'])
             }
         };
     } ])
-    .directive('simpleGrid', ['sgColumn', 'breadcrumbs', 'localizedMessages','crudWait', '$uibModal','simpleGridExport','$timeout', '$uibPosition','$compile','$document','httpRequestTracker',
-        function (sgColumn, breadcrumbs, localizedMessages,crudWait,$uibModal,simpleGridExport,$timeout,$uibPosition,$compile,$document,httpRequestTracker) {
+    .directive('simpleGrid', ['sgColumn', 'breadcrumbs', 'localizedMessages','crudWait', '$modal','simpleGridExport','$timeout', '$position','$compile','$document','httpRequestTracker',
+        function (sgColumn, breadcrumbs, localizedMessages,crudWait,$modal,simpleGridExport,$timeout,$position,$compile,$document,httpRequestTracker) {
             return {
                 restrict:'E',
                 replace:true,
@@ -884,7 +896,7 @@ angular.module('pzutil.simplegrid', ['pzutil.services','pzutil.modal'])
                     });
                     $scope.modalEdit = function(item, col, e){
                         var keyPos = col.$getComboKey(4);
-                        comboScope[keyPos] = $uibPosition.offset(e);
+                        comboScope[keyPos] = $position.offset(e);
                         comboScope[keyPos].top = comboScope[keyPos].top + e.prop('offsetHeight');
                         $scope.activeRow = item;
                         comboScope[col.$getComboKey(2)]=true;
@@ -1094,7 +1106,7 @@ angular.module('pzutil.simplegrid', ['pzutil.services','pzutil.modal'])
                         s.item = function () {
                             return   pageSetting.modalSearchCriteria || {};
                         };
-                        var  modalInstance = $uibModal.open({
+                        var  modalInstance = $modal.open({
                             templateUrl: $scope.sgModalSearchTemplate,
                             controller: $scope.sgModalSearchController,
                             resolve: $scope.sgModalSearchResolve
@@ -1724,7 +1736,7 @@ angular.module("template/simplegrid/simpleGrid-normal.html", []).run(["$template
     "                    <i ng-if=\"col.bool\" ng-class=\"{true: 'fa fa-check'}[col.$getValue(item)]\"></i>\n" +
     "                    <ng-include  ng-if=\"!sgReadonly && col.template && (col.template.substr(0,9)=='readonly_' || !item.$core || !item.$core())\" src=\"col.template\" ng-init=\"col=col\"></ng-include>\n" +
     "                    <span ng-if=\"!sgReadonly && col.editTemplate\" z-template=\"col.editTemplate\"></span>\n" +
-    "                    <span ng-click=\"col.$uibModalEdit(item,$event)\" ng-class=\"{true:'editable-click'}[col.modalEdit && !sgReadonly]\" ng-if=\"col.showSpan(item)\">{{col.$getText(item)| picker:col.format}}</span>\n" +
+    "                    <span ng-click=\"col.$modalEdit(item,$event)\" ng-class=\"{true:'editable-click'}[col.modalEdit && !sgReadonly]\" ng-if=\"col.showSpan(item)\">{{col.$getText(item)| picker:col.format}}</span>\n" +
     "                    <i ng-if=\"$last && item.$core && item.$core()\" class=\"fa fa-lock pull-right sg_gridIcon\"></i>\n" +
     "                </div>\n" +
     "            </div>\n" +
