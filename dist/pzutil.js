@@ -2,7 +2,7 @@
  * pzutil
  * 
 
- * Version: 0.0.18 - 2017-04-25
+ * Version: 0.0.18 - 2017-04-27
  * License: MIT
  */
 angular.module("pzutil", ["pzutil.aditem","pzutil.adpublish","pzutil.download","pzutil.image","pzutil.modal","pzutil.rest","pzutil.retailhelper","pzutil.services","pzutil.simplegrid","pzutil.tree","pzutil.ztemplate"]);
@@ -770,10 +770,18 @@ angular.module('pzutil.simplegrid', ['pzutil.services','pzutil.modal'])
             templateUrl: 'template/simplegrid/chart.html',
             link: function(scope, iElement, iAttrs ) {
                 scope.items_chart = [];
-                scope.items = new kendo.data.DataSource({data: []});
+                //scope.items = new kendo.data.DataSource({data: []});
                 scope.scChartInstance = scope.scChartInstance ||{};
+                scope.chart = {
+                    data: [],
+                    labels:[],
+                    series: []
+                };
                 var chartIt = function(){
                     scope.items_chart.length = 0;
+                    scope.chart.data.length = 0;
+                    scope.chart.labels.length = 0;
+                    scope.chart.series.length = 0;
                     if (scope.scData.length>0){
                         var g;
                         if (scope.scData[0].hasOwnProperty(scope.scCategory))
@@ -822,7 +830,12 @@ angular.module('pzutil.simplegrid', ['pzutil.services','pzutil.modal'])
                             }
                         }
                     }
-                    scope.items.data(scope.items_chart);
+                    scope.chart.labels.push.apply(scope.chart.labels, _.map(scope.items_chart,scope.scCategory));
+                    _(scope.scSeries).forEach(function(j){
+                        scope.chart.series.push(j.field);
+                        scope.chart.data.push(_.map(scope.items_chart,j.field))
+                    })
+                    //scope.items.data(scope.items_chart);
                     if (scope.kendoInstance){
                         var chartOptions = scope.kendoInstance.options;
                         chartOptions.series.length = 0;
